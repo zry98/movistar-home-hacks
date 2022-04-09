@@ -20,17 +20,33 @@ Las contribuciones al [repositorio](https://github.com/zry98/movistar-home) son 
 - [ ] Arreglar el botón de reinicio
 - [ ] Encontrar una manera de instalar Linux sin desmontar ni soldar (quizás a través del easycwmp en el puerto 7547)
 
+## Características
+
+| | |
+| --- | --- |
+| CPU | Intel Atom x5-Z8350 (4C4T) @ 1.44 GHz |
+| RAM | Hynix 2 GB DDR3 ECC @ 1600 MHz |
+| Almacenamiento | Kingston TB2816 16 GB eMMC |
+| Pantalla | 8 pulgadas 1280x800 con pantalla táctil de I2C de Goodix |
+| Wi-Fi & Bluetooth | Realtek RTL8822BE |
+| Tarjeta de sonido | Realtek RT5672 |
+| Altavoces | 2 x 5 W (SPL 87 dB @ 1 W \| 1 m) |
+| Micrófonos | 4 micrófonos omnidireccionales con DSP dedicado |
+| Cámara | OMNIVISION OV2680 con 2 megapíxeles |
+| Medidas | 21,2 x 23,5 x 12,2 cm (alto x ancho x fondo) |
+| Peso | 1,1 kg |
+
 ## Estado de los drivers
 
 Como en el último Manjaro XFCE con kernel 5.15.28-1, el 9 de abril de 2022:
 
-| Dispositivo | Modelo | Driver | Estado |
-| --- | --- | --- | --- |
-| Pantalla táctil | modelo desconocido de Goodix | goodix | OK |
-| Wi-Fi | Realtek RTL8822BE | rtw88_8822be | OK |
-| Bluetooth | Realtek RTL8822BE | rtw88_8822be | No funciona |
-| Tarjeta de sonido (altavoz y micrófono) | Realtek RT5672 | snd_soc_sst_cht_bsw_rt5672 | No funciona |
-| Cámara | OMNIVISION OV2680 | atomisp | No funciona |
+| Dispositivo | Driver | Estado |
+| --- | --- | --- |
+| Pantalla táctil | goodix | OK |
+| Wi-Fi | rtw88_8822be | OK |
+| Bluetooth | rtw88_8822be | No funciona |
+| Tarjeta de sonido | snd_soc_sst_cht_bsw_rt5672 | No funciona |
+| Cámara | atomisp | No funciona |
 
 ## Instalación de Linux
 

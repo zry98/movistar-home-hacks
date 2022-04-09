@@ -20,17 +20,33 @@ Contributions to the [repository](https://github.com/zry98/movistar-home) are ve
 - [ ] Fix reset button
 - [ ] Find a way to install Linux without disassembling nor soldering (maybe through easycwmp on port 7547)
 
+## Characteristics
+
+| | |
+| --- | --- |
+| CPU | Intel Atom x5-Z8350 (4C4T) @ 1.44 GHz |
+| RAM | Hynix 2 GB DDR3 ECC @ 1600 MHz |
+| Storage | Kingston TB2816 16 GB eMMC |
+| Screen | 8-inch 1280x800 with Goodix I2C touch screen |
+| Wi-Fi & Bluetooth | Realtek RTL8822BE |
+| Sound card | Realtek RT5672 |
+| Speakers | 2 x 5 W (SPL 87 dB @ 1 W \| 1 m) |
+| Microphones | 4 omnidirectional microphones with dedicated DSP |
+| Camera | OMNIVISION OV2680 with 2 megapixels |
+| Dimensions | 21.2 x 23.5 x 12.2 cm (height x width x depth) |
+| Weight | 1.1 kg |
+
 ## Driver status
 
 As in the latest Manjaro XFCE with 5.15.28-1 kernel, on April 9, 2022:
 
-| Device | Model | Driver | Status |
-| --- | --- | --- | --- |
-| Touch screen | Goodix unknown model | goodix | OK |
-| Wi-Fi | Realtek RTL8822BE | rtw88_8822be | OK |
-| Bluetooth | Realtek RTL8822BE | rtw88_8822be | Not working |
-| Sound card (speaker & microphone) | Realtek RT5672 | snd_soc_sst_cht_bsw_rt5672 | Not working |
-| Camera | OMNIVISION OV2680 | atomisp | Not working |
+| Device | Driver | Status |
+| --- | --- | --- |
+| Touch screen | goodix | OK |
+| Wi-Fi | rtw88_8822be | OK |
+| Bluetooth | rtw88_8822be | Not working |
+| Sound card | snd_soc_sst_cht_bsw_rt5672 | Not working |
+| Camera | atomisp | Not working |
 
 ## Linux installation
 
