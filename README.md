@@ -114,7 +114,7 @@ Section "InputClass"
 EndSection
 ```
 
-#### Arreglar el desplazamiento con dos dedos en Firefox
+#### Arreglar el control tactil en Firefox
 
 *Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)*
 

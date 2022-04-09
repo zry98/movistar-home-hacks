@@ -114,7 +114,7 @@ Section "InputClass"
 EndSection
 ```
 
-#### Fix two-fingers scrolling in Firefox
+#### Fix touch control in Firefox
 
 *Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)*
 
