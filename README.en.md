@@ -116,7 +116,7 @@ EndSection
 
 #### Fix two-fingers scrolling in Firefox
 
-Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)
+*Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)*
 
 Open Firefox and access `about:config`, search for `dom.w3c_touch_events.enabled` and make sure it's either set to 1 (*enabled*) or 2 (*default, auto-detect*).
 
@@ -161,13 +161,13 @@ Hidden=false
 
 ### Virtual keyboard
 
-Install *Onboard* with `sudo pacman -S onboard`, open Xfce's `Session and Startup` settings, switch to `Application Autostart` tab, find and enable `Onboard (Flexible onscreen keyboard)`.
+Install [*Onboard*](https://archlinux.org/packages/community/x86_64/onboard/) with `sudo pacman -S onboard`, open Xfce's `Session and Startup` settings, switch to `Application Autostart` tab, find and enable `Onboard (Flexible onscreen keyboard)`.
 
 After rebooting, open Onboard's settings and adjust them to your liking.
 
 ### Hide mouse cursor
 
-Install *unclutter* with `sudo pacman -S unclutter`.
+Install [*unclutter*](https://archlinux.org/packages/community/x86_64/unclutter/) with `sudo pacman -S unclutter`.
 
 Create file `~/.config/autostart/hide-cursor.desktop` with following content:
 
@@ -205,4 +205,4 @@ Terminal=false
 Hidden=false
 ```
 
-It's recommended to set up the OpenSSH server before unsoldering the USB connector and reassemble the device, for future maintenance.
+It's recommended to set up the OpenSSH server before unsoldering the USB connector and reassembling the device, for possible future maintenance.

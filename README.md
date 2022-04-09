@@ -116,7 +116,7 @@ EndSection
 
 #### Arreglar el desplazamiento con dos dedos en Firefox
 
-Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)
+*Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)*
 
 Abre la Firefox y acceda a `about:config`, busca por `dom.w3c_touch_events.enabled` y asegúrase de que está configurado a 1 (*habilitado*) o 2 (*predeterminado, detección automática*).
 
@@ -161,15 +161,13 @@ Hidden=false
 
 ### Teclado virtual
 
-Install *Onboard* with `sudo pacman -S onboard`, open Xfce's `Session and Startup` settings, switch to `Application Autostart` tab, find and enable `Onboard (Flexible onscreen keyboard)`.
-
-Instala Onboard con `sudo pacman -S onboard`, abre la configuración `Sesión e inicio` de Xfce, cambia a la pestaña `Autoarranque de aplicaciones`, busca y habilita `Onboard (Teclado en pantalla flexible)`.
+Instala [*Onboard*](https://archlinux.org/packages/community/x86_64/onboard/) con `sudo pacman -S onboard`, abre la configuración `Sesión e inicio` de Xfce, cambia a la pestaña `Autoarranque de aplicaciones`, busca y habilita `Onboard (Teclado en pantalla flexible)`.
 
 Después de reiniciar, abre la configuración de Onboard y ajústala a tu gusto.
 
 ### Ocultar cursor del ratón
 
-Instala *unclutter* con `sudo pacman -S unclutter`.
+Instala [*unclutter*](https://archlinux.org/packages/community/x86_64/unclutter/) con `sudo pacman -S unclutter`.
 
 Crea el archivo `~/.config/autostart/hide-cursor.desktop` con el siguiente contenido:
 
@@ -198,7 +196,7 @@ Encoding=UTF-8
 Version=0.9.4
 Type=Application
 Name=HASS Dashboard
-Comment=Ejecute el dashboard de HASS en el quiosco de Firefox
+Comment=Ejecute el dashboard de HASS en el mode quiosco de Firefox
 Exec=firefox -kiosk -url 'https://tu.hass.url'
 OnlyShowIn=XFCE;
 RunHook=0
@@ -207,4 +205,4 @@ Terminal=false
 Hidden=false
 ```
 
-Se recomienda configurar el servidor OpenSSH antes de desoldar el conector USB y volver a montar el dispositivo, para los mantenimientos futuros.
+Se recomienda configurar el servidor OpenSSH antes de desoldar el conector USB y volver a montar el dispositivo, para los posibles mantenimientos en el futuro.
