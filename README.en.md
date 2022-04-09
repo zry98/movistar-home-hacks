@@ -20,7 +20,7 @@ Contributions to the [repository](https://github.com/zry98/movistar-home) are ve
 - [ ] Fix reset button
 - [ ] Find a way to install Linux without disassembling nor soldering (maybe through easycwmp on port 7547)
 
-## Characteristics
+## Tech specs
 
 | | |
 | --- | --- |
