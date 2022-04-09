@@ -114,6 +114,14 @@ Section "InputClass"
 EndSection
 ```
 
+#### Fix two-fingers scrolling in Firefox
+
+Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)
+
+Open Firefox and access `about:config`, search for `dom.w3c_touch_events.enabled` and make sure it's either set to 1 (*enabled*) or 2 (*default, auto-detect*).
+
+Add `MOZ_USE_XINPUT2 DEFAULT=1` to `/etc/security/pam_env.conf`.
+
 ### Auto backlight dimming
 
 Create file `/etc/X11/xorg.conf.d/10-intel.conf` with following content:

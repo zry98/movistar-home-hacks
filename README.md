@@ -114,6 +114,14 @@ Section "InputClass"
 EndSection
 ```
 
+#### Arreglar el desplazamiento con dos dedos en Firefox
+
+Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)
+
+Abre la Firefox y acceda a `about:config`, busca por `dom.w3c_touch_events.enabled` y asegúrase de que está configurado a 1 (*habilitado*) o 2 (*predeterminado, detección automática*).
+
+Añade `MOZ_USE_XINPUT2 DEFAULT=1` a `/etc/security/pam_env.conf`.
+
 ### Reducción automática de brillo
 
 Crea el archivo `/etc/X11/xorg.conf.d/10-intel.conf` con el siguiente contenido:
