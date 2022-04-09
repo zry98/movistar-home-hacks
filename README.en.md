@@ -10,7 +10,7 @@ as a Home Assistant dashboard panel.
 
 I dumped the original Android-x86 firmware from flash, but it failed to boot after I wrote it back in, and the /data partition was encrypted and I couldn't find a way to decrypt it.
 
-Contributions to the [repository](https://github.com/zry98/movistar-home) are very welcomed if you've got any discoveries; or if you have a Movistar Home not in use and willing to help this project, please contact me through my email in [GitHub profile](https://github.com/zry98), much appreciated!
+Contributions to the [repository](https://github.com/zry98/movistar-home-hacks) are very welcomed if you've got any discoveries; or if you have a Movistar Home not in use and willing to help this project, please contact me through my email in [GitHub profile](https://github.com/zry98), much appreciated!
 
 ### TODO list
 

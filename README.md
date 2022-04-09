@@ -10,7 +10,7 @@ como un panel de dashboard de Home Assistant.
 
 He descargado el firmware original de Android-x86 en la memoria flash, pero no se pudo iniciar después de que lo volví a escribir, además la partición /data estaba cifrada y no pude encontrar una manera de descifrarla.
 
-Las contribuciones al [repositorio](https://github.com/zry98/movistar-home) son muy bienvenidas si tienes algunos descubrimientos; o si tienes una Movistar Home que no estás usando y quieres ayudar en este proyecto, por favor contáctame a través de mi email en [mi perfil de GitHub](https://github.com/zry98), ¡muchas gracias!
+Las contribuciones al [repositorio](https://github.com/zry98/movistar-home-hacks) son muy bienvenidas si tienes algunos descubrimientos; o si tienes una Movistar Home que no estás usando y quieres ayudar en este proyecto, por favor contáctame a través de mi email en [mi perfil de GitHub](https://github.com/zry98), ¡muchas gracias!
 
 ### Lista de tareas
 
