@@ -1,8 +1,10 @@
 # Repurposing Movistar Home
 
-![hass](img/hass.jpg)
+as a Home Assistant dashboard panel.
 
 [Versión en castellano](README.md)
+
+![hass](img/hass.jpg)
 
 ## HELP NEEDED
 
