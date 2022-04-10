@@ -46,7 +46,9 @@ Then I connected a USB hub with a USB ethernet adapter, now it's connected to th
 
 I was able to download APKs but couldn't find a way to install them. I could read local files using the `file://` protocol (e.g. `file:///system/build.prop`) but when I try to open an APK file with `file:///sdcard/download/xxx.apk` it only gives me a toast saying that such files can only be accessed with HTTP(S) protocol.
 
-Then I scanned the open ports on the device, found a HTTP service of `easycwmp` listening on port 7547, but it's protected with basic authentication. Later in the flash dump I found its credentials should be `easycwmp/easycwmp`, but it won't boot into the original Android-x86 after I wrote the dump back.
+#### easycwmp
+
+I scanned the open ports on the device, found a HTTP service of `easycwmp` listening on port 7547, but it's protected with basic authentication. Later in the flash dump I found its credentials should be `easycwmp/easycwmp`, but it won't boot into the original Android-x86 after I wrote the dump back. [easycwmp](https://github.com/pivasoftware/easycwmp) is a [TR-069](https://en.wikipedia.org/wiki/TR-069) client, which usually should only appear in ISP-provided modems and routers, my guess here is that it's for the OS's OTA updates. That means it might be possible to take advantage of this service and flash custom firmware (Linux) **without having to disassemble the device and solder USB cable**. But unfortunately, I no longer have one with the original OS to do research on it.
 
 So far nothing useful, so I decided to try to get into the BIOS setup which I believe it should have one since it's x86.
 

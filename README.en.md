@@ -18,7 +18,7 @@ Contributions to the [repository](https://github.com/zry98/movistar-home-hacks) 
 - [ ] Fix camera driver
 - [ ] Fix bluetooth driver
 - [ ] Fix reset button
-- [ ] Find a way to install Linux without disassembling nor soldering (maybe through easycwmp on port 7547)
+- [ ] Find a way to install Linux without disassembling nor soldering (maybe through [easycwmp on port 7547](researches.md#easycwmp))
 
 ## Tech specs
 
