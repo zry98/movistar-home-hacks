@@ -4,6 +4,8 @@ como un panel de dashboard de Home Assistant.
 
 [English version](README.en.md)
 
+[Research notes](researches.md)
+
 ![hass](img/hass.jpg)
 
 ## SE NECESITA AYUDA
