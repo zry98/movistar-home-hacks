@@ -1,0 +1,35 @@
+# easycwmp uci configuration
+
+config local
+	option interface wlan0
+	option port 7547
+	option ubus_socket /data/run/ubus.sock
+	option date_format %FT%T%z
+	option username easycwmp
+	option password easycwmp
+	option provisioning_code ''
+#Logging levels: Critic=0, Warning=1, Notice=2, Info=3, Debug=4
+	option logging_level '4'
+
+config acs
+	option url http://192.168.1.100:8080
+	option username easycwmp
+	option password easycwmp
+	option parameter_key ''
+	option periodic_enable '1'
+	option periodic_interval '3600'
+	option periodic_time '0001-01-01T00:00:00Z'
+	option ssl_cacert /system/etc/certs/CA_Telefonica.cer
+	option ssl_verify disabled
+	option hostName_verify 0
+	option enable_cwmp 1
+#basic authentication = 'Basic', Digest authentication = 'Digest', Default value = 'Digest'
+	option authentication 'Digest'
+
+config device
+	option manufacturer mstc
+	option oui F8E7D6
+	option product_class mstc_hap_t4
+	option serial_number FFFFFF123456
+	option hardware_version mstc_hw_version
+	option software_version mstc_sw_version

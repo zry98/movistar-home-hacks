@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Device>
+  <LAN>
+    <AddressingType PARAMETER="configured" TYPE="string" LENGTH="256" />
+    <IPAddress PARAMETER="configured" TYPE="string" LENGTH="45" />
+    <SubnetMask PARAMETER="configured" TYPE="string" LENGTH="45" />
+    <DefaultGateway PARAMETER="configured" TYPE="string" LENGTH="256" />
+    <DNSServers PARAMETER="configured" TYPE="string" LENGTH="256" />
+  </LAN>
+  <ManagementServer>
+    <EnableCWMP PARAMETER="configured" TYPE="boolean" NOTIFICATION="off">1</EnableCWMP>
+    <URL PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">https://main.acs.telefonica.net:7016/cwmpWeb/WGCPEMgt</URL>
+    <Username PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">ACS1234</Username>
+    <Password PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">ACS1234</Password>
+    <PeriodicInformEnable PARAMETER="configured" TYPE="boolean" NOTIFICATION="off">1</PeriodicInformEnable>
+    <PeriodicInformInterval PARAMETER="configured" TYPE="uint32" MAX="4294967295" MIN="1" NOTIFICATION="off">86400</PeriodicInformInterval>
+    <PeriodicInformTime PARAMETER="configured" TYPE="datetime">0001-01-01T00:00:00Z</PeriodicInformTime>
+    <ConnectionRequestUsername PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">ACSCR1234</ConnectionRequestUsername>
+    <ConnectionRequestPassword PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">ACSCR1234</ConnectionRequestPassword>
+    <UDPConnectionRequestAddressNotificationLimit PARAMETER="configured" TYPE="uint32" MAX="4294967295" MIN="0" NOTIFICATION="off">100</UDPConnectionRequestAddressNotificationLimit>
+    <STUNEnable PARAMETER="configured" TYPE="boolean" NOTIFICATION="off">0</STUNEnable>
+    <STUNServerAddress PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">192.168.1.100</STUNServerAddress>
+    <STUNServerPort PARAMETER="configured" TYPE="uint32" MAX="65535" MIN="0" NOTIFICATION="off">3478</STUNServerPort>
+    <STUNUsername PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">1234</STUNUsername>
+    <STUNPassword PARAMETER="configured" TYPE="string" LENGTH="256" NOTIFICATION="off">1234</STUNPassword>
+    <STUNMaximumKeepAlivePeriod PARAMETER="configured" TYPE="sint31" MAX="2147483647" MIN="-1" NOTIFICATION="off">-1</STUNMaximumKeepAlivePeriod>
+    <STUNMinimumKeepAlivePeriod PARAMETER="configured" TYPE="uint32" MAX="4294967295" MIN="0" NOTIFICATION="off">30</STUNMinimumKeepAlivePeriod>
+  </ManagementServer>
+  <Time>
+    <NTPServer2 PARAMETER="configured" TYPE="string" LENGTH="64" NOTIFICATION="off">hora.ngn.rima-tde.net</NTPServer2>
+    <NTPServer3 PARAMETER="configured" TYPE="string" LENGTH="64" NOTIFICATION="off">time.google.com</NTPServer3>
+  </Time>
+</Device>
+
