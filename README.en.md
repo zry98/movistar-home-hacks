@@ -68,6 +68,8 @@ Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. P
 
 Install your linux as usual, it may be necessary to include non-free drivers.
 
+It's recommended to set up the OpenSSH server before unsoldering the USB connector and reassembling the device, for possible future maintenance.
+
 ## Configurations
 
 The following configurations were made for Manjaro XFCE and may need to be adjusted for other distros.
@@ -207,4 +209,52 @@ Terminal=false
 Hidden=false
 ```
 
-It's recommended to set up the OpenSSH server before unsoldering the USB connector and reassembling the device, for possible future maintenance.
+### Prevent screen burn-in
+
+**DO NOT USE this script if you or a family member has [photosensitive epilepsy](https://en.wikipedia.org/wiki/Photosensitive_epilepsy)!**
+
+Since it will mostly be used to display a HASS dashboard 24/7, it's very likely to get [screen burn-in](https://en.wikipedia.org/wiki/Screen_burn-in) after some time, although it has an LCD screen. To prevent that, I wrote a Python script to have it periodically flash several colors in full screen to refresh all the pixels.
+
+Create file `/usr/bin/screensaver.py` with following content, then run command `chmod +x /usr/bin/screensaver.py` to make it executable:
+
+```python
+#!/usr/bin/env python3
+from time import time
+import tkinter as tk
+
+color_interval = 300  # milliseconds
+total_time = 10  # seconds, exit after that
+
+colors = ['red', 'green', 'blue', 'black', 'white']
+color_index = 0
+
+root = tk.Tk()
+w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+root.overrideredirect(True)
+root.attributes('-fullscreen', True)
+canvas = tk.Canvas(root, width=w, height=h, background='black', highlightthickness=0)
+canvas.pack()
+canvas.focus_set()
+canvas.bind('<Button-1>', lambda _: root.destroy())  # exit on touch
+
+
+def flash_color():
+    global color_index
+    if time() - time_start > total_time: root.destroy()
+    canvas.configure(background=colors[color_index])
+    color_index = (color_index + 1) % len(colors)
+    root.after(color_interval, flash_color)
+
+
+time_start = time()
+flash_color()
+root.mainloop()
+```
+
+Adjust the two variables `color_interval` and `total_time` to your liking, with `total_time = 10` it will be running for 10 seconds, just touch the screen if you need to stop it immediately.
+
+Run command `crontab -e` and add a cron job as following, which will run the script every hour:
+
+```crontab
+0 * * * *       export DISPLAY=:0; /usr/bin/screensaver.py
+```
