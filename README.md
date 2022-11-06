@@ -40,7 +40,7 @@ Las contribuciones al [repositorio](https://github.com/zry98/movistar-home-hacks
 
 ## Estado de los drivers
 
-Como en el último Manjaro XFCE con kernel 5.15.71-1, el 5 de noviembre de 2022:
+Como en el último Manjaro XFCE con kernel 5.15.76-1, el 7 de noviembre de 2022:
 
 | Dispositivo | Driver | Estado |
 | --- | --- | --- |
@@ -52,7 +52,7 @@ Como en el último Manjaro XFCE con kernel 5.15.71-1, el 5 de noviembre de 2022:
 
 ## Instalación de Linux
 
-Desmonta el dispositivo, hay 10 presillas (snap-fits) debajo de los bordes del panel posterior, ten cuidado de no dañarlos; luego hay 8 tornillos debajo de él.
+Desmonta el dispositivo, hay 10 presillas (*snap-fits*) debajo de los bordes del panel posterior, ten cuidado de no dañarlos; luego hay 8 tornillos debajo de él.
 
 Localiza el puerto vacío de micro USB en el borde izquierdo de la placa base, para el modelo `IGW-5000A2BKMP-I v2`:
 
@@ -62,9 +62,9 @@ Para la placa rev5 en el modelo más nuevo `RG3205W` (aun no he probado uno):
 
 ![board-rev5](img/board-rev5.jpg)
 
-Suelda un conector hembra micro USB y conecta un cable adaptador OTG, o simplemente un cable con un conector hembra USB estándar, luego cortocircuita el cuarto pin (o la pad `ID`) a la tierra (GND), haciendo que el dispositivo funcione como un OTG host.
+Suelda un conector hembra micro USB y conecta un cable adaptador OTG, o simplemente un cable con un conector hembra USB estándar, luego cortocircuita el cuarto pin (o la pad `ID`) a la tierra (GND), haciendo que el dispositivo funcione como un OTG *host*.
 
-Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID`) a tierra (GND, el quinto pin), haciendo que el dispositivo funcione como un OTG host.
+Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID`) a tierra (GND, el quinto pin), haciendo que el dispositivo funcione como un OTG *host*.
 
 Flashea un pendrive USB con tu distribución de Linux favorita, recomiendo usar el entorno de escritorio Xfce ya que el Movistar Home solo tiene 2 GB de RAM.
 
@@ -92,7 +92,7 @@ Section "Monitor"
 EndSection
 ```
 
-Ajusta el parámetro de escala (*Scale*) a tu gusto, descubrí que 0.8x es el más adecuado para esta pantalla.
+Ajusta el parámetro de escala (*Scale*) a tu gusto, descubrí que 0,8x es el más adecuado para esta pantalla.
 
 ### Arreglar la pantalla táctil
 
@@ -148,7 +148,7 @@ EndSection
 
 Abre el `Administrador de energía` de Xfce, cambia a la pestaña `Pantalla` y ajusta la configuración de `Reducción de brillo`. Personalmente lo configuré para que se reduzca al 20% después de 90 segundos de inactividad.
 
-También recuerda a deshabilitar la suspensión/apagar automático desde allí.
+También recuerda a deshabilitar la suspensión/apagar automática desde allí.
 
 Crea el archivo `~/.config/autostart/set-backlight.desktop` con el siguiente contenido:
 
@@ -173,7 +173,7 @@ Hidden=false
 
 Instala [*Onboard*](https://archlinux.org/packages/community/x86_64/onboard/) con `sudo pacman -S onboard`, abre la configuración `Sesión e inicio` de Xfce, cambia a la pestaña `Autoarranque de aplicaciones`, busca y habilita `Onboard (Teclado en pantalla flexible)`.
 
-Después de reiniciar, abre la configuración de Onboard y ajústala a tu gusto.
+Después de reiniciar, abre la configuración de *Onboard* y ajústala a tu gusto.
 
 ### Ocultar cursor del ratón
 
@@ -219,9 +219,9 @@ Ejecutará Firefox en modo quiosco al iniciar, del que solo puedes salir presion
 
 ### Evitar que la pantalla se queme
 
-Dado que se usará principalmente para mostrar un dashboard de HASS todos los días, es muy probable que [la pantalla se queme](https://en.wikipedia.org/wiki/Screen_burn-in) después de un tiempo, aunque tiene una pantalla LCD.
+Dado que se usará principalmente para mostrar un dashboard de Home Assistant todos los días, es muy probable que [la pantalla se queme](https://en.wikipedia.org/wiki/Screen_burn-in) después de un tiempo, aunque tiene una pantalla LCD.
 
-Para evitar eso, escribí un script de Python para que muestre periódicamente varios colores en pantalla completa para actualizar todos los píxeles.
+Para evitarlo, escribí un script de Python para que muestre periódicamente varios colores en pantalla completa para actualizar todos los píxeles.
 
 **¡NO USA este script si tú o un miembro de tu familia tiene [epilepsia fotosensible](https://es.wikipedia.org/wiki/Epilepsia_fotosensible)!**
 
@@ -263,7 +263,7 @@ root.mainloop()
 
 Ajusta las dos variables `color_interval` y `total_time` a tu gusto, con `total_time = 10` se ejecutará durante 10 segundos, toca la pantalla si necesitas detenerlo de inmediato.
 
-Ejecuta el comando `chmod +x /usr/bin/screensaver.py` para hacerlo ejecutable, luego ejecuta el comando `crontab -e` y agrega un trabajo de cron como sigue, que ejecutará el script cada hora:
+Ejecuta el comando `chmod +x /usr/bin/screensaver.py` para hacerlo ejecutable, luego ejecuta el comando `crontab -e` y agrega un trabajo de *cron* como sigue, que ejecutará el script cada hora:
 
 ```crontab
 0 * * * *       export DISPLAY=:0; /usr/bin/screensaver.py

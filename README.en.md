@@ -40,7 +40,7 @@ Contributions to the [repository](https://github.com/zry98/movistar-home-hacks) 
 
 ## Driver status
 
-As in the latest Manjaro XFCE with 5.15.71-1 kernel, on November 5, 2022:
+As in the latest Manjaro XFCE with 5.15.76-1 kernel, on November 7, 2022:
 
 | Device | Driver | Status |
 | --- | --- | --- |
@@ -90,7 +90,7 @@ Section "Monitor"
 EndSection
 ```
 
-Adjust the scaling parameter to your liking, I found 0.8x most suitable for this screen.
+Adjust the scaling parameter (*Scale*) to your liking, I found 0.8x the most suitable for this screen.
 
 ### Fix touch screen
 
@@ -217,7 +217,7 @@ This will run Firefox in kiosk mode at startup, which you can only exit by press
 
 ### Prevent screen burn-in
 
-Since it will mostly be used to display a HASS dashboard 24/7, it's very likely to get [screen burn-in](https://en.wikipedia.org/wiki/Screen_burn-in) after some time, although it has an LCD screen.
+Since it will mostly be used to display a Home Assistant dashboard 24/7, it's very likely to get [screen burn-in](https://en.wikipedia.org/wiki/Screen_burn-in) after some time, although it has an LCD screen.
 
 To prevent that, I wrote a Python script to have it periodically flash several colors in full screen to refresh all the pixels.
 
