@@ -40,7 +40,7 @@ Contributions to the [repository](https://github.com/zry98/movistar-home-hacks) 
 
 ## Driver status
 
-As in the latest Manjaro XFCE with 5.15.28-1 kernel, on April 9, 2022:
+As in the latest Manjaro XFCE with 5.15.71-1 kernel, on November 5, 2022:
 
 | Device | Driver | Status |
 | --- | --- | --- |
@@ -52,15 +52,19 @@ As in the latest Manjaro XFCE with 5.15.28-1 kernel, on April 9, 2022:
 
 ## Linux installation
 
-Disassemble the device, be careful not to damage those snaps under the back panel.
+Disassemble the device, there are 10 snap-fits under the back panel edges, be careful not to damage them; then 8 screws under it.
 
-Locate the unpopulated micro USB port on the left edge of the motherboard:
+Locate the unpopulated micro USB port on the left edge of the motherboard, for model `IGW-5000A2BKMP-I v2`:
 
 ![inside-with-usb-port-location](img/inside-with-usb-port-location.jpg)
 
-Solder a micro USB female connector and connect an OTG adapter, or just a cable with a standard USB female connector to it, then short the fourth pin (or the `ID` pad) to the ground (GND), making the device function as an OTG host.
+For rev5 board in newer model `RG3205W` (I haven't tested one yet):
 
-Flash a USB drive with your favorite Linux distro, I recommend using XFCE desktop environment since it only has 2 GB RAM.
+![board-rev5](img/board-rev5.jpg)
+
+Solder a micro USB female connector and connect an OTG adapter cable; or just solder a cable with a standard USB-A female connector to it, then short the fourth pin (or the `ID` pad) to the ground (GND, the fifth pin), making the device function as an OTG host.
+
+Flash a USB drive with your favorite Linux distro, I recommend using Xfce desktop environment considering the Movistar Home only has 2 GB RAM.
 
 Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. Power it up while pressing the `F2` key, it will boot into BIOS setup, navigate to the last tab (`Save & Exit`), select your USB drive (should be something like `UEFI: USB, Partition 1`) in the `Boot Override` menu, press Enter key to boot it.
 
@@ -72,11 +76,11 @@ It's recommended to set up the OpenSSH server before unsoldering the USB connect
 
 ## Configurations
 
-The following configurations were made for Manjaro XFCE and may need to be adjusted for other distros.
+The following configurations were made for Manjaro XFCE and may need some modifications for other distros.
 
 ### Fix screen rotation
 
-Create file `/etc/X11/xorg.conf.d/20-monitor.conf` with following content:
+Create file `/etc/X11/xorg.conf.d/20-monitor.conf` with the following content:
 
 ```
 Section "Monitor"
@@ -92,7 +96,7 @@ Adjust the scaling parameter to your liking, I found 0.8x most suitable for this
 
 For some reason the touch screen won't work at all unless it's soft rebooted once, in dmesg the driver says "*Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults*".
 
-Create file `/etc/systemd/system/fix-touchscreen.service` with following content:
+Create file `/etc/systemd/system/fix-touchscreen.service` with the following content:
 
 ```systemd
 [Unit]
@@ -106,9 +110,9 @@ ExecStart=sh -c 'dmesg | grep -q " Goodix-TS .*: Invalid config " && reboot now 
 WantedBy=multi-user.target
 ```
 
-Then execute `sudo systemctl daemon-reload && systemctl enable fix-touchscreen.service` to make it run at boot.
+Then execute `sudo systemctl daemon-reload && systemctl enable fix-touchscreen.service` to make it run at startup.
 
-For fixing rotation, create file `/etc/X11/xorg.conf.d/30-touchscreen.conf` with following content:
+For fixing rotation, create file `/etc/X11/xorg.conf.d/30-touchscreen.conf` with the following content:
 
 ```
 Section "InputClass"
@@ -128,7 +132,7 @@ Add `MOZ_USE_XINPUT2 DEFAULT=1` to `/etc/security/pam_env.conf`.
 
 ### Auto backlight dimming
 
-Create file `/etc/X11/xorg.conf.d/10-intel.conf` with following content:
+Create file `/etc/X11/xorg.conf.d/10-intel.conf` with the following content:
 
 ```
 Section "Device"
@@ -144,7 +148,7 @@ Open Xfce's `Power Manager`, switch to `Display` tab, and adjust the `Brightness
 
 Remember also to disable the auto suspension/shutdown from there.
 
-Create file `~/.config/autostart/set-backlight.desktop` with following content:
+Create file `~/.config/autostart/set-backlight.desktop` with the following content:
 
 ```systemd
 [Desktop Entry]
@@ -173,7 +177,7 @@ After rebooting, open Onboard's settings and adjust them to your liking.
 
 Install [*unclutter*](https://archlinux.org/packages/community/x86_64/unclutter/) with `sudo pacman -S unclutter`.
 
-Create file `~/.config/autostart/hide-cursor.desktop` with following content:
+Create file `~/.config/autostart/hide-cursor.desktop` with the following content:
 
 ```systemd
 [Desktop Entry]
@@ -192,7 +196,7 @@ Hidden=false
 
 ### Home Assistant dashboard
 
-Create file `~/.config/autostart/HASS.desktop` with following content:
+Create file `~/.config/autostart/HASS.desktop` with the following content:
 
 ```systemd
 [Desktop Entry]
@@ -209,13 +213,17 @@ Terminal=false
 Hidden=false
 ```
 
+This will run Firefox in kiosk mode at startup, which you can only exit by pressing alt+F4 or using kill command in SSH.
+
 ### Prevent screen burn-in
+
+Since it will mostly be used to display a HASS dashboard 24/7, it's very likely to get [screen burn-in](https://en.wikipedia.org/wiki/Screen_burn-in) after some time, although it has an LCD screen.
+
+To prevent that, I wrote a Python script to have it periodically flash several colors in full screen to refresh all the pixels.
 
 **DO NOT USE this script if you or a family member has [photosensitive epilepsy](https://en.wikipedia.org/wiki/Photosensitive_epilepsy)!**
 
-Since it will mostly be used to display a HASS dashboard 24/7, it's very likely to get [screen burn-in](https://en.wikipedia.org/wiki/Screen_burn-in) after some time, although it has an LCD screen. To prevent that, I wrote a Python script to have it periodically flash several colors in full screen to refresh all the pixels.
-
-Create file `/usr/bin/screensaver.py` with following content, then run command `chmod +x /usr/bin/screensaver.py` to make it executable:
+Create file `/usr/bin/screensaver.py` with the following content:
 
 ```python
 #!/usr/bin/env python3
@@ -253,7 +261,7 @@ root.mainloop()
 
 Adjust the two variables `color_interval` and `total_time` to your liking, with `total_time = 10` it will be running for 10 seconds, just touch the screen if you need to stop it immediately.
 
-Run command `crontab -e` and add a cron job as following, which will run the script every hour:
+Run command `chmod +x /usr/bin/screensaver.py` to make it executable, then run command `crontab -e` and add a cron job as following, which will run the script every hour:
 
 ```crontab
 0 * * * *       export DISPLAY=:0; /usr/bin/screensaver.py
