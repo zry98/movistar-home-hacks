@@ -62,8 +62,6 @@ Para la placa rev5 en el modelo más nuevo `RG3205W` (aun no he probado uno):
 
 ![board-rev5](img/board-rev5.jpg)
 
-Suelda un conector hembra micro USB y conecta un cable adaptador OTG, o simplemente un cable con un conector hembra USB estándar, luego cortocircuita el cuarto pin (o la pad `ID`) a la tierra (GND), haciendo que el dispositivo funcione como un OTG *host*.
-
 Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID`) a tierra (GND, el quinto pin), haciendo que el dispositivo funcione como un OTG *host*.
 
 Flashea un pendrive USB con tu distribución de Linux favorita, recomiendo usar el entorno de escritorio Xfce ya que el Movistar Home solo tiene 2 GB de RAM.
@@ -72,7 +70,7 @@ Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. 
 
 ![bios](img/bios.jpg)
 
-Instala tu linux como de costumbre, puede ser necesario incluir los *non-free* drivers.
+Instala tu distribución de Linux como de costumbre, puede ser necesario incluir los drivers *non-free*.
 
 Se recomienda configurar el servidor OpenSSH antes de desoldar el conector USB y volver a montar el dispositivo, para los posibles mantenimientos en el futuro.
 
@@ -88,7 +86,14 @@ Crea el archivo `/etc/X11/xorg.conf.d/20-monitor.conf` con el siguiente contenid
 Section "Monitor"
         Identifier      "DSI1"
         Option          "Rotate" "right"
-        Option          "Scale"  "0.8x0.8"
+        Option          "Scale" "0.8x0.8"
+        Option          "DPMS" "true"
+EndSection
+
+Section "ServerFlags"
+        Option          "StandbyTime" "0"
+        Option          "SuspendTime" "0"
+        Option          "OffTime" "0"
 EndSection
 ```
 
@@ -112,7 +117,7 @@ ExecStart=sh -c 'dmesg | grep -q " Goodix-TS .*: Invalid config " && reboot now 
 WantedBy=multi-user.target
 ```
 
-Ejecuta `sudo systemctl daemon-reload && systemctl enable fix-touchscreen.service` para que se ejecute al iniciar.
+Ejecuta `sudo systemctl daemon-reload && sudo systemctl enable fix-touchscreen.service` para que se ejecute al iniciar.
 
 Para corregir la rotación, crea el archivo `/etc/X11/xorg.conf.d/30-touchscreen.conf` con el siguiente contenido:
 
@@ -216,6 +221,111 @@ Hidden=false
 ```
 
 Ejecutará Firefox en modo quiosco al iniciar, del que solo puedes salir presionando alt+F4 o usando el comando kill en SSH.
+
+### Controlar el estado de la pantalla desde Home Assistant
+
+Crea el archivo `~/panel_server.py` con el siguiente contenido:
+
+```python
+import os
+from subprocess import run
+import logging
+from flask import Flask, request, make_response
+from werkzeug.wrappers import Request, Response
+
+TOKEN = ''
+
+class middleware():
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, env, start_resp):
+        request = Request(env)
+        if TOKEN != '' and request.headers.get('Authorization') != f'Bearer {TOKEN}':
+            res = Response('Unauthorized', mimetype='text/plain', status=401)
+            return res(env, start_resp)
+        return self.app(env, start_resp)
+
+
+app = Flask(__name__)
+app.wsgi_app = middleware(app.wsgi_app)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+@app.route('/display/state', methods=['GET'])
+def get_display_state():
+    cmd = "xset -display :0.0 q | grep '^  Monitor is' | awk '{print $NF}'"
+    state = run(cmd, shell=True, capture_output=True).stdout.decode().strip()
+    if state == 'On':
+        return make_response('ON', 200)
+    elif state == 'Off':
+        return make_response('OFF', 200)
+    else:
+        return make_response(f'Unknown state "{state}"', 500)
+
+@app.route('/display/state', methods=['POST'])
+def set_display_state():
+    req_body = request.get_data().decode()
+    if req_body == 'OFF':
+        cmd = 'xset -display :0.0 dpms force off'
+    elif req_body == 'ON':
+        cmd = 'xset -display :0.0 dpms force on'
+    else:
+        return make_response('Bad Request', 400)
+
+    ret = run(cmd, shell=True).returncode
+    if ret == 0:
+        return make_response(req_body, 200)
+    else:
+        return make_response(f'Command returned {ret}', 500)
+
+if __name__ == '__main__':
+    TOKEN = os.environ.get('TOKEN', '')
+    app.run(host=os.environ.get('HOST', '0.0.0.0'), port=os.environ.get('PORT', 8080))
+```
+
+Crea el archivo `/etc/systemd/system/panelserver.service` con el siguiente contenido:
+
+```systemd
+[Unit]
+Description=Panel Server
+Wants=network-online.target nss-lookup.target
+After=network-online.target nss-lookup.target
+
+[Service]
+Environment="TOKEN=aa83720a-0bc1-4d5b-82fc-bf27a6682aa4"  # reemplázalo con tu clave secreta
+User=panel  # reemplázalo con tu usuario
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+WorkingDirectory=~
+ExecStart=/usr/bin/python3 panel_server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Ejecuta `sudo systemctl daemon-reload && sudo systemctl enable panelserver.service` para que se ejecute al iniciar.
+
+Crea un [interruptor de RESTful](https://www.home-assistant.io/integrations/switch.rest/) en la configuración YAML de tu Home Assistant como:
+
+```yaml
+- platform: rest
+  name: Pantalla del Panel
+  unique_id: pantalla_panel
+  resource: http://panel:8080/display/state  # reemplaza `panel` con el nombre de host o la dirección IP de tu panel
+  body_on: 'ON'
+  body_off: 'OFF'
+  is_on_template: '{{ value == "ON" }}'
+  headers:
+    Authorization: Bearer aa83720a-0bc1-4d5b-82fc-bf27a6682aa4  # reemplázalo con tu clave secreta (después de `Bearer `)
+  verify_ssl: false
+```
+
+Recarga tu instancia de Home Assistant, usa las *Herramientas de desarrollador* para probar el interruptor y el sensor.
+
+Luego puedes usarlo en las Automatizaciones, por ejemplo, apagarlo cuando te vas a dormir por la noche y volver a encenderlo cuando te levantas por la mañana.
 
 ### Evitar que la pantalla se queme
 

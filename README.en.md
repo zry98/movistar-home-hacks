@@ -70,7 +70,7 @@ Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. P
 
 ![bios](img/bios.jpg)
 
-Install your linux as usual, it may be necessary to include non-free drivers.
+Install your Linux distro as usual, it may be necessary to include non-free drivers.
 
 It's recommended to set up the OpenSSH server before unsoldering the USB connector and reassembling the device, for possible future maintenance.
 
@@ -86,7 +86,14 @@ Create file `/etc/X11/xorg.conf.d/20-monitor.conf` with the following content:
 Section "Monitor"
         Identifier      "DSI1"
         Option          "Rotate" "right"
-        Option          "Scale"  "0.8x0.8"
+        Option          "Scale" "0.8x0.8"
+        Option          "DPMS" "true"
+EndSection
+
+Section "ServerFlags"
+        Option          "StandbyTime" "0"
+        Option          "SuspendTime" "0"
+        Option          "OffTime" "0"
 EndSection
 ```
 
@@ -110,9 +117,9 @@ ExecStart=sh -c 'dmesg | grep -q " Goodix-TS .*: Invalid config " && reboot now 
 WantedBy=multi-user.target
 ```
 
-Then execute `sudo systemctl daemon-reload && systemctl enable fix-touchscreen.service` to make it run at startup.
+Then execute `sudo systemctl daemon-reload && sudo systemctl enable fix-touchscreen.service` to make it run at startup.
 
-For fixing rotation, create file `/etc/X11/xorg.conf.d/30-touchscreen.conf` with the following content:
+To fix rotation, create file `/etc/X11/xorg.conf.d/30-touchscreen.conf` with the following content:
 
 ```
 Section "InputClass"
@@ -214,6 +221,110 @@ Hidden=false
 ```
 
 This will run Firefox in kiosk mode at startup, which you can only exit by pressing alt+F4 or using kill command in SSH.
+
+### Control display state from Home Assistant
+
+Create file `~/panel_server.py` with the following content:
+
+```python
+import os
+from subprocess import run
+import logging
+from flask import Flask, request, make_response
+from werkzeug.wrappers import Request, Response
+
+TOKEN = ''
+
+class middleware():
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, env, start_resp):
+        request = Request(env)
+        if TOKEN != '' and request.headers.get('Authorization') != f'Bearer {TOKEN}':
+            res = Response('Unauthorized', mimetype='text/plain', status=401)
+            return res(env, start_resp)
+        return self.app(env, start_resp)
+
+app = Flask(__name__)
+app.wsgi_app = middleware(app.wsgi_app)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+@app.route('/display/state', methods=['GET'])
+def get_display_state():
+    cmd = "xset -display :0.0 q | grep '^  Monitor is' | awk '{print $NF}'"
+    state = run(cmd, shell=True, capture_output=True).stdout.decode().strip()
+    if state == 'On':
+        return make_response('ON', 200)
+    elif state == 'Off':
+        return make_response('OFF', 200)
+    else:
+        return make_response(f'Unknown state "{state}"', 500)
+
+@app.route('/display/state', methods=['POST'])
+def set_display_state():
+    req_body = request.get_data().decode()
+    if req_body == 'OFF':
+        cmd = 'xset -display :0.0 dpms force off'
+    elif req_body == 'ON':
+        cmd = 'xset -display :0.0 dpms force on'
+    else:
+        return make_response('Bad Request', 400)
+
+    ret = run(cmd, shell=True).returncode
+    if ret == 0:
+        return make_response(req_body, 200)
+    else:
+        return make_response(f'Command returned {ret}', 500)
+
+if __name__ == '__main__':
+    TOKEN = os.environ.get('TOKEN', '')
+    app.run(host=os.environ.get('HOST', '0.0.0.0'), port=os.environ.get('PORT', 8080))
+```
+
+Create file `/etc/systemd/system/panelserver.service` with the following content:
+
+```systemd
+[Unit]
+Description=Panel Server
+Wants=network-online.target nss-lookup.target
+After=network-online.target nss-lookup.target
+
+[Service]
+Environment="TOKEN=aa83720a-0bc1-4d5b-82fc-bf27a6682aa4"  # replace it with your secret token
+User=panel  # replace it with your user
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+WorkingDirectory=~
+ExecStart=/usr/bin/python3 panel_server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then execute `sudo systemctl daemon-reload && sudo systemctl enable panelserver.service` to make it run at startup.
+
+Create a [RESTful switch](https://www.home-assistant.io/integrations/switch.rest/) in your Home Assistant's YAML config like:
+
+```yaml
+- platform: rest
+  name: Panel Display
+  unique_id: panel_display
+  resource: http://panel:8080/display/state  # replace `panel` with your panel's hostname or IP address
+  body_on: 'ON'
+  body_off: 'OFF'
+  is_on_template: '{{ value == "ON" }}'
+  headers:
+    Authorization: Bearer aa83720a-0bc1-4d5b-82fc-bf27a6682aa4  # replace it with your secret token (after `Bearer `)
+  verify_ssl: false
+```
+
+Reload your Home Assistant instance, use *Developer Tools* to test the switch and sensor.
+
+Then you can use it in Automations, e.g., turn it off when you go to sleep at night and turn it back on when you get up in the morning.
 
 ### Prevent screen burn-in
 
