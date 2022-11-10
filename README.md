@@ -220,7 +220,7 @@ Terminal=false
 Hidden=false
 ```
 
-Ejecutará Firefox en modo quiosco al iniciar, del que solo puedes salir presionando alt+F4 o usando el comando kill en SSH.
+Ejecutará Firefox en modo quiosco al iniciar, del que solo puedes salir presionando `alt+F4` o usando el comando `kill` a través de SSH.
 
 ### Controlar el estado de la pantalla desde Home Assistant
 

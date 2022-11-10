@@ -220,7 +220,7 @@ Terminal=false
 Hidden=false
 ```
 
-This will run Firefox in kiosk mode at startup, which you can only exit by pressing alt+F4 or using kill command in SSH.
+This will run Firefox in kiosk mode at startup, which you can only exit by pressing `alt+F4` or using `kill` command by SSH.
 
 ### Control display state from Home Assistant
 
