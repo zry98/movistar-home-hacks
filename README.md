@@ -18,7 +18,7 @@ Actualmente existen al menos 2 modelos diferentes de Movistar Home, revisa la et
 
 Fabricado por *ASKEY*, probablemente después de 2018.
 
-Tiene un SoC Qualcomm Snapdragon 625 (arm64).
+Tiene una SoC Qualcomm Snapdragon 625 (**arm64**).
 
 Si tienes este modelo, por favor consulta [RG3205W.es.md](RG3205W.es.md).
 
@@ -28,7 +28,7 @@ Si tienes este modelo, por favor consulta [RG3205W.es.md](RG3205W.es.md).
 
 Fabricado por *MitraStar*, probablemente antes de 2020.
 
-Tiene una CPU Intel Atom x5-Z8350 (x86-64).
+Tiene una CPU Intel Atom x5-Z8350 (**x86-64**).
 
 Si tienes este modelo, por favor consulta [IGW5000.es.md](IGW5000.es.md).
 
@@ -39,5 +39,5 @@ Si tienes este modelo, por favor consulta [IGW5000.es.md](IGW5000.es.md).
 ¡Muchas gracias a todos los que contribuyeron!
 
 - Howard
-- [Iscle](@Iscle)
+- [Iscle](https://github.com/Iscle)
 - Carlos
