@@ -18,7 +18,7 @@ Actualmente existen al menos 2 modelos diferentes de Movistar Home, revisa la et
 
 Fabricado por *ASKEY*, probablemente después de 2018.
 
-Tiene una SoC Qualcomm Snapdragon 625 (**arm64**).
+Tiene un SoC Qualcomm Snapdragon 625 (**arm64**).
 
 Si tienes este modelo, por favor consulta [RG3205W.es.md](RG3205W.es.md).
 
