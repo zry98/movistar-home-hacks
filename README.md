@@ -36,8 +36,11 @@ Si tienes este modelo, por favor consulta [IGW5000.es.md](IGW5000.es.md).
 
 ## Créditos
 
-¡Muchas gracias a todos los que contribuyeron!
+¡Muchas gracias a todos los que han contribuido!
 
 - Howard
 - [Iscle](https://github.com/Iscle)
 - Carlos
+- Cansi
+- Pablo
+- José
