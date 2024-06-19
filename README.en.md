@@ -4,7 +4,7 @@ as a Home Assistant dashboard panel.
 
 [![Telegram group chat](https://img.shields.io/badge/Telegram-Group-blue.svg?logo=telegram)](https://t.me/movistar_home_hacking)
 
-[Versión en castellano](README.md)
+[🇪🇸 Versión en castellano](README.md)
 
 Join our [Telegram group chat](https://t.me/movistar_home_hacking) for more information!
 
@@ -38,9 +38,10 @@ If you have this model, please refer to [IGW5000.en.md](IGW5000.en.md).
 
 Special thanks to everyone who has contributed!
 
-- Howard
-- [Iscle](https://github.com/Iscle)
-- Carlos
 - Cansi
-- Pablo
+- Carlos
+- Howard
+- [@Iscle](https://github.com/Iscle)
 - José
+- Pablo
+- [@roobre](https://github.com/roobre)
