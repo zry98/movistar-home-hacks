@@ -129,6 +129,10 @@ on one hand, forums say it's complex to let an app use a custom webview (unless 
 on the other hand, I'm somewhat afraid of this possibly messing with the base OS, and a factory reset is going to take me so much time to restore the current setup,
 I just went another way (see below).
 
+The Home Assistant native app would also be required if you want to use the Home Assistant voice features via the Movistar Home mic and speakers.
+Android 8 supports installing voice assistants, so it could be technically doable; however I haven't experiemented with the stipped-down OS,
+nor with its CPU capabilities (and the aforecited usage of the outdated webview). If you get any results with this, please let the community know!
+
 ### Install browser, and use the Home Assistant Progressive Web App (PWA)
 Initially, I installed Chrome (`com.android.chrome`), navigated to my Home Assistant instance and, from there, installed the PWA on the desktop.
 I would have stuck with this setup, if only I wasn't running my Home Assistance instance over the local network, via HTTP.
