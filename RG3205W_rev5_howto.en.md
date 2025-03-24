@@ -76,12 +76,14 @@ much like if that bit of the OS has been stripped out. This means that, sadly, y
 right when the display dims: the OS feature has been stripped. This leads to the below automation headache.
 
 ### Putting the screen to sleep
-I ended up installing *Automate* (`com.llamalab.automate`), that now manages the screensave/screen lock, and a few other bits (see below).
+I ended up installing *Automate* (`com.llamalab.automate`), that now manages the screensave/screen lock, and
+[a few other bits](automate_examples) you can import into your instance (see below for details about each script).
 
 Since we can't tell when the display dims or, in general, when the device is idle, I've automated a workaround that, well, works, albeit it doesn't make me proud.
 
-The automation starts, waits for 3 minutes (here you can pick the average amount of time you think you'll be continuosuly interacting with the screen),
-and then just launches the screensaver (you want to pick the `Somnambulator` activity) -- alternatively you could lock the screen.
+The [auto-screensaver automation](automate_examples/Run%20screensaver%20every%203min.flo) starts, waits for 3 minutes
+(you can tweak the flow to pick the average amount of time you think you'll be continuosuly interacting with the screen),
+and then just launches the screensaver (the `Somnambulator` activity) -- alternatively you can modify the flow to lock the screen instead.
 Then, the automation waits for the `DREAMING_STOPPED` broadcast intent (if you decided to lock the screen instead, pick the proper broadcast event on wake up),
 which triggers once someone touches the screen, waking the device up. At which points, the automation loops on the 3 minutes wait.
 Not clean as I'd like, but it works *just good enough*.
@@ -92,7 +94,8 @@ Suppose your device was idle, with the screensaver active, and the power goes do
 screensaver never kicks in. This is because with the screensaver active, the automation was waiting for the `DREAMING_STOPPED` intent. After reboot,
 the device has no screensaver active, so unless you run and then exit from it manually, the `DREAMING_STOPPED` intent will never be sent, deadlocking your resumed automation.
 
-Current dirty solution: create another automation that waits for the `BOOT_COMPLETED` intent, then launches the Screen Saver, and loops waiting again for the boot intent.
+Current dirty solution: create [another automation](automate_examples/Start%20Firefox%20and%20screensaver%20at%20boot.flo)
+that waits for the `BOOT_COMPLETED` intent, then launches the Screen Saver, and loops waiting again for the boot intent.
 (Another solution could be: create an automation that, on boot, kills and re-start all other automations -- requires more nodes that eat against the Automate free tier.)
 Yes, you see why I can't be proud. But, again, it works, within the limitations of the OS running on the Movistar Home.
 
@@ -104,9 +107,14 @@ You may be tempted to use Automate to increase/decrease brightness based on time
 
 Maybe being an automation freak, I can't have a display going dim at, say, 8PM. That's too early in Summer, and too late in Winter!
 
-Luckily, I found an automation that would compute locally (no Internet access required, which is the case for my setup) the sunrise and sunset times for a given day,
+Luckily, I found a [nice automation by Sándor Illés](https://llamalab.com/automate/community/flows/2103)
+that would compute locally (no Internet access required, which is the case for my setup) the sunrise and sunset times for a given day,
 based on which I now alter the display brightness. Automate is free for automations with up to 30 nodes -- so I had to spend quite some time tweaking it,
-to minimize it so that I could run it within the free tier. Happy to share more details, if there's interest.
+to minimize it so that I could run it within the free tier.
+You can download my custom [dim brightness based on time of day automation](automate_examples/Dim%20brightness%20at%20calculated%20sunrise-sunset%20times.flo):
+import it, and then set the `lat` and `lng` variables to your location. You can derive your location from any map application.
+For example, set `lat` to `40.4163889` and `lng` to `-3.7036111111111114`
+(without quotes, as you want numbers), to set it to the Km0 sign in Madird, Puerta del Sol.
 
 ## Use case: Home Assistant wall/desk panel
 Now that you got to an almost-decent basic setup, you may actually want to do something with the device. I know of people that use it as a Youtube player while cooking.
@@ -132,11 +140,12 @@ it actually opens a new tab with the same app. No good.
 
 However, using plain Firefox, and setting my Home Assistance instance as the home page does the trick.
 
-Then, remember the automation that at boot runs the screensaver? Well, it now starts Firefox first, then the screensaver immediately after.
+Then, remember the [automation that at boot runs the screensaver](automate_examples/Start%20Firefox%20and%20screensaver%20at%20boot.flo)?
+Well, it now starts Firefox first, then the screensaver immediately after.
 So that, after a boot, I touch the screen and my Home Assistant home screen is there, waiting for me.
 
 Tip: I created a Home Assistant user dedicated to the Movistar Home device,
-and somewhat restricted access as currently possible within the Home Assistant ACLs (e..g it's a local user).
+and somewhat restricted access as currently possible within the Home Assistant ACLs (e.g. it's a local user).
 The Movistar Home comes preinstalled with apps such as QTI Logikit.
 
 ### Bonus: Volume buttons as Home Assistant automations
@@ -145,7 +154,7 @@ I plan to use the Movistar Home as a door intercom. So, someone rings at the doo
 
 What we want to achieve here, is that when you press, say, the volume-up button, an HTTP POST requestis sent to your Home Assistant REST API, to trigger the service of your choice.
 In my case, opening the door is done by toggling a switch, so it would be doing a POST request to `http://<home-assistant-URL>:8123/api/services/switch/toggle`, using the correct
-long-term bearer token, and the desired `entity_id` as the POST data.
+long-term bearer token as the `Authentication` header, and the desired `entity_id` as the POST data.
 
 First, install the *Button Mapper* app (`flar2.homebutton`). You may be tempted to pay for the pro version, to use its embedded *HTTP POST* mapping. Don't bother:
 not only it's not needed; it actually doesn't work.
@@ -157,8 +166,8 @@ Then, go back to the Button Mapper app, and for the volume-up button press, conf
 defined in the step above. If a popup comes up, pick the "legacy" mode (if you pick the "current" mode, you'll get an error, and you can try again).
 
 You should be all set! You may just want to fine-tune the HTTP Shortcut config.
-For instance, after trying the setup a few times, I've configured the HTTP Shortcut to execute in the
-background, which just flashes the screen for a moment when you press it, giving a nice feedback.
+For instance, after trying the setup a few times, I've configured the HTTP Shortcut to execute silently on success,
+which just flashes the screen for a moment when you press it, giving a nice feedback.
 
 Of course, you can repeat for the other, volume-down, button. Note you can't configure the power button (Android doesn't allow that, unless the device is rooted),
 nor the mic-mute button (which seems to be physically connected to the hardware, in that no intent is generate in Android when it's pressed).
