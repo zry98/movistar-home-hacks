@@ -23,7 +23,8 @@ so that the Movistar Home device can complete its initial setup process. Connect
 Make sure the setup completes and you are in the Movistar Home homepage.
 
 From there, go to the config and try to add a bluetooth speaker. When the Movistar Home is accepting Bluetooth connections, use a bluetooth keyboard to connect.
-You should be able to use a physical keyboard. If you have a computer with MacOS, you can use the *keyPad* app;
+You should be able to use a physical keyboard. If you have a computer with MacOS,
+you can use the [keyPad](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442) app;
 it's handy as it also allows you to paste long strings (e.g. Bearer tokens).
 
 Once the Bluetooth keyboard is connected, press <kbd>Meta</kbd> and <kbd>E</kbd> (<kbd>Meta</kbd> is the <kbd>Win</kbd> key on a typical keyboard for Windows, or the <kbd>⌘ Command</kbd> key on a keyboard for Macs),
@@ -35,9 +36,11 @@ In my experience, Outlook and Yahoo mail won't work (I always get a username/pas
 Gmail doesn't allow to attach .apk files, which are fundamental in our next step.
 
 Go to the web-based gmx.com interface, and create an email (either save as draft, or send to yourself), where you attach the .apk of an app store.
-Many people that worked with the Movistar Home device have recommended [Aptoide](https://aptoide.en.aptoide.com/app), which worked fine with me. Other options are [F-Droid](https://f-droid.org/en/) which, however,
+Many people that worked with the Movistar Home device have recommended [Aptoide](https://aptoide.en.aptoide.com/app), which worked fine with me.
+Other options are [F-Droid](https://f-droid.org/en/) which, however, only contains open-source applications, somwewhat limiting choice.
 
-Now, back to the email app on your Movistar Home device. Refresh (either the inbox, or the draft folder), and open the email with the app store APK file. Open the attachment. This will install the app store.
+Now, back to the email app on your Movistar Home device. Refresh (either the inbox, or the draft folder), and open the email with the app store APK file.
+Open the attachment. This will install the app store.
 
 ### Install a launcher and get out of Movistar Home kiosk
 Once installed, click on *open*, which will launch the app store. From within the app store, select a launcher. The recommended one here is
