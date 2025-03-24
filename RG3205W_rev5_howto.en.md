@@ -23,7 +23,8 @@ so that the Movistar Home device can complete its initial setup process. Connect
 Make sure the setup completes and you are in the Movistar Home homepage.
 
 From there, go to the config and try to add a bluetooth speaker. When the Movistar Home is accepting Bluetooth connections, use a bluetooth keyboard to connect.
-You should be able to use a physical keyboard. If you have a computer with MacOS, you can use the *keyPad* app;
+You should be able to use a physical keyboard. If you have a computer with MacOS,
+you can use the [keyPad](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442) app;
 it's handy as it also allows you to paste long strings (e.g. Bearer tokens).
 
 Once the Bluetooth keyboard is connected, press <kbd>Meta</kbd> and <kbd>E</kbd> (<kbd>Meta</kbd> is the <kbd>Win</kbd> key on a typical keyboard for Windows, or the <kbd>⌘ Command</kbd> key on a keyboard for Macs),
@@ -35,9 +36,11 @@ In my experience, Outlook and Yahoo mail won't work (I always get a username/pas
 Gmail doesn't allow to attach .apk files, which are fundamental in our next step.
 
 Go to the web-based gmx.com interface, and create an email (either save as draft, or send to yourself), where you attach the .apk of an app store.
-Many people that worked with the Movistar Home device have recommended [Aptoide](https://aptoide.en.aptoide.com/app), which worked fine with me. Other options are [F-Droid](https://f-droid.org/en/) which, however,
+Many people that worked with the Movistar Home device have recommended [Aptoide](https://aptoide.en.aptoide.com/app), which worked fine with me.
+Other options are [F-Droid](https://f-droid.org/en/) which, however, only contains open-source applications, somwewhat limiting choice.
 
-Now, back to the email app on your Movistar Home device. Refresh (either the inbox, or the draft folder), and open the email with the app store APK file. Open the attachment. This will install the app store.
+Now, back to the email app on your Movistar Home device. Refresh (either the inbox, or the draft folder), and open the email with the app store APK file.
+Open the attachment. This will install the app store.
 
 ### Install a launcher and get out of Movistar Home kiosk
 Once installed, click on *open*, which will launch the app store. From within the app store, select a launcher. The recommended one here is
@@ -51,7 +54,7 @@ At this point you can reboot the unit, and make sure Nova Launcher starts on boo
 You may want to fiddle a bit with the Nova Launcher config. For exmaple, I addded the drawer button instead of opening the drawer by sliding (see below why).
 
 From now on, you don't need to be connected to a Movistar Wi-Fi; any Wi-Fi network will do, in fact most of the time I use my unit on a local LAN with no Internet access
-(which, given it's Android 8 with no security patches, is probably a good idea anyway!).
+(which, given it's Android 8 with the most recent security patches dating back to 2021, is probably a good idea anyway!).
 In my unit, no Movistar app is autostarted at boot (I guess the Movistar launcher does that), so I get no interference.
 However, I'm aware other users have disabled all Movistar apps from the config menu, which shouldn't hurt.
 
@@ -73,12 +76,14 @@ much like if that bit of the OS has been stripped out. This means that, sadly, y
 right when the display dims: the OS feature has been stripped. This leads to the below automation headache.
 
 ### Putting the screen to sleep
-I ended up installing *Automate* (`com.llamalab.automate`), that now manages the screensave/screen lock, and a few other bits (see below).
+I ended up installing *Automate* (`com.llamalab.automate`), that now manages the screensave/screen lock, and
+[a few other bits](automate_examples) you can import into your instance (see below for details about each script).
 
 Since we can't tell when the display dims or, in general, when the device is idle, I've automated a workaround that, well, works, albeit it doesn't make me proud.
 
-The automation starts, waits for 3 minutes (here you can pick the average amount of time you think you'll be continuosuly interacting with the screen),
-and then just launches the screensaver (you want to pick the `Somnambulator` activity) -- alternatively you could lock the screen.
+The [auto-screensaver automation](automate_examples/Run%20screensaver%20every%203min.flo) starts, waits for 3 minutes
+(you can tweak the flow to pick the average amount of time you think you'll be continuosuly interacting with the screen),
+and then just launches the screensaver (the `Somnambulator` activity) -- alternatively you can modify the flow to lock the screen instead.
 Then, the automation waits for the `DREAMING_STOPPED` broadcast intent (if you decided to lock the screen instead, pick the proper broadcast event on wake up),
 which triggers once someone touches the screen, waking the device up. At which points, the automation loops on the 3 minutes wait.
 Not clean as I'd like, but it works *just good enough*.
@@ -89,7 +94,8 @@ Suppose your device was idle, with the screensaver active, and the power goes do
 screensaver never kicks in. This is because with the screensaver active, the automation was waiting for the `DREAMING_STOPPED` intent. After reboot,
 the device has no screensaver active, so unless you run and then exit from it manually, the `DREAMING_STOPPED` intent will never be sent, deadlocking your resumed automation.
 
-Current dirty solution: create another automation that waits for the `BOOT_COMPLETED` intent, then launches the Screen Saver, and loops waiting again for the boot intent.
+Current dirty solution: create [another automation](automate_examples/Start%20Firefox%20and%20screensaver%20at%20boot.flo)
+that waits for the `BOOT_COMPLETED` intent, then launches the Screen Saver, and loops waiting again for the boot intent.
 (Another solution could be: create an automation that, on boot, kills and re-start all other automations -- requires more nodes that eat against the Automate free tier.)
 Yes, you see why I can't be proud. But, again, it works, within the limitations of the OS running on the Movistar Home.
 
@@ -101,9 +107,14 @@ You may be tempted to use Automate to increase/decrease brightness based on time
 
 Maybe being an automation freak, I can't have a display going dim at, say, 8PM. That's too early in Summer, and too late in Winter!
 
-Luckily, I found an automation that would compute locally (no Internet access required, which is the case for my setup) the sunrise and sunset times for a given day,
+Luckily, I found a [nice automation by Sándor Illés](https://llamalab.com/automate/community/flows/2103)
+that would compute locally (no Internet access required, which is the case for my setup) the sunrise and sunset times for a given day,
 based on which I now alter the display brightness. Automate is free for automations with up to 30 nodes -- so I had to spend quite some time tweaking it,
-to minimize it so that I could run it within the free tier. Happy to share more details, if there's interest.
+to minimize it so that I could run it within the free tier.
+You can download my custom [dim brightness based on time of day automation](automate_examples/Dim%20brightness%20at%20calculated%20sunrise-sunset%20times.flo):
+import it, and then set the `lat` and `lng` variables to your location. You can derive your location from any map application.
+For example, set `lat` to `40.4163889` and `lng` to `-3.7036111111111114`
+(without quotes, as you want numbers), to set it to the Km0 sign in Madird, Puerta del Sol.
 
 ## Use case: Home Assistant wall/desk panel
 Now that you got to an almost-decent basic setup, you may actually want to do something with the device. I know of people that use it as a Youtube player while cooking.
@@ -118,6 +129,10 @@ on one hand, forums say it's complex to let an app use a custom webview (unless 
 on the other hand, I'm somewhat afraid of this possibly messing with the base OS, and a factory reset is going to take me so much time to restore the current setup,
 I just went another way (see below).
 
+The Home Assistant native app would also be required if you want to use the Home Assistant voice features via the Movistar Home mic and speakers.
+Android 8 supports installing voice assistants, so it could be technically doable; however I haven't experiemented with the stipped-down OS,
+nor with its CPU capabilities (and the aforecited usage of the outdated webview). If you get any results with this, please let the community know!
+
 ### Install browser, and use the Home Assistant Progressive Web App (PWA)
 Initially, I installed Chrome (`com.android.chrome`), navigated to my Home Assistant instance and, from there, installed the PWA on the desktop.
 I would have stuck with this setup, if only I wasn't running my Home Assistance instance over the local network, via HTTP.
@@ -129,11 +144,12 @@ it actually opens a new tab with the same app. No good.
 
 However, using plain Firefox, and setting my Home Assistance instance as the home page does the trick.
 
-Then, remember the automation that at boot runs the screensaver? Well, it now starts Firefox first, then the screensaver immediately after.
+Then, remember the [automation that at boot runs the screensaver](automate_examples/Start%20Firefox%20and%20screensaver%20at%20boot.flo)?
+Well, it now starts Firefox first, then the screensaver immediately after.
 So that, after a boot, I touch the screen and my Home Assistant home screen is there, waiting for me.
 
 Tip: I created a Home Assistant user dedicated to the Movistar Home device,
-and somewhat restricted access as currently possible within the Home Assistant ACLs (e..g it's a local user).
+and somewhat restricted access as currently possible within the Home Assistant ACLs (e.g. it's a local user).
 The Movistar Home comes preinstalled with apps such as QTI Logikit.
 
 ### Bonus: Volume buttons as Home Assistant automations
@@ -142,7 +158,7 @@ I plan to use the Movistar Home as a door intercom. So, someone rings at the doo
 
 What we want to achieve here, is that when you press, say, the volume-up button, an HTTP POST requestis sent to your Home Assistant REST API, to trigger the service of your choice.
 In my case, opening the door is done by toggling a switch, so it would be doing a POST request to `http://<home-assistant-URL>:8123/api/services/switch/toggle`, using the correct
-long-term bearer token, and the desired `entity_id` as the POST data.
+long-term bearer token as the `Authentication` header, and the desired `entity_id` as the POST data.
 
 First, install the *Button Mapper* app (`flar2.homebutton`). You may be tempted to pay for the pro version, to use its embedded *HTTP POST* mapping. Don't bother:
 not only it's not needed; it actually doesn't work.
@@ -154,11 +170,14 @@ Then, go back to the Button Mapper app, and for the volume-up button press, conf
 defined in the step above. If a popup comes up, pick the "legacy" mode (if you pick the "current" mode, you'll get an error, and you can try again).
 
 You should be all set! You may just want to fine-tune the HTTP Shortcut config.
-For instance, after trying the setup a few times, I've configured the HTTP Shortcut to execute in the
-background, which just flashes the screen for a moment when you press it, giving a nice feedback.
+For instance, after trying the setup a few times, I've configured the HTTP Shortcut to execute silently on success,
+which just flashes the screen for a moment when you press it, giving a nice feedback.
 
 Of course, you can repeat for the other, volume-down, button. Note you can't configure the power button (Android doesn't allow that, unless the device is rooted),
 nor the mic-mute button (which seems to be physically connected to the hardware, in that no intent is generate in Android when it's pressed).
+
+Finally, I've configured the buttons long-presses to still activate volume (so that feature isn't lost); and you still have the double-click free to, say, trigger
+further automations.
 
 ## Other notes from the journey
 While configuring this setup, I often came across the need to input either large strings (e.g. Bearer Tokens), or in general copy/paste quite some text (e.g. refactoring
