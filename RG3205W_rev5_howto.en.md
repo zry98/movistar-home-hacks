@@ -176,6 +176,9 @@ which just flashes the screen for a moment when you press it, giving a nice feed
 Of course, you can repeat for the other, volume-down, button. Note you can't configure the power button (Android doesn't allow that, unless the device is rooted),
 nor the mic-mute button (which seems to be physically connected to the hardware, in that no intent is generate in Android when it's pressed).
 
+Finally, I've configured the buttons long-presses to still activate volume (so that feature isn't lost); and you still have the double-click free to, say, trigger
+further automations.
+
 ## Other notes from the journey
 While configuring this setup, I often came across the need to input either large strings (e.g. Bearer Tokens), or in general copy/paste quite some text (e.g. refactoring
 third-party automations).
