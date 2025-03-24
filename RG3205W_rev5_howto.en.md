@@ -54,7 +54,7 @@ At this point you can reboot the unit, and make sure Nova Launcher starts on boo
 You may want to fiddle a bit with the Nova Launcher config. For exmaple, I addded the drawer button instead of opening the drawer by sliding (see below why).
 
 From now on, you don't need to be connected to a Movistar Wi-Fi; any Wi-Fi network will do, in fact most of the time I use my unit on a local LAN with no Internet access
-(which, given it's Android 8 with no security patches, is probably a good idea anyway!).
+(which, given it's Android 8 with the most recent security patches dating back to 2021, is probably a good idea anyway!).
 In my unit, no Movistar app is autostarted at boot (I guess the Movistar launcher does that), so I get no interference.
 However, I'm aware other users have disabled all Movistar apps from the config menu, which shouldn't hurt.
 
