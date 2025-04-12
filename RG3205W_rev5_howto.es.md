@@ -40,8 +40,10 @@ Según mi experiencia, Outlook y Yahoo Mail no funcionan (siempre obtengo un err
 Gmail no permite adjuntar archivos .apk, lo cual es fundamental para nuestro siguiente paso.
 
 Ve a la interfaz web de gmx.com y crea un correo (puedes guardarlo como borrador o enviártelo a ti mismo),
-donde adjuntas el .apk de una tienda de aplicaciones. Muchas personas que han trabajado con el dispositivo Movistar Home han recomendado [Aptoide](https://aptoide.en.aptoide.com/app), que funcionó bien conmigo.
-Otras opciones son [F-Droid](https://f-droid.org/en/), que, sin embargo, solo contiene aplicaciones de código abierto, lo que limita un poco la elección.
+donde adjuntas el .apk de una tienda de aplicaciones.
+Muchas personas que han trabajado con el dispositivo Movistar Home han recomendado [Aptoide](https://aptoide.en.aptoide.com/app), que funcionó bien conmigo.
+Otras opciones son [Aurora](https://auroraoss.com/) para una experiencia estilo Google Play,
+o [F-Droid](https://f-droid.org/en/) para usar sólo aplicaciones de código abierto (lo que limita un poco la elección).
 
 Ahora, vuelve a la aplicación de correo en tu dispositivo Movistar Home.
 Actualiza (ya sea la bandeja de entrada o la carpeta de borradores) y abre el correo con el archivo APK de la tienda de aplicaciones.
