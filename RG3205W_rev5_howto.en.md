@@ -37,7 +37,7 @@ Gmail doesn't allow to attach .apk files, which are fundamental in our next step
 
 Go to the web-based gmx.com interface, and create an email (either save as draft, or send to yourself), where you attach the .apk of an app store.
 Many people that worked with the Movistar Home device have recommended [Aptoide](https://aptoide.en.aptoide.com/app), which worked fine with me.
-Other options are [F-Droid](https://f-droid.org/en/) which, however, only contains open-source applications, somwewhat limiting choice.
+Other options are [Aurora](https://auroraoss.com/) for a Google Play-like experience, or [F-Droid](https://f-droid.org/en/) for a full open-source experience (somwewhat limiting choice).
 
 Now, back to the email app on your Movistar Home device. Refresh (either the inbox, or the draft folder), and open the email with the app store APK file.
 Open the attachment. This will install the app store.

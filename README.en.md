@@ -34,6 +34,10 @@ If you have this model, please refer to [IGW5000.en.md](IGW5000.en.md).
 
 ![label-IGW5000](img/label-IGW5000.jpg)
 
+### Tutorial
+
+Albeit with some limitations, the device can be used with its stock Android, by following [this tutorial](RG3205W_rev5_howto.en.md).
+
 ## Credits
 
 Special thanks to everyone who has contributed!
