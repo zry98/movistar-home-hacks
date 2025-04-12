@@ -34,6 +34,11 @@ Si tienes este modelo, por favor consulta [IGW5000.es.md](IGW5000.es.md).
 
 ![label-IGW5000](img/label-IGW5000.jpg)
 
+### Tutorial
+
+Aunque si de forma algo limitada, puedes aprovechar el dispositivo sin necesidad de soldar cables o abrir su caja,
+siguiendo [este tutorial](RG3205W_rev5_howto.es.md).
+
 ## Créditos
 
 ¡Muchas gracias a todos los que han contribuido!
