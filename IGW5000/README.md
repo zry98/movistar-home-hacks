@@ -2,7 +2,7 @@
 
 como un panel de dashboard para Home Assistant.
 
-**Este documento solo está destinado al modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel. Para el modelo `RG3205W` con un SoC arm64 de Qualcomm, por favor consulta [RG3205W/README.md](../RG3205W/README.md). [*¿Cómo identificarlo?*](../README.md#nota-importante)**
+**Este documento solo está destinado al modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel. Para el modelo `RG3205W` con un SoC arm64 de Qualcomm, por favor consulta [RG3205W/README.md](../RG3205W/README.md). [_¿Cómo identificarlo?_](../README.md#nota-importante)**
 
 [🇺🇸 English version](../IGW5000/README.en.md)
 
@@ -64,7 +64,7 @@ Localiza el puerto micro USB desocupado en el borde izquierdo de la placa base:
 
 ![inside-with-usb-port-location](../img/inside-with-usb-port-location.jpg)
 
-Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID` cercano) a el quinto pin GND (o cualquier pad de tierra en la placa), haciendo que el puerto funcione como un *OTG host*.
+Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID` cercano) a el quinto pin GND (o cualquier pad de tierra en la placa), haciendo que el puerto funcione como un _OTG host_.
 
 Aquí es un ejemplo para soldar un conector USB-A hembra:
 
@@ -72,11 +72,11 @@ Aquí es un ejemplo para soldar un conector USB-A hembra:
 
 Flashea un pendrive USB con tu distribución de Linux favorita, se recomienda utilizar un entorno de escritorio ligero como Xfce, teniendo en cuenta que el Movistar Home solo tiene 2 GB de RAM.
 
-Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. Enciéndelo mientras presiona la tecla `F2`, se iniciará a la configuración del BIOS (UEFI), navega a la última pestaña (`Save & Exit`), selecciona tu pendrive (debería ser algo así como `UEFI: USB, Partition 1`) en el menú `Boot Override`, presiona la tecla `Intro` (`Enter`) para iniciarlo.
+Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. Enciéndelo mientras presiona la tecla <kbd>F2</kbd>, se iniciará a la configuración del BIOS (UEFI), navega a la última pestaña (`Save & Exit`), selecciona tu pendrive (debería ser algo así como `UEFI: USB, Partition 1`) en el menú `Boot Override`, presiona la tecla <kbd>Intro</kbd> (<kbd>Enter</kbd>) para iniciarlo.
 
 ![bios](../img/bios.jpg)
 
-Instala tu distribución de Linux como de costumbre, puede ser necesario incluir los drivers *non-free*.
+Instala tu distribución de Linux como de costumbre, puede ser necesario incluir los drivers y firmwares _non-free_.
 
 > [!IMPORTANT]
 > Se recomienda configurar el servidor OpenSSH antes de desoldar el conector USB y volver a montar el dispositivo, para los posibles mantenimientos en el futuro.
@@ -109,7 +109,7 @@ En la Configuración de Pantalla de Xfce, ajusta la escala a tu gusto, descubrí
 
 ### Arreglar la pantalla táctil
 
-Por alguna razón, la pantalla táctil no funciona en absoluto a menos que se haya reiniciado una vez, en *dmesg* el driver dice "*Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults*".
+Por alguna razón, la pantalla táctil no funciona en absoluto a menos que se haya reiniciado una vez, en _dmesg_ el driver dice "Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults".
 
 Para arreglarlo, crea el fichero `/etc/systemd/system/fix-touchscreen.service` con el siguiente contenido:
 
@@ -139,9 +139,9 @@ EndSection
 
 #### Arreglar el control táctil en Firefox
 
-*Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)*
+_Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)_
 
-Abre la Firefox y acceda a `about:config`, busca por `dom.w3c_touch_events.enabled` y asegúrase de que está configurado a 1 (*habilitado*) o 2 (*predeterminado, detección automática*).
+Abre la Firefox y acceda a `about:config`, busca por `dom.w3c_touch_events.enabled` y asegúrase de que está configurado a 1 (_habilitado_) o 2 (_predeterminado, detección automática_).
 
 También añade `MOZ_USE_XINPUT2 DEFAULT=1` al `/etc/security/pam_env.conf`.
 
@@ -183,13 +183,13 @@ Y mejor deshabilitar el servicio systemd-backlight con `sudo systemctl mask syst
 
 ### Teclado virtual
 
-Instala [*Onboard*](https://launchpad.net/onboard) con `sudo pacman -S onboard`, abre la configuración `Sesión e inicio` de Xfce, cambia a la pestaña `Autoarranque de aplicaciones`, busca y habilita `Onboard (Teclado en pantalla flexible)`.
+Instala [_Onboard_](https://launchpad.net/onboard) con `sudo pacman -S onboard`, abre la configuración `Sesión e inicio` de Xfce, cambia a la pestaña `Autoarranque de aplicaciones`, busca y habilita `Onboard (Teclado en pantalla flexible)`.
 
-Después de reiniciar, abre la configuración de *Onboard* y ajústala a tu gusto.
+Después de reiniciar, abre la configuración de _Onboard_ y ajústala a tu gusto.
 
 ### Ocultar cursor del ratón
 
-Instala [*unclutter*](https://github.com/Airblader/unclutter-xfixes) con `sudo pacman -S unclutter`.
+Instala [_unclutter_](https://github.com/Airblader/unclutter-xfixes) con `sudo pacman -S unclutter`.
 
 Crea el fichero `~/.config/autostart/hide-cursor.desktop` con el siguiente contenido:
 
@@ -296,7 +296,7 @@ Ejecutará Firefox en modo quiosco al iniciar, del que solo puedes salir presion
 >  1. La reducción de brillo de pantalla en `Administrador de energía` de Xfce.
 >  2. El `XScreenSaver` de Xfce.
 
-Ejecuta `sudo pacman -S python-flask` para instalar *Flask*, luego crea el fichero `~/.local/bin/panel_server.py` con el siguiente contenido:
+Ejecuta `sudo pacman -S python-flask` para instalar _Flask_, luego crea el fichero `~/.local/bin/panel_server.py` con el siguiente contenido:
 
 <details>
 
@@ -419,7 +419,7 @@ switch:
     icon: mdi:tablet-dashboard
 ```
 
-Recarga tu instancia de Home Assistant, usa las *Herramientas de desarrollador* para probar el interruptor y el sensor.
+Recarga tu instancia de Home Assistant, usa las _Herramientas de desarrollador_ para probar el interruptor y el sensor.
 
 Luego puedes usarlo en las Automatizaciones, por ejemplo, apagarlo cuando te vas a dormir por la noche y volver a encenderlo cuando te levantas por la mañana.
 
@@ -496,7 +496,7 @@ root.mainloop()
 
 </details>
 
-Ejecuta `chmod +x ~/.local/bin/screensaver.py` para hacerlo ejecutable, luego ejecuta `crontab -e` y agrega un trabajo de *cron* como sigue, que ejecutará el script cada hora:
+Ejecuta `chmod +x ~/.local/bin/screensaver.py` para hacerlo ejecutable, luego ejecuta `crontab -e` y agrega un trabajo de _cron_ como sigue, que ejecutará el script cada hora:
 
 ```crontab
 0 * * * *	DISPLAY=:0 COLOR_INTERVAL=300 TOTAL_TIME=10 BROWSER_WINDOW_CLASS="firefox" /home/panel/.local/bin/screensaver.py  # reemplázalo con tu ruta real

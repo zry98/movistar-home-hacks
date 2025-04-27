@@ -16,7 +16,7 @@ Currently there are at least 2 different models of Movistar Home exist, check th
 
 ### `RG3205W`
 
-Manufactured by *ASKEY*, likely after 2018.
+Manufactured by _ASKEY_, likely after 2018.
 
 It has a Qualcomm Snapdragon 625 (**arm64**) SoC.
 
@@ -24,19 +24,17 @@ If you have this model, please refer to [RG3205W/README.en.md](RG3205W/README.en
 
 ![label-RG3202W](img/label-RG3205W.jpg)
 
+Albeit with some limitations, the device can be used with its stock Android, by following [this tutorial](RG3205W/rev5_howto.en.md).
+
 ### `IGW-5000A2BKMP-I v2`
 
-Manufactured by *MitraStar*, likely before 2020.
+Manufactured by _MitraStar_, likely before 2020.
 
 It has an Intel Atom x5-Z8350 (**x86-64**) CPU.
 
 If you have this model, please refer to [IGW5000/README.en.md](IGW5000/README.en.md).
 
 ![label-IGW5000](img/label-IGW5000.jpg)
-
-### Tutorial
-
-Albeit with some limitations, the device can be used with its stock Android, by following [this tutorial](RG3205W/RG3205W_rev5_howto.en.md).
 
 ## Credits
 

@@ -2,7 +2,7 @@
 
 as a Home Assistant dashboard panel.
 
-**This document is only intended for the model `IGW-5000A2BKMP-I v2` with an Intel x86 CPU. For the model `RG3205W` with a Qualcomm arm64 SoC, please refer to [RG3205W/README.en.md](../RG3205W/README.en.md). [*How to identify?*](../README.en.md#important-note)**
+**This document is only intended for the model `IGW-5000A2BKMP-I v2` with an Intel x86 CPU. For the model `RG3205W` with a Qualcomm arm64 SoC, please refer to [RG3205W/README.en.md](../RG3205W/README.en.md). [_How to identify?_](../README.en.md#important-note)**
 
 [🇪🇸 Versión en castellano](../IGW5000/README.md)
 
@@ -72,11 +72,11 @@ Here is an example for soldering a USB-A female connector:
 
 Flash a USB drive with your favorite Linux distro, it is recommended to use a lightweight desktop environment like Xfce, considering the Movistar Home has only 2 GB of RAM.
 
-Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. Power it up while pressing the `F2` key, it will boot into the BIOS (UEFI) setup, navigate to the last tab (`Save & Exit`), select your USB drive (should be something like `UEFI: USB, Partition 1`) in the `Boot Override` menu, press `Enter` key to boot it.
+Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. Power it up while pressing the <kbd>F2</kbd> key, it will boot into the BIOS (UEFI) setup, navigate to the last tab (`Save & Exit`), select your USB drive (should be something like `UEFI: USB, Partition 1`) in the `Boot Override` menu, press <kbd>Enter</kbd> key to boot it.
 
 ![bios](../img/bios.jpg)
 
-Install your Linux distro as usual, it might be necessary to include *non-free* drivers.
+Install your Linux distro as usual, it might be necessary to include _non-free_ drivers and firmwares.
 
 > [!IMPORTANT]
 > It is recommended to set up the OpenSSH server before unsoldering the USB connector and reassembling the device, for possible future maintenance.
@@ -109,7 +109,7 @@ In Xfce's Display Settings, adjust the scaling to your liking, I found 0.8x (102
 
 ### Fix touch screen
 
-For some reason the touch screen won't work at all unless it has been soft rebooted once, in dmesg the driver says "*Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults*".
+For some reason the touch screen won't work at all unless it has been soft rebooted once, in dmesg the driver says "Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults".
 
 To fix this, create the file `/etc/systemd/system/fix-touchscreen.service` with the following content:
 
@@ -139,9 +139,9 @@ EndSection
 
 #### Fix touch control in Firefox
 
-*Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)*
+_Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)_
 
-Open Firefox and access `about:config`, search for `dom.w3c_touch_events.enabled` and make sure it's either set to 1 (*enabled*) or 2 (*default, auto-detect*).
+Open Firefox and access `about:config`, search for `dom.w3c_touch_events.enabled` and make sure it's either set to 1 (_enabled_) or 2 (_default, auto-detect_).
 
 Also add `MOZ_USE_XINPUT2 DEFAULT=1` to `/etc/security/pam_env.conf`.
 
@@ -183,13 +183,13 @@ And better to disable the systemd-backlight service with `sudo systemctl mask sy
 
 ### Virtual keyboard
 
-Install [*Onboard*](https://launchpad.net/onboard) with `sudo pacman -S onboard`, open Xfce's `Session and Startup` settings, switch to `Application Autostart` tab, find and enable `Onboard (Flexible onscreen keyboard)`.
+Install [_Onboard_](https://launchpad.net/onboard) with `sudo pacman -S onboard`, open Xfce's `Session and Startup` settings, switch to `Application Autostart` tab, find and enable `Onboard (Flexible onscreen keyboard)`.
 
 After rebooting, open Onboard's settings and adjust them to your liking.
 
 ### Hide mouse cursor
 
-Install [*unclutter*](https://github.com/Airblader/unclutter-xfixes) with `sudo pacman -S unclutter`.
+Install [_unclutter_](https://github.com/Airblader/unclutter-xfixes) with `sudo pacman -S unclutter`.
 
 Create the file `~/.config/autostart/hide-cursor.desktop` with the following content:
 
@@ -296,7 +296,7 @@ This will run Firefox in kiosk mode at startup, which you can only exit by press
 >  1. Screen dimming in Xfce's `Power Manager`.
 >  2. Xfce's `XScreenSaver`.
 
-Run `sudo pacman -S python-flask` to install *Flask*, then create the file `~/.local/bin/panel_server.py` with the following content:
+Run `sudo pacman -S python-flask` to install _Flask_, then create the file `~/.local/bin/panel_server.py` with the following content:
 
 <details>
 
@@ -419,7 +419,7 @@ switch:
     icon: mdi:tablet-dashboard
 ```
 
-Reload your Home Assistant instance, use *Developer Tools* to test the switch and sensor.
+Reload your Home Assistant instance, use _Developer Tools_ to test the switch and sensor.
 
 Then you can use it in Automations, e.g., turn it off when you go to sleep at night and turn it back on when you get up in the morning.
 
