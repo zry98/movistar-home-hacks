@@ -2,6 +2,10 @@
 
 _Author:_ @alfredopironti
 
+**This document is only intended for the model `RG3205W` with a Qualcomm arm64 SoC. For the model `IGW-5000A2BKMP-I v2` with an Intel x86 CPU, please refer to [IGW5000/README.en.md](../IGW5000/README.en.md).  [*How to identify?*](../README.en.md#important-note)**
+
+[🇪🇸 Versión en castellano](../RG3205W/rev5_howto.es.md)
+
 **No need to open the box; no soldering; no root; no Linux**
 
 *Just needs a bit of tapping, a Bluetooth (or virtual) keyboard, lots of patience and spare time*

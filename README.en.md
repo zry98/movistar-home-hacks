@@ -12,7 +12,7 @@ Join our [Telegram group chat](https://t.me/movistar_home_hacking) for more info
 
 ## Important note
 
-Currently there are at least 2 different models of Movistar Home exist, check the sticker label on the bottom of your device to find out its model.
+Currently there are at least 2 different models of Movistar Home exist, check the sticker label on the bottom of your device to identify its model.
 
 ### `RG3205W`
 
@@ -20,7 +20,7 @@ Manufactured by *ASKEY*, likely after 2018.
 
 It has a Qualcomm Snapdragon 625 (**arm64**) SoC.
 
-If you have this model, please refer to [RG3205W.en.md](RG3205W.en.md).
+If you have this model, please refer to [RG3205W/README.en.md](RG3205W/README.en.md).
 
 ![label-RG3202W](img/label-RG3205W.jpg)
 
@@ -30,13 +30,13 @@ Manufactured by *MitraStar*, likely before 2020.
 
 It has an Intel Atom x5-Z8350 (**x86-64**) CPU.
 
-If you have this model, please refer to [IGW5000.en.md](IGW5000.en.md).
+If you have this model, please refer to [IGW5000/README.en.md](IGW5000/README.en.md).
 
 ![label-IGW5000](img/label-IGW5000.jpg)
 
 ### Tutorial
 
-Albeit with some limitations, the device can be used with its stock Android, by following [this tutorial](RG3205W_rev5_howto.en.md).
+Albeit with some limitations, the device can be used with its stock Android, by following [this tutorial](RG3205W/RG3205W_rev5_howto.en.md).
 
 ## Credits
 
@@ -45,7 +45,10 @@ Special thanks to everyone who has contributed!
 - Cansi
 - Carlos
 - Howard
-- [@Iscle](https://github.com/Iscle)
+- Iscle [@iscle](https://github.com/iscle)
 - José
 - Pablo
-- [@roobre](https://github.com/roobre)
+- Nadia Santalla [@nadiamoe](https://github.com/nadiamoe)
+- P4blo24
+- josemoraocana
+- Alfredo [@alfredopironti](https://github.com/alfredopironti)

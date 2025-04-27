@@ -1,5 +1,10 @@
 # Hacks para RG3205W Rev5
+
 _Autor:_ @alfredopironti
+
+**Este documento solo está destinado al modelo `RG3205W` con un SoC arm64 de Qualcomm. Para el modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel, por favor consulta [IGW5000/README.md](../IGW5000/README.md). [*¿Cómo identificarlo?*](../README.md#nota-importante)**
+
+[🇺🇸 English version](../RG3205W/rev5_howto.en.md)
 
 **No es necesario abrir la caja; nada de soldar; no root; no Linux**
 

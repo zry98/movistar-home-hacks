@@ -12,7 +12,7 @@ como un panel de dashboard para Home Assistant.
 
 ## Nota importante
 
-Actualmente existen al menos 2 modelos diferentes de Movistar Home, revisa la etiqueta adhesiva en la parte de abajo de tu dispositivo para saber su modelo.
+Actualmente existen al menos 2 modelos diferentes de Movistar Home, revisa la etiqueta adhesiva en la parte de abajo de tu dispositivo para identificar su modelo.
 
 ### `RG3205W`
 
@@ -20,7 +20,7 @@ Fabricado por *ASKEY*, probablemente después de 2018.
 
 Tiene un SoC Qualcomm Snapdragon 625 (**arm64**).
 
-Si tienes este modelo, por favor consulta [RG3205W.es.md](RG3205W.es.md).
+Si tienes este modelo, por favor consulta [RG3205W/README.md](RG3205W/README.md).
 
 ![label-RG3202W](img/label-RG3205W.jpg)
 
@@ -30,14 +30,13 @@ Fabricado por *MitraStar*, probablemente antes de 2020.
 
 Tiene una CPU Intel Atom x5-Z8350 (**x86-64**).
 
-Si tienes este modelo, por favor consulta [IGW5000.es.md](IGW5000.es.md).
+Si tienes este modelo, por favor consulta [IGW5000/README.md](IGW5000/README.md).
 
 ![label-IGW5000](img/label-IGW5000.jpg)
 
 ### Tutorial
 
-Aunque si de forma algo limitada, puedes aprovechar el dispositivo sin necesidad de soldar cables o abrir su caja,
-siguiendo [este tutorial](RG3205W_rev5_howto.es.md).
+Aunque si de forma algo limitada, puedes aprovechar el dispositivo sin necesidad de soldar cables o abrir su caja, siguiendo [este tutorial](RG3205W/RG3205W_rev5_howto.es.md).
 
 ## Créditos
 
@@ -46,7 +45,10 @@ siguiendo [este tutorial](RG3205W_rev5_howto.es.md).
 - Cansi
 - Carlos
 - Howard
-- [@Iscle](https://github.com/Iscle)
+- Iscle [@iscle](https://github.com/iscle)
 - José
 - Pablo
-- [@roobre](https://github.com/roobre)
+- Nadia Santalla [@nadiamoe](https://github.com/nadiamoe)
+- P4blo24
+- josemoraocana
+- Alfredo [@alfredopironti](https://github.com/alfredopironti)

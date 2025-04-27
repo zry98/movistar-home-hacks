@@ -2,25 +2,29 @@
 
 como un panel de dashboard para Home Assistant.
 
-**Este documento solo está destinado al modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel. Para el modelo `RG3205W` con un SoC arm64 de Qualcomm, por favor consulta [RG3205W.es.md](RG3205W.es.md).**
+**Este documento solo está destinado al modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel. Para el modelo `RG3205W` con un SoC arm64 de Qualcomm, por favor consulta [RG3205W/README.md](../RG3205W/README.md). [*¿Cómo identificarlo?*](../README.md#nota-importante)**
 
-[🇺🇸 English version](IGW5000.en.md)
+[🇺🇸 English version](../IGW5000/README.en.md)
 
-[Notas de investigación (en inglés)](researches/IGW5000.md)
+[Notas de investigación (en inglés)](../researches/IGW5000.md)
 
 ## SE NECESITA AYUDA
 
-He descargado el firmware original de Android-x86 en la memoria flash, pero no se pudo iniciar después de que lo volví a escribir, además la partición /data estaba cifrada y no pude encontrar una manera de descifrarla.
+Extraje el firmware original de Android-x86 en la memoria flash, pero no logró arrancar después de volver a escribirlo.
 
-Las contribuciones al [repositorio](https://github.com/zry98/movistar-home-hacks) son muy bienvenidas si tienes algunos descubrimientos; o si tienes una Movistar Home que no estás usando y quieres ayudar en este proyecto, por favor únete a nuestro [grupo de Telegram](https://t.me/movistar_home_hacking), ¡muchas gracias!
+Cualquier contribución al [repositorio](https://github.com/zry98/movistar-home-hacks) será muy bienvenida.
+
+Si tienes alguna pregunta o quieres ayudar en este proyecto, por favor únete a nuestro [grupo de Telegram](https://t.me/movistar_home_hacking).
 
 ### Lista de tareas
 
-- [ ] Arreglar el driver de la tarjeta de sonido (quizás las configuraciones de [ALSA](https://en.wikipedia.org/wiki/Advanced_Linux_Sound_Architecture))
+- [ ] Arreglar el driver de la tarjeta de sonido
+  - [x] Arreglar los altavoces
+  - [ ] Arreglar los micrófonos (quizás las configuraciones de [ALSA](https://en.wikipedia.org/wiki/Advanced_Linux_Sound_Architecture))
 - [ ] Arreglar el driver de la cámara
 - [ ] Arreglar el driver de bluetooth
 - [ ] Arreglar el botón de reinicio
-- [ ] Encontrar una manera de instalar Linux sin desmontar ni soldar (quizás a través del [easycwmp en el puerto 7547](researches/IGW5000.md#easycwmp))
+- [ ] Encontrar una manera de instalar Linux sin desmontar ni soldar (quizás a través del [easycwmp en el puerto 7547](../researches/IGW5000.md#easycwmp))
 
 ## Especificaciones
 
@@ -40,15 +44,15 @@ Las contribuciones al [repositorio](https://github.com/zry98/movistar-home-hacks
 
 ## Estado de los drivers
 
-Como en el último Manjaro XFCE 24.0.2 con kernel 6.9.3-3, el 19 de junio de 2024:
+Como en el último Manjaro Xfce 25.0.0 con kernel 6.12.21-4, el 27 de abril de 2025:
 
 | Dispositivo | Driver | Estado |
 | --- | --- | --- |
 | Pantalla táctil | goodix_ts | OK |
 | Wi-Fi | rtw88_8822be | OK |
 | Bluetooth | rtw88_8822be | No funciona |
-| Tarjeta de sonido | snd_soc_sst_cht_bsw_rt5672 | No funciona |
-| Cámara | atomisp | No funciona en kernel 5.15, no disponible en kernel 6.2+ |
+| Tarjeta de sonido | snd_soc_sst_cht_bsw_rt5672 | Altavoces OK, micrófonos no funcionan |
+| Cámara | atomisp | No funciona en kernel 5.15, no disponible en 6.2+ |
 
 ## Instalación de Linux
 
@@ -58,33 +62,34 @@ Desmonta el dispositivo, tiene **10 presillas** debajo de los bordes del panel p
 
 Localiza el puerto micro USB desocupado en el borde izquierdo de la placa base:
 
-![inside-with-usb-port-location](img/inside-with-usb-port-location.jpg)
+![inside-with-usb-port-location](../img/inside-with-usb-port-location.jpg)
 
-Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID`) a tierra (GND, el quinto pin), haciendo que el dispositivo funcione como un OTG *host*.
+Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID` cercano) a el quinto pin GND (o cualquier pad de tierra en la placa), haciendo que el puerto funcione como un *OTG host*.
 
 Aquí es un ejemplo para soldar un conector USB-A hembra:
 
-![igw5000-usb-port-connection-1](img/igw5000-usb-port-connection-1.jpg)
+![igw5000-usb-port-connection-1](../img/igw5000-usb-port-connection-1.jpg)
 
-Flashea un pendrive USB con tu distribución de Linux favorita, recomiendo usar el entorno de escritorio Xfce ya que el Movistar Home solo tiene 2 GB de RAM.
+Flashea un pendrive USB con tu distribución de Linux favorita, se recomienda utilizar un entorno de escritorio ligero como Xfce, teniendo en cuenta que el Movistar Home solo tiene 2 GB de RAM.
 
-Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. Enciéndelo mientras presiona la tecla `F2`, se iniciará a la configuración del BIOS, navega a la última pestaña (`Save & Exit`), selecciona tu pendrive (debería ser algo así como `UEFI: USB, Partition 1`) en el menú `Boot Override`, presiona la tecla `Intro` (`Enter`) para iniciarlo.
+Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. Enciéndelo mientras presiona la tecla `F2`, se iniciará a la configuración del BIOS (UEFI), navega a la última pestaña (`Save & Exit`), selecciona tu pendrive (debería ser algo así como `UEFI: USB, Partition 1`) en el menú `Boot Override`, presiona la tecla `Intro` (`Enter`) para iniciarlo.
 
-![bios](img/bios.jpg)
+![bios](../img/bios.jpg)
 
 Instala tu distribución de Linux como de costumbre, puede ser necesario incluir los drivers *non-free*.
 
-Se recomienda configurar el servidor OpenSSH antes de desoldar el conector USB y volver a montar el dispositivo, para los posibles mantenimientos en el futuro.
+> [!IMPORTANT]
+> Se recomienda configurar el servidor OpenSSH antes de desoldar el conector USB y volver a montar el dispositivo, para los posibles mantenimientos en el futuro.
 
 ## Configuraciones
 
-Las siguientes configuraciones se realizaron para Manjaro con XFCE y es posible que necesiten algunas modificaciones para las otras distribuciones o entornos de escritorio.
+Las siguientes configuraciones se realizaron para Manjaro con Xfce y es posible que necesiten algunas modificaciones para las otras distribuciones o entornos de escritorio.
 
 ### Corregir la rotación de la pantalla
 
 Instala el driver `xf86-video-intel` con el comando `sudo pacman -S xf86-video-intel`.
 
-Crea el archivo `/etc/X11/xorg.conf.d/20-monitor.conf` con el siguiente contenido:
+Crea el fichero `/etc/X11/xorg.conf.d/20-monitor.conf` con el siguiente contenido:
 
 ```plaintext
 Section "Monitor"
@@ -100,13 +105,13 @@ Section "ServerFlags"
 EndSection
 ```
 
-En la configuración de pantalla de Xfce, ajusta la escala a tu gusto, descubrí que 0.8x es el más adecuado para esta pantalla (1024x640).
+En la Configuración de Pantalla de Xfce, ajusta la escala a tu gusto, descubrí que 0.8x (equivalente a 1024x640) es el más adecuado para esta pantalla.
 
 ### Arreglar la pantalla táctil
 
-Por alguna razón, la pantalla táctil no funciona en absoluto a menos que se reinicie por una vez, en *dmesg* el driver dice "*Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults*".
+Por alguna razón, la pantalla táctil no funciona en absoluto a menos que se haya reiniciado una vez, en *dmesg* el driver dice "*Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults*".
 
-Crea el archivo `/etc/systemd/system/fix-touchscreen.service` con el siguiente contenido:
+Para arreglarlo, crea el fichero `/etc/systemd/system/fix-touchscreen.service` con el siguiente contenido:
 
 ```systemd
 [Unit]
@@ -122,7 +127,7 @@ WantedBy=multi-user.target
 
 Ejecuta `sudo systemctl daemon-reload && sudo systemctl enable fix-touchscreen.service` para que se ejecute al iniciar.
 
-Para corregir la rotación, crea el archivo `/etc/X11/xorg.conf.d/30-touchscreen.conf` con el siguiente contenido:
+Para corregir la rotación, crea el fichero `/etc/X11/xorg.conf.d/30-touchscreen.conf` con el siguiente contenido:
 
 ```plaintext
 Section "InputClass"
@@ -132,17 +137,17 @@ Section "InputClass"
 EndSection
 ```
 
-#### Arreglar el control tactil en Firefox
+#### Arreglar el control táctil en Firefox
 
 *Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)*
 
 Abre la Firefox y acceda a `about:config`, busca por `dom.w3c_touch_events.enabled` y asegúrase de que está configurado a 1 (*habilitado*) o 2 (*predeterminado, detección automática*).
 
-Añade `MOZ_USE_XINPUT2 DEFAULT=1` a `/etc/security/pam_env.conf`.
+También añade `MOZ_USE_XINPUT2 DEFAULT=1` al `/etc/security/pam_env.conf`.
 
 ### Reducción automática de brillo
 
-Modifica el archivo `/etc/mkinitcpio.conf` para incluir `i915` y `pwm-lpss-platform` en la matriz `MODULES` como sigue:
+Modifica el fichero `/etc/mkinitcpio.conf` para incluir `i915` y `pwm-lpss-platform` en la matriz `MODULES` como sigue:
 
 ```plaintext
 ...
@@ -152,7 +157,7 @@ MODULES=(i915 pwm-lpss-platform)
 
 Y ejecuta `sudo mkinitcpio -P` para regenerar el initramfs.
 
-Crea el archivo `/etc/X11/xorg.conf.d/10-intel.conf` con el siguiente contenido:
+Crea el fichero `/etc/X11/xorg.conf.d/10-intel.conf` con el siguiente contenido:
 
 ```plaintext
 Section "Device"
@@ -168,7 +173,7 @@ Abre el `Administrador de energía` de Xfce, cambia a la pestaña `Pantalla` y a
 
 También recuerda a deshabilitar la suspensión/apagar automática desde allí.
 
-Crea el archivo `/etc/udev/rules.d/backlight.rules` con el siguiente contenido:
+Crea el fichero `/etc/udev/rules.d/backlight.rules` con el siguiente contenido:
 
 ```plaintext
 ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness", ATTR{brightness}="100"
@@ -186,7 +191,7 @@ Después de reiniciar, abre la configuración de *Onboard* y ajústala a tu gust
 
 Instala [*unclutter*](https://github.com/Airblader/unclutter-xfixes) con `sudo pacman -S unclutter`.
 
-Crea el archivo `~/.config/autostart/hide-cursor.desktop` con el siguiente contenido:
+Crea el fichero `~/.config/autostart/hide-cursor.desktop` con el siguiente contenido:
 
 ```systemd
 [Desktop Entry]
@@ -203,9 +208,69 @@ Terminal=false
 Hidden=false
 ```
 
+### Arreglar el sonido
+
+> [!NOTE]
+> **TRABAJO EN CURSO**
+> El contenido de esta sección (especialmente los ficheros) podría cambiar frecuentemente, ya que seguimos trabajando en ello.
+
+> [!NOTE]
+> Actualmente solo se han arreglado los altavoces; los micrófonos aún no funcionan.
+
+El amplificador integrado para los altavoces no se activa correctamente mediante el driver de la tarjeta de sonido RT5672. Tenemos que configurar los GPIO 5 y 7 de gpiochip1 al nivel lógico ALTO.
+
+<details>
+
+<summary>Detalles técnicos</summary>
+
+El amplificador integrado Realtek ALC1304 es compatible con el TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
+
+El GPIO 5 de gpiochip1 controla el nivel lógico en el pin 29 (`SDZ`) del amplificador; al configurarlo en ALTO, el pin se pone en estado ALTO, activando el amplificador.
+
+> Pin 29 `SDZ`: Entrada lógica de apagado para el amplificador de audio (BAJO = salidas en Hi-Z, ALTO = salidas activadas).
+
+El GPIO 7 de gpiochip1 controla el pin 7 (`MUTE`) del amplificador; al configurarlo en ALTO, el pin se pone en estado BAJO, habilitando la salida.
+
+> Pin 7 `MUTE`: Señal de silencio para desactivar/activar rápidamente las salidas: ALTO = salidas apagadas (high-Z), BAJO = salidas encendidas.
+
+</details>
+
+Ejecuta `sudo pacman -S alsa-utils alsa-ucm-conf libgpiod` para instalar los paquetes necesarios, luego crea el fichero `/etc/systemd/system/fix-sound.service` con el siguiente contenido:
+
+```systemd
+[Unit]
+Description=Arreglar sonido
+
+[Service]
+Type=simple
+ExecStart=gpioset -c 1 5=1 7=1
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Ejecuta `sudo systemctl daemon-reload && sudo systemctl enable fix-sound.service` para que se ejecute al iniciar.
+
+Crea el fichero `~/.config/autostart/switch-alsa-ucm.desktop` con el siguiente contenido:
+
+```systemd
+[Desktop Entry]
+Encoding=UTF-8
+Version=0.9.4
+Type=Application
+Name=Cambiar ALSA UCM
+Comment=Para arreglar los altavoces
+Exec=alsaucm -c cht-bsw-rt5672 set _verb HiFi set _enadev Headphones
+OnlyShowIn=XFCE;
+RunHook=0
+StartupNotify=false
+Terminal=false
+Hidden=false
+```
+
 ### Home Assistant dashboard
 
-Crea el archivo `~/.config/autostart/HASS.desktop` con el siguiente contenido:
+Crea el fichero `~/.config/autostart/HASS.desktop` con el siguiente contenido:
 
 ```systemd
 [Desktop Entry]
@@ -224,14 +289,18 @@ Hidden=false
 
 Ejecutará Firefox en modo quiosco al iniciar, del que solo puedes salir presionando `Alt+F4` o usando el comando `kill` a través de SSH.
 
-### Controlar el estado de la pantalla desde Home Assistant
+#### Controla la retroiluminación desde Home Assistant
 
 > [!TIP]
 > Como se menciona en [ArchLinux Wiki](https://wiki.archlinux.org/title/Xfce#Display_blanking), para que el `xset` pueda controlar la DPMS, necesitas desactivar:
 >  1. La reducción de brillo de pantalla en `Administrador de energía` de Xfce.
 >  2. El `XScreenSaver` de Xfce.
 
-Crea el archivo `~/panel_server.py` con el siguiente contenido:
+Ejecuta `sudo pacman -S python-flask` para instalar *Flask*, luego crea el fichero `~/.local/bin/panel_server.py` con el siguiente contenido:
+
+<details>
+
+<summary>script de Python panel_server.py</summary>
 
 ```python
 #!/usr/bin/env python3
@@ -311,41 +380,43 @@ if __name__ == '__main__':
     app.run(host=os.environ.get('HOST', '0.0.0.0'), port=os.environ.get('PORT', 8080))
 ```
 
-Ejecuta `sudo pacman -S python-flask` para instalar *Flask*.
+</details>
 
-Crea el archivo `~/.config/systemd/user/panelserver.service` con el siguiente contenido:
+Ejecuta `systemctl edit --user --force --full panelserver.service`, lo cual creará un fichero de servicio de systemd y lo abrirá en tu editor predeterminado (puede ser cambiado con la variable de entorno `EDITOR`, por ejemplo, `EDITOR=nano systemctl edit ...`), luego poner el siguiente contenido:
 
 ```systemd
 [Unit]
 Description=Panel Server
-After=network-online.target nss-lookup.target graphical-session.target
+After=network.target graphical.target
 
 [Service]
-Environment="TOKEN=aa83720a-0bc1-4d5b-82fc-bf27a6682aa4"  # reemplázalo con tu clave secreta
+Environment=TOKEN=aa83720a-0bc1-4d5b-82fc-bf27a6682aa4  # reemplázalo con tu clave secreta
+Environment=DISPLAY=:0
 NoNewPrivileges=true
-ExecStart=/usr/bin/python3 /home/panel/panel_server.py  # reemplázalo con tu ruta real
+ExecStart=/usr/bin/python3 /home/panel/.local/bin/panel_server.py  # reemplázalo con tu ruta real
 Restart=always
 
 [Install]
 WantedBy=default.target
 ```
 
-Ejecuta `systemctl --user daemon-reload && systemctl --user enable --now panelserver.service` para que se ejecute al iniciar.
+Guárdalo y ejecuta `systemctl daemon-reload --user && systemctl enable --user --now panelserver.service` para que se ejecute al iniciar.
 
-Crea un [interruptor de RESTful](https://www.home-assistant.io/integrations/switch.rest/) en la configuración YAML de tu Home Assistant como:
+Crea un [Interruptor de RESTful](https://www.home-assistant.io/integrations/switch.rest/) en la configuración YAML de tu Home Assistant como:
 
 ```yaml
-- platform: rest
-  name: Pantalla del Panel
-  unique_id: pantalla_panel
-  resource: http://panel:8080/display/state  # reemplaza `panel` con el nombre de host o la dirección IP de tu panel
-  body_on: 'ON'
-  body_off: 'OFF'
-  is_on_template: '{{ value == "ON" }}'
-  headers:
-    Authorization: Bearer aa83720a-0bc1-4d5b-82fc-bf27a6682aa4  # reemplázalo con tu clave secreta (después de `Bearer `)
-  verify_ssl: false
-  icon: mdi:tablet-dashboard
+switch:
+  - platform: rest
+    name: Pantalla del Panel
+    unique_id: pantalla_panel
+    resource: http://panel:8080/display/state  # reemplaza `panel` con el nombre de host o la dirección IP de tu panel
+    body_on: 'ON'
+    body_off: 'OFF'
+    is_on_template: '{{ value == "ON" }}'
+    headers:
+      Authorization: Bearer aa83720a-0bc1-4d5b-82fc-bf27a6682aa4  # reemplázalo con tu clave secreta (después del `Bearer `)
+    verify_ssl: false
+    icon: mdi:tablet-dashboard
 ```
 
 Recarga tu instancia de Home Assistant, usa las *Herramientas de desarrollador* para probar el interruptor y el sensor.
@@ -354,14 +425,18 @@ Luego puedes usarlo en las Automatizaciones, por ejemplo, apagarlo cuando te vas
 
 ### Evitar que la pantalla se queme
 
-Dado que se usará principalmente para mostrar un dashboard de Home Assistant todos los días, es muy probable que [la pantalla se queme](https://en.wikipedia.org/wiki/Screen_burn-in) después de un tiempo, aunque tiene una pantalla LCD.
+Dado que se usará principalmente para mostrar un dashboard de Home Assistant todos los días, es muy probable que con el tiempo sufra de [quemado de pantalla](https://en.wikipedia.org/wiki/Screen_burn-in), aunque tiene una pantalla LCD.
 
-Para evitarlo, escribí un script de Python para que muestre periódicamente varios colores en pantalla completa para actualizar todos los píxeles, también actualiza la pestaña del navegador al mismo tiempo, para evitar posibles bloqueos.
+Para evitarlo, se puede utilizar un script en Python para que muestre periódicamente varios colores en pantalla completa para refrescar todos los píxeles. Si lo prefieres, también puede actualizar la pestaña del navegador al mismo tiempo para solucionar posibles problemas como el bloqueo.
 
 > [!CAUTION]
-> **¡NO USA este script si tú o un miembro de tu familia tiene [epilepsia fotosensible](https://es.wikipedia.org/wiki/Epilepsia_fotosensible)!**
+> **¡NO USES este script si tú o algún miembro de tu familia tiene [epilepsia fotosensible](https://es.wikipedia.org/wiki/Epilepsia_fotosensible)!**
 
-Crea el archivo `/usr/bin/screensaver.py` con el siguiente contenido:
+Instala los paquetes necesarios con `sudo pacman -S tk xdotool` y crea el fichero `~/.local/bin/screensaver.py` con el siguiente contenido:
+
+<details>
+
+<summary>script de Python screensaver.py</summary>
 
 ```python
 #!/usr/bin/env python3
@@ -371,8 +446,8 @@ import tkinter as tk
 from subprocess import run
 from time import time
 
-color_interval = int(os.environ.get('COLOR_INTERVAL', 300))  # milliseconds
-total_time = int(os.environ.get('TOTAL_TIME', 10))  # seconds, exit after that
+color_interval = int(os.environ.get('COLOR_INTERVAL', 300))  # milisegundos
+total_time = int(os.environ.get('TOTAL_TIME', 10))  # segundos, saldrá después de ese tiempo
 colors = ['red', 'green', 'blue', 'black', 'white']
 
 root = tk.Tk()
@@ -419,12 +494,20 @@ show_color()
 root.mainloop()
 ```
 
-Instala los paquetes necesarios con `sudo pacman -S tk xdotool`, ejecuta el comando `sudo chmod +x /usr/bin/screensaver.py` para hacerlo ejecutable, luego ejecuta el comando `crontab -e` y agrega un trabajo de *cron* como sigue, que ejecutará el script cada hora:
+</details>
+
+Ejecuta `chmod +x ~/.local/bin/screensaver.py` para hacerlo ejecutable, luego ejecuta `crontab -e` y agrega un trabajo de *cron* como sigue, que ejecutará el script cada hora:
 
 ```crontab
-0 * * * *	DISPLAY=:0 COLOR_INTERVAL=300 TOTAL_TIME=10 BROWSER_WINDOW_CLASS="firefox" /usr/bin/python3 /usr/bin/screensaver.py
+0 * * * *	DISPLAY=:0 COLOR_INTERVAL=300 TOTAL_TIME=10 BROWSER_WINDOW_CLASS="firefox" /home/panel/.local/bin/screensaver.py  # reemplázalo con tu ruta real
 ```
 
 Ajusta las dos variables de entorno `COLOR_INTERVAL` y `TOTAL_TIME` a tu gusto, con un `TOTAL_TIME` de 10 estará ejecutándose durante 10 segundos. Si necesitas detenerlo inmediatamente, simplemente toca la pantalla.
 
 Si utilizas otro navegador (por ejemplo, `chromium`), cambia el valor de `BROWSER_WINDOW_CLASS` en consecuencia; si no deseas actualizar la pestaña del navegador, hazlo vacío (`BROWSER_WINDOW_CLASS=""`).
+
+Si utilizas otro navegador (por ejemplo, `chromium`) para el dashboard, cambia el valor de `BROWSER_WINDOW_CLASS` en consecuencia; quitalo si no deseas actualizar la pestaña del navegador.
+
+## Recursos
+
+- [Volcado de la memoria flash](https://t.me/movistar_home_hacking/93) usando `dd`
