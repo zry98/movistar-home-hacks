@@ -8,7 +8,7 @@ como un panel de dashboard para Home Assistant.
 
 ¡Únete a nuestro [grupo de Telegram](https://t.me/movistar_home_hacking) para más información!
 
-![hass](img/hass.jpg)
+![hass](assets/img/hass.jpg)
 
 ## Nota importante
 
@@ -22,7 +22,7 @@ Tiene un SoC Qualcomm Snapdragon 625 (**arm64**).
 
 Si tienes este modelo, por favor consulta [RG3205W/README.md](RG3205W/README.md).
 
-![label-RG3202W](img/label-RG3205W.jpg)
+![label-RG3202W](assets/img/label-RG3205W.jpg)
 
 Aunque si de forma algo limitada, puedes aprovechar el dispositivo sin necesidad de soldar cables o abrir su caja, siguiendo [este tutorial](RG3205W/rev5_howto.es.md).
 
@@ -34,7 +34,7 @@ Tiene una CPU Intel Atom x5-Z8350 (**x86-64**).
 
 Si tienes este modelo, por favor consulta [IGW5000/README.md](IGW5000/README.md).
 
-![label-IGW5000](img/label-IGW5000.jpg)
+![label-IGW5000](assets/img/label-IGW5000.jpg)
 
 ## Créditos
 

@@ -142,9 +142,9 @@ Hidden=false
 
 El amplificador integrado para los altavoces no se activa correctamente mediante el driver de la tarjeta de sonido RT5672. Tenemos que configurar los GPIO 5 y 7 de gpiochip1 al nivel lógico ALTO.
 
-<details>
+<details markdown="1">
 
-<summary>Detalles técnicos</summary>
+<summary markdown="span">Detalles técnicos</summary>
 
 El amplificador integrado Realtek ALC1304 es compatible con el TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -221,9 +221,9 @@ Ejecutará Firefox en modo quiosco al iniciar, del que solo puedes salir presion
 
 Ejecuta `sudo pacman -S python-flask` para instalar _Flask_, luego crea el fichero `~/.local/bin/panel_server.py` con el siguiente contenido:
 
-<details>
+<details markdown="1">
 
-<summary>script de Python panel_server.py</summary>
+<summary markdown="span">script de Python panel_server.py</summary>
 
 ```python
 #!/usr/bin/env python3
@@ -357,9 +357,9 @@ Para evitarlo, se puede utilizar un script en Python para que muestre periódica
 
 Instala los paquetes necesarios con `sudo pacman -S tk xdotool` y crea el fichero `~/.local/bin/screensaver.py` con el siguiente contenido:
 
-<details>
+<details markdown="1">
 
-<summary>script de Python screensaver.py</summary>
+<summary markdown="span">script de Python screensaver.py</summary>
 
 ```python
 #!/usr/bin/env python3

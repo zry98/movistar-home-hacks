@@ -39,9 +39,9 @@ If yours has a `Rev4` (a known manufacturing date (YYMM): `2001`) PCB then you a
 
 But unfortunately, the more common one on the market is `Rev5` (a known manufacturing date (YYMM): `2008`) which not only comes with the USB Type-C connector unpopulated, but also lacks a 5.1 kΩ pull-down resistor between the `CC` (`CC1` or `CC2` depending on the side) and `GND` pins to put it in host mode. So you'll have to solder the resistor yourself like below:
 
-![RG3205W-Rev5-USB-pull-down-resistor](../img/RG3205W-Rev5-USB-pull-down-resistor.jpg)
+![RG3205W-Rev5-USB-pull-down-resistor](../assets/img/RG3205W-Rev5-USB-pull-down-resistor.jpg)
 
-![USB-Type-C-pinout](../img/USB-Type-C-pinout.png)
+![USB-Type-C-pinout](../assets/img/USB-Type-C-pinout.png)
 
 The 4-pin white female JST-PH connector nearby is also connected to the USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder a USB Type-C SMD connector (which is very difficult to do).
 

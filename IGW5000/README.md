@@ -62,13 +62,13 @@ Desmonta el dispositivo, tiene **10 presillas** debajo de los bordes del panel p
 
 Localiza el puerto micro USB desocupado en el borde izquierdo de la placa base:
 
-![inside-with-usb-port-location](../img/inside-with-usb-port-location.jpg)
+![inside-with-usb-port-location](../assets/img/inside-with-usb-port-location.jpg)
 
 Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID` cercano) a el quinto pin GND (o cualquier pad de tierra en la placa), haciendo que el puerto funcione como un _OTG host_.
 
 Aquí es un ejemplo para soldar un conector USB-A hembra:
 
-![igw5000-usb-port-connection-1](../img/igw5000-usb-port-connection-1.jpg)
+![igw5000-usb-port-connection-1](../assets/img/igw5000-usb-port-connection-1.jpg)
 
 Flashea un pendrive USB con tu distribución de Linux favorita.
 
@@ -76,7 +76,7 @@ Teniendo en cuenta que el Movistar Home solo tiene 2 GB de RAM, se recomienda en
 
 Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. Enciéndelo mientras presiona la tecla <kbd>F2</kbd>, se iniciará a la configuración del BIOS (UEFI), navega a la última pestaña (`Save & Exit`), selecciona tu pendrive (debería ser algo así como `UEFI: USB, Partition 1`) en el menú `Boot Override`, presiona la tecla <kbd>Intro</kbd> (<kbd>Enter</kbd>) para iniciarlo.
 
-![bios](../img/bios.jpg)
+![bios](../assets/img/bios.jpg)
 
 Instala tu distribución de Linux como de costumbre, puede ser necesario incluir los drivers y firmwares _non-free_.
 
@@ -233,9 +233,9 @@ seat seat0 {
 
 El amplificador integrado para los altavoces no se activa correctamente mediante el driver de la tarjeta de sonido RT5672. Tenemos que configurar los GPIO 5 y 7 de gpiochip1 al nivel lógico ALTO.
 
-<details>
+<details markdown="1">
 
-<summary>Detalles técnicos</summary>
+<summary markdown="span">Detalles técnicos</summary>
 
 El amplificador integrado Realtek ALC1304 es compatible con el TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -331,9 +331,9 @@ Ejecuta `python3 -m venv ~/panel-controller` para crear un entorno virtual de Py
 
 Luego crea el fichero `~/panel-controller/app.py` con el siguiente contenido:
 
-<details>
+<details markdown="1">
 
-<summary>Python script app.py</summary>
+<summary markdown="span">Python script app.py</summary>
 
 ```python
 import logging
@@ -494,7 +494,7 @@ if __name__ == '__main__':
     gtk_app.run(None)
 ```
 
-</details><br>
+</details>
 
 Crea el fichero `~/.config/systemd/user/panel-controller.service` con el siguiente contenido:
 

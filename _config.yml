@@ -1,11 +1,33 @@
-theme: jekyll-theme-cayman
 title: Reutilización de Movistar Home
+repository: zry98/movistar-home-hacks
 description: Reutilización de Movistar Home como un panel de dashboard de Home Assistant<br>Repurposing Movistar Home as a Home Assistant dashboard panel
 timezone: Europe/Madrid
-markdown: GFM
+theme: jekyll-theme-cayman
+markdown: kramdown
+kramdown:
+  input: GFM
+  parse_block_html: true
 # markdown: CommonMarkGhPages
 # commonmark:
 #   options: ["UNSAFE", "SMART", "FOOTNOTES"]
 #   extensions: ["strikethrough", "autolink", "table", "tagfilter"]
 plugins:
   - jekyll-gfm-admonitions
+  - jekyll-optional-front-matter
+exclude: 
+  - "**/*.ts" # Exclude source code files!
+  - "**/*.js"
+  - "*.ts" # Also those in the root directory!
+  - "*.js"
+  - "*.json" # Don't forget about assets!
+  - node_modules/ # And large vendored directories
+  # And these ignore all the artifacts the build produces:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

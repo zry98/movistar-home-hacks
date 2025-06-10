@@ -1,0 +1,37 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+// custom styles
+
+// <summary> and <details>
+details {
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 0.5em 1em;
+  background-color: #f6f8fa;
+  margin-bottom: 1em;
+}
+
+summary {
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+summary::marker,
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::before {
+  content: '▶';
+  display: inline-block;
+  margin-right: 0.5em;
+  transition: transform 0.2s ease-in-out;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}

@@ -62,13 +62,13 @@ Disassemble the device, it has **10 snap-fits** under the back panel edges, be c
 
 Locate the unpopulated micro USB port on the left edge of the motherboard:
 
-![inside-with-usb-port-location](../img/inside-with-usb-port-location.jpg)
+![inside-with-usb-port-location](../assets/img/inside-with-usb-port-location.jpg)
 
 Solder a micro USB female connector and connect an OTG adapter cable; or just solder a cable with a standard USB-A female connector to it, then short the fourth pin (or the `ID` pad nearby) to the fifth pin GND (or any ground pad on the motherboard), making the port function as OTG host.
 
 Here is an example for soldering a USB-A female connector:
 
-![igw5000-usb-port-connection-1](../img/igw5000-usb-port-connection-1.jpg)
+![igw5000-usb-port-connection-1](../assets/img/igw5000-usb-port-connection-1.jpg)
 
 Flash a USB drive with your favorite Linux distro.
 
@@ -76,7 +76,7 @@ Considering the Movistar Home has only 2 GB of RAM, it is highly recommended to 
 
 Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. Power it up while pressing the <kbd>F2</kbd> key, it will boot into the BIOS (UEFI) setup, navigate to the last tab (`Save & Exit`), select your USB drive (should be something like `UEFI: USB, Partition 1`) in the `Boot Override` menu, press <kbd>Enter</kbd> key to boot it.
 
-![bios](../img/bios.jpg)
+![bios](../assets/img/bios.jpg)
 
 Install your Linux distro as usual, it might be necessary to include _non-free_ drivers and firmwares.
 
@@ -233,9 +233,9 @@ seat seat0 {
 
 The built-in speaker amplifier is not enabled correctly by the driver for sound card RT5672, we need to set the GPIO 5 and 7 on gpiochip1 to logical HIGH.
 
-<details>
+<details markdown="1">
 
-<summary>Technical details</summary>
+<summary markdown="span">Technical details</summary>
 
 The amplifier IC Realtek ALC1304 is compatible with the TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -331,9 +331,9 @@ Execute the command `python3 -m venv ~/panel-controller` to create a Python virt
 
 Then create the file `~/panel-controller/app.py` with the following content:
 
-<details>
+<details markdown="1">
 
-<summary>Python script app.py</summary>
+<summary markdown="span">Python script app.py</summary>
 
 ```python
 import logging
@@ -494,7 +494,7 @@ if __name__ == '__main__':
     gtk_app.run(None)
 ```
 
-</details><br>
+</details>
 
 Create the file `~/.config/systemd/user/panel-controller.service` with the following content:
 

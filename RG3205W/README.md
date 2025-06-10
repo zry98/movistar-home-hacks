@@ -39,9 +39,9 @@ Si tienes un PCB `Rev4` (una fecha de fabricación conocida (AAMM): `2001`) ento
 
 Pero desafortunadamente, el más común en el mercado es el `Rev5` (una fecha de fabricación conocida (AAMM): `2008`) que no solo viene con el conector USB Tipo-C no poblado, sino que también carece de una resistencia de _pull-down_ de 5,1 kΩ entre los pines `CC` (`CC1` o `CC2` dependiendo del lado) y `GND` para ponerlo en modo host. Así que tendrás que soldar la resistencia tú mismo como se muestra a continuación:
 
-![RG3205W-Rev5-USB-resistencia-pull-down](../img/RG3205W-Rev5-USB-pull-down-resistor.jpg)
+![RG3205W-Rev5-USB-resistencia-pull-down](../assets/img/RG3205W-Rev5-USB-pull-down-resistor.jpg)
 
-![pinout-USB-tipo-C](../img/USB-Type-C-pinout.png)
+![pinout-USB-tipo-C](../assets/img/USB-Type-C-pinout.png)
 
 El conector hembra blanco de 4 pines JST-PH cercano también está conectado a los pines USB 2.0, con el pinout de izquierda a derecha: `D-`, `D+`, `GND`, `+5V`, puedes usarlo para sacar la conexión USB sin necesidad de soldar un conector SMD USB Tipo-C (lo cual es muy difícil de hacer).
 

@@ -142,9 +142,9 @@ Hidden=false
 
 The built-in speaker amplifier is not enabled correctly by the driver for sound card RT5672, we need to set the GPIO 5 and 7 on gpiochip1 to logical HIGH.
 
-<details>
+<details markdown="1">
 
-<summary>Technical details</summary>
+<summary markdown="span">Technical details</summary>
 
 The amplifier IC Realtek ALC1304 is compatible with the TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -221,9 +221,9 @@ This will run Firefox in kiosk mode at startup, which you can only exit by press
 
 Run `sudo pacman -S python-flask` to install _Flask_, then create the file `~/.local/bin/panel_server.py` with the following content:
 
-<details>
+<details markdown="1">
 
-<summary>Python script panel_server.py</summary>
+<summary markdown="span">Python script panel_server.py</summary>
 
 ```python
 #!/usr/bin/env python3
@@ -357,9 +357,9 @@ To prevent that, a Python script can be used to have it periodically flash sever
 
 Install the required packages with `sudo pacman -S tk xdotool` and create the file `~/.local/bin/screensaver.py` with the following content:
 
-<details>
+<details markdown="1">
 
-<summary>Python script screensaver.py</summary>
+<summary markdown="span">Python script screensaver.py</summary>
 
 ```python
 #!/usr/bin/env python3
