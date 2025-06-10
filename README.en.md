@@ -14,7 +14,7 @@ Join our [Telegram group chat](https://t.me/movistar_home_hacking) for more info
 
 Currently there are at least 2 different models of Movistar Home exist, check the sticker label on the bottom of your device to identify its model.
 
-### `RG3205W`
+### RG3205W
 
 Manufactured by _ASKEY_, likely after 2018.
 
@@ -26,7 +26,7 @@ If you have this model, please refer to [RG3205W/README.en.md](RG3205W/README.en
 
 Albeit with some limitations, the device can be used with its stock Android, by following [this tutorial](RG3205W/rev5_howto.en.md).
 
-### `IGW-5000A2BKMP-I v2`
+### IGW-5000A2BKMP-I v2
 
 Manufactured by _MitraStar_, likely before 2020.
 

@@ -1,4 +1,4 @@
-# Reutilización de Movistar Home
+# Reutilización de Movistar Home - RG3205W
 
 como un panel de dashboard para Home Assistant.
 

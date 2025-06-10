@@ -2,7 +2,10 @@ theme: jekyll-theme-cayman
 title: Reutilización de Movistar Home
 description: Reutilización de Movistar Home como un panel de dashboard de Home Assistant<br>Repurposing Movistar Home as a Home Assistant dashboard panel
 timezone: Europe/Madrid
-markdown: CommonMarkGhPages
-commonmark:
-  options: ["UNSAFE", "SMART", "FOOTNOTES"]
-  extensions: ["strikethrough", "autolink", "table", "tagfilter"]
+markdown: GFM
+# markdown: CommonMarkGhPages
+# commonmark:
+#   options: ["UNSAFE", "SMART", "FOOTNOTES"]
+#   extensions: ["strikethrough", "autolink", "table", "tagfilter"]
+plugins:
+  - jekyll-gfm-admonitions

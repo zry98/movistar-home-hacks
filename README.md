@@ -14,7 +14,7 @@ como un panel de dashboard para Home Assistant.
 
 Actualmente existen al menos 2 modelos diferentes de Movistar Home, revisa la etiqueta adhesiva en la parte de abajo de tu dispositivo para identificar su modelo.
 
-### `RG3205W`
+### RG3205W
 
 Fabricado por _ASKEY_, probablemente después de 2018.
 
@@ -26,7 +26,7 @@ Si tienes este modelo, por favor consulta [RG3205W/README.md](RG3205W/README.md)
 
 Aunque si de forma algo limitada, puedes aprovechar el dispositivo sin necesidad de soldar cables o abrir su caja, siguiendo [este tutorial](RG3205W/rev5_howto.es.md).
 
-### `IGW-5000A2BKMP-I v2`
+### IGW-5000A2BKMP-I v2
 
 Fabricado por _MitraStar_, probablemente antes de 2020.
 

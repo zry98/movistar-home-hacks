@@ -1,4 +1,4 @@
-# Repurposing Movistar Home
+# Repurposing Movistar Home - IGW5000
 
 as a Home Assistant dashboard panel.
 
@@ -44,7 +44,7 @@ If you have any questions or want to help this project, please join our [Telegra
 
 ## Driver status
 
-As in the latest Manjaro Xfce 25.0.0 with 6.12.21-4 kernel, on April 27, 2025:
+As in the latest Arch Linux with 6.14.10-arch1-1 kernel, on June 10, 2025:
 
 | Device | Driver | Status |
 | --- | --- | --- |
@@ -70,7 +70,9 @@ Here is an example for soldering a USB-A female connector:
 
 ![igw5000-usb-port-connection-1](../img/igw5000-usb-port-connection-1.jpg)
 
-Flash a USB drive with your favorite Linux distro, it is recommended to use a lightweight desktop environment like Xfce, considering the Movistar Home has only 2 GB of RAM.
+Flash a USB drive with your favorite Linux distro.
+
+Considering the Movistar Home has only 2 GB of RAM, it is highly recommended to only use a [window manager](https://wiki.archlinux.org/title/Window_manager). If you want to use a full desktop environment, consider using a lightweight one like _Xfce_.
 
 Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. Power it up while pressing the <kbd>F2</kbd> key, it will boot into the BIOS (UEFI) setup, navigate to the last tab (`Save & Exit`), select your USB drive (should be something like `UEFI: USB, Partition 1`) in the `Boot Override` menu, press <kbd>Enter</kbd> key to boot it.
 
@@ -83,129 +85,141 @@ Install your Linux distro as usual, it might be necessary to include _non-free_ 
 
 ## Configurations
 
-The following configurations were made for Manjaro with Xfce and may need some modifications for other distros or desktop environments.
+The following configurations were made for [Arch Linux](https://archlinux.org/) with the [_Sway_](https://wiki.archlinux.org/title/Sway) window manager (based on the Wayland compositor _wlroots_), some modifications may be needed for other distros, window managers or desktop environments.
 
-### Fix screen rotation
+If you prefer to use a full desktop environment, please refer to the [legacy guide](../IGW5000/xfce.en.md) for Xfce.
 
-Install the driver `xf86-video-intel` with the command `sudo pacman -S xf86-video-intel`.
+### Improve Wi-Fi stability
 
-Create the file `/etc/X11/xorg.conf.d/20-monitor.conf` with the following content:
-
-```plaintext
-Section "Monitor"
-    Identifier    "DSI1"
-    Option        "Rotate" "right"
-    Option        "DPMS" "true"
-EndSection
-
-Section "ServerFlags"
-    Option        "StandbyTime" "0"
-    Option        "SuspendTime" "0"
-    Option        "OffTime"     "0"
-EndSection
-```
-
-In Xfce's Display Settings, adjust the scaling to your liking, I found 0.8x (1024x640 effectively) being the most suitable for this screen.
-
-### Fix touch screen
-
-For some reason the touch screen won't work at all unless it has been soft rebooted once, in dmesg the driver says "Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults".
-
-To fix this, create the file `/etc/systemd/system/fix-touchscreen.service` with the following content:
-
-```systemd
-[Unit]
-Description=Fix touchscreen
-
-[Service]
-Type=oneshot
-ExecStart=sh -c 'dmesg | grep -q " Goodix-TS .*: Invalid config " && reboot now || exit 0'
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Then execute `sudo systemctl daemon-reload && sudo systemctl enable fix-touchscreen.service` to make it run at startup.
-
-To fix rotation, create the file `/etc/X11/xorg.conf.d/30-touchscreen.conf` with the following content:
+Create the file `/etc/modprobe.d/99-movistar-home-panel.conf` with the following content:
 
 ```plaintext
-Section "InputClass"
-    Identifier      "calibration"
-    MatchProduct    "Goodix Capacitive TouchScreen"
-    Option          "TransformationMatrix" "0 1 0 -1 0 1 0 0 1"
-EndSection
-```
-
-#### Fix touch control in Firefox
-
-_Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)_
-
-Open Firefox and access `about:config`, search for `dom.w3c_touch_events.enabled` and make sure it's either set to 1 (_enabled_) or 2 (_default, auto-detect_).
-
-Also add `MOZ_USE_XINPUT2 DEFAULT=1` to `/etc/security/pam_env.conf`.
-
-### Auto backlight dimming
-
-Modify the file `/etc/mkinitcpio.conf` to include `i915` and `pwm-lpss-platform` in the `MODULES` array like below:
-
-```plaintext
-...
-MODULES=(i915 pwm-lpss-platform)
-...
+# disable RTL8822BE power-saving
+options rtw88_core disable_lps_deep=y
+options rtw88_pci disable_msi=y disable_aspm=y
+options rtw_core disable_lps_deep=y
+options rtw_pci disable_msi=y disable_aspm=y
 ```
 
 Then execute `sudo mkinitcpio -P` to regenerate the initramfs.
 
-Create the file `/etc/X11/xorg.conf.d/10-intel.conf` with the following content:
+### Fix screen rotation and backlight control
+
+Create the file `/etc/mkinitcpio.conf.d/99-movistar-home-panel.conf` with the following content:
 
 ```plaintext
-Section "Device"
-    Identifier    "Intel Graphics"
-    Driver        "intel"
-    Option        "AccelMethod" "sna"
-    Option        "TearFree"    "true"
-    Option        "Backlight"   "intel_backlight"
-EndSection
+MODULES=(i915 pwm-lpss-platform)
 ```
 
-Open Xfce's `Power Manager`, switch to `Display` tab, and adjust the `Brightness reduction` settings. I personally set it to reduce to 20% after 90 seconds of inactivity.
-
-Remember also to disable the auto suspension/shutdown from there.
-
-Create the file `/etc/udev/rules.d/backlight.rules` with the following content:
+Create the file `/etc/udev/rules.d/10-movistar-home-panel-backlight.rules` with the following content:
 
 ```plaintext
-ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness", ATTR{brightness}="100"
+ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness"
 ```
+
+Then execute `sudo mkinitcpio -P` to regenerate the initramfs.
+
+Make sure to add your user to the `video` group with `sudo usermod -aG video $USER`.
+
+Edit the Sway config file (default is `~/.config/sway/config`) to add the following content:
+
+```nginx
+# ...
+# display
+output DSI-1 {
+  power on
+  mode 800x1280
+  position 0 0
+  transform 90
+  scale 1.25
+  adaptive_sync on
+  background #000000 solid_color
+}
+# ...
+```
+
+If you prefer the full resolution of 1280x800, you can change the `scale` to `1.0`.
+
+### Fix touch screen
+
+Add the following content to your Sway config file:
+
+```nginx
+# ...
+# map touchscreen
+input "1046:911:Goodix_Capacitive_TouchScreen" {
+  map_to_output DSI-1
+}
+# ...
+```
+
+### Auto backlight dimming
+
+Create the file `~/.config/systemd/user/sway-session.target` with the following content:
+
+```systemd
+[Unit]
+Description=SwayWM session
+BindsTo=graphical-session.target
+Wants=graphical-session-pre.target
+After=graphical-session-pre.target
+```
+
+Install [_swayidle_](https://man.archlinux.org/man/swayidle.1) with `sudo pacman -S swayidle`, then create the file `~/.config/systemd/user/swayidle.service` with the following content:
+
+```systemd
+[Unit]
+Description=Swayidle
+BindsTo=sway-session.target
+After=sway-session.target
+
+[Service]
+Type=simple
+# default backlight to 100% on start-up
+ExecStartPre=brightnessctl --quiet --device=intel_backlight set 100
+# auto dim backlight to 15% after idling for 60 secs
+ExecStart=swayidle -w \
+            timeout 3 ':' \
+              resume 'brightnessctl --quiet --device=intel_backlight set 100 && swaymsg "output DSI-1 power on"' \
+            timeout 60 'brightnessctl --quiet --device=intel_backlight set 15' \
+              resume 'brightnessctl --quiet --device=intel_backlight set 100'
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=10
+
+[Install]
+WantedBy=sway-session.target
+```
+
+Then execute `systemctl --user daemon-reload && systemctl --user enable --now sway-session.target swayidle.service` to make it run at startup.
+
+The first rule (`timeout 3 ':' ...`) is for reactivating the screen and resuming the backlight after touching the screen when the screen had been turned off.
+
+Adjust the values in of second rule to your liking, the one above is for dimming it to 15% after idling for 60 seconds.
 
 And better to disable the systemd-backlight service with `sudo systemctl mask systemd-backlight@backlight\:intel_backlight.service`, to prevent it from interfering.
 
 ### Virtual keyboard
 
-Install [_Onboard_](https://launchpad.net/onboard) with `sudo pacman -S onboard`, open Xfce's `Session and Startup` settings, switch to `Application Autostart` tab, find and enable `Onboard (Flexible onscreen keyboard)`.
+I haven't found a good virtual keyboard for Sway (Wayland) yet. If you have any suggestions, please share!
 
-After rebooting, open Onboard's settings and adjust them to your liking.
+You can use the [_ydotool_](https://man.archlinux.org/man/ydotool.1.en) utility to simulate key presses and type texts, over SSH.
+
+Install it with `sudo pacman -S ydotool`, then execute `systemctl --user daemon-reload && systemctl --user enable --now ydotool.service` to make it run at startup.
+
+Check its readme on GitHub for [usage](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#usage) and [examples](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#examples).
 
 ### Hide mouse cursor
 
-Install [_unclutter_](https://github.com/Airblader/unclutter-xfixes) with `sudo pacman -S unclutter`.
+Edit the Sway config file and add the following content:
 
-Create the file `~/.config/autostart/hide-cursor.desktop` with the following content:
-
-```systemd
-[Desktop Entry]
-Encoding=UTF-8
-Version=0.9.4
-Type=Application
-Name=Hide Cursor
-Comment=Hide mourse cursor
-Exec=unclutter --hide-on-touch
-OnlyShowIn=XFCE;
-RunHook=0
-StartupNotify=false
-Terminal=false
-Hidden=false
+```nginx
+# ...
+# hide cursor
+seat seat0 {
+  hide_cursor 100
+}
+# ...
 ```
 
 ### Fix sound
@@ -249,158 +263,260 @@ ExecStart=gpioset -c 1 5=1 7=1
 WantedBy=multi-user.target
 ```
 
-Execute `sudo systemctl daemon-reload && sudo systemctl enable fix-sound.service` to make it run at startup.
+Execute `sudo systemctl daemon-reload && sudo systemctl enable --now fix-sound.service` to make it run at startup.
 
-Create the file `~/.config/autostart/switch-alsa-ucm.desktop` with the following content:
+Edit the Sway config file and add the following content:
 
-```systemd
-[Desktop Entry]
-Encoding=UTF-8
-Version=0.9.4
-Type=Application
-Name=Switch ALSA UCM
-Comment=For fixing the speakers
-Exec=alsaucm -c cht-bsw-rt5672 set _verb HiFi set _enadev Headphones
-OnlyShowIn=XFCE;
-RunHook=0
-StartupNotify=false
-Terminal=false
-Hidden=false
+```nginx
+# ...
+# fix sound
+exec alsaucm --card cht-bsw-rt5672 set _verb HiFi set _enadev Headphones
+# ...
 ```
 
 ### Home Assistant dashboard
 
-Create the file `~/.config/autostart/HASS.desktop` with the following content:
-
-```systemd
-[Desktop Entry]
-Encoding=UTF-8
-Version=0.9.4
-Type=Application
-Name=HASS Dashboard
-Comment=Run HASS dashboard in Firefox kiosk
-Exec=firefox -kiosk -url 'https://your.hass.url'
-OnlyShowIn=XFCE;
-RunHook=0
-StartupNotify=false
-Terminal=false
-Hidden=false
-```
-
-This will run Firefox in kiosk mode at startup, which you can only exit by pressing `Alt+F4` or using the `kill` command over SSH.
-
-#### Control backlight from Home Assistant
-
-> [!TIP]
-> As mentioned in [ArchLinux Wiki](https://wiki.archlinux.org/title/Xfce#Display_blanking), for `xset` to be able to control DPMS, you need to disable:
->  1. Screen dimming in Xfce's `Power Manager`.
->  2. Xfce's `XScreenSaver`.
-
-Run `sudo pacman -S python-flask` to install _Flask_, then create the file `~/.local/bin/panel_server.py` with the following content:
-
-<details>
-
-<summary>Python script panel_server.py</summary>
-
-```python
-#!/usr/bin/env python3
-import logging
-import os
-from subprocess import run
-from time import sleep
-
-from flask import Flask, request
-from werkzeug.wrappers import Request, Response
-
-TOKEN = os.environ.get('TOKEN', '')
-
-
-class middleware():
-    def __init__(self, app):
-        self.app = app
-
-    def __call__(self, env, start_resp):
-        request = Request(env)
-        if TOKEN != '' and request.headers.get('Authorization') != f'Bearer {TOKEN}':
-            res = Response('Unauthorized', mimetype='text/plain', status=401)
-            return res(env, start_resp)
-        return self.app(env, start_resp)
-
-
-app = Flask(__name__)
-app.wsgi_app = middleware(app.wsgi_app)
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
-
-
-@app.route('/display/state', methods=['GET'])
-def get_display_state():
-    cmd = f"xset -display :0.0 q | grep '^  Monitor is' | awk '{{print $NF}}'"
-    state = run(cmd, shell=True, capture_output=True).stdout.decode().strip()
-    if state == 'On':
-        return 'ON', 200
-    elif state == 'Off':
-        return 'OFF', 200
-    else:
-        return f'Unknown state "{state}"', 500
-
-
-@app.route('/display/state', methods=['POST'])
-def set_display_state():
-    req_body = request.get_data().decode()
-    if req_body == 'OFF':
-        cmd = f'xset -display :0.0 dpms force off'
-    elif req_body == 'ON':
-        cmd = f'xset -display :0.0 dpms force on'
-    else:
-        return 'Bad Request', 400
-
-    ret = run(cmd, shell=True).returncode
-    if ret == 0:
-        return req_body, 200
-    else:
-        return f'Command returned {ret}', 500
-
-
-def init_display():
-    while True:
-        out = run(f"xset -display :0.0 q | grep '^  DPMS is '", shell=True, capture_output=True).stdout.decode()
-        if 'Disabled' in out or 'Enabled' in out:
-            break
-        sleep(3)
-    ret = run(f'xset -display :0.0 dpms force on', shell=True).returncode
-    if ret != 0:
-        print(f'Failed to turn on display: command returned {ret}')
-        exit(ret)
-
-
-if __name__ == '__main__':
-    init_display()
-
-    app.run(host=os.environ.get('HOST', '0.0.0.0'), port=os.environ.get('PORT', 8080))
-```
-
-</details>
-
-Execute `systemctl edit --user --force --full panelserver.service`, which will create a systemd service file and edit it in your default editor (can be overridden by setting the environment variable `EDITOR`, e.g., `EDITOR=nano systemctl edit ...`), then put in the following content:
+Create the file `~/.config/systemd/user/hass-dashboard.service` with the following content:
 
 ```systemd
 [Unit]
-Description=Panel Server
-After=network.target graphical.target
+Description=HASS dashboard
+BindsTo=sway-session.target
+After=sway-session.target
 
 [Service]
-Environment=TOKEN=aa83720a-0bc1-4d5b-82fc-bf27a6682aa4  # replace it with your secret token
-Environment=DISPLAY=:0
-NoNewPrivileges=true
-ExecStart=/usr/bin/python3 /home/panel/.local/bin/panel_server.py  # replace it with your actual path
-Restart=always
+Environment=HASS_DASHBOARD_URL=https://your.hass.url
+Type=simple
+ExecStart=chromium \
+            --ozone-platform=wayland \
+            --no-default-browser-check \
+            --no-first-run \
+            --disable-crash-reporter \
+            --disable-breakpad \
+            --disable-search-engine-choice-screen \
+            --webview-disable-safebrowsing-support \
+            --process-per-site \
+            --disk-cache-dir="/tmp/chromium-cache" \
+            --kiosk \
+            --hide-scrollbars \
+            --autoplay-policy=no-user-gesture-required \
+            "${HASS_DASHBOARD_URL}"
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=10
+CPUAccounting=yes
+BlockIOAccounting=yes
+MemoryAccounting=yes
+MemoryHigh=1.2G
+MemoryMax=1.2G
+MemorySwapMax=0
 
 [Install]
-WantedBy=default.target
+WantedBy=sway-session.target
 ```
 
-Save it and execute `systemctl daemon-reload --user && systemctl enable --user --now panelserver.service` to make it run at startup.
+Then execute `systemctl --user daemon-reload && systemctl --user enable --now hass-dashboard.service` to make it run at startup.
+
+If you prefer Firefox, replace the `ExecStart` line with:
+
+```systemd
+ExecStart=firefox -kiosk -url "${HASS_DASHBOARD_URL}"
+```
+
+Based on my testing, Chromium consumes less memory, is more responsive and stable than Firefox on this device, and has support for hardware acceleration (useful for viewing camera streams). You can also try [ungoogled-chromium](https://aur.archlinux.org/packages/ungoogled-chromium).
+
+#### Control backlight from Home Assistant
+
+Execute the command `python3 -m venv ~/panel-controller` to create a Python virtual environment, then execute `sudo pacman -S gtk4-layer-shell && ~/panel-controller/bin/pip install Flask==3.1.1 i3ipc==2.2.1 PyGObject==3.52.3 apscheduler==3.11.0` to install the required dependencies.
+
+Then create the file `~/panel-controller/app.py` with the following content:
+
+<details>
+
+<summary>Python script app.py</summary>
+
+```python
+import logging
+import os
+import threading
+from colorsys import hsv_to_rgb
+from ctypes import CDLL
+CDLL('libgtk4-layer-shell.so')
+from functools import wraps
+
+import gpiod
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask, request
+from i3ipc import Connection as SwayIPC
+
+import gi
+gi.require_version('Gtk', '4.0')
+gi.require_version('Gtk4LayerShell', '1.0')
+from gi.repository import Gtk, GLib
+from gi.repository import Gtk4LayerShell as LayerShell
+
+APP_ID = 'io.zry.panel-controller'
+
+def auth_required(f):
+    """Authentication decorator for endpoints"""
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        token = server.config.get('TOKEN', '')
+        if token != '' and request.headers.get('Authorization', '') != f'Bearer {token}':
+            return 'Unauthorized', 401
+        return f(*args, **kwargs)
+    return decorator
+
+# HTTP API server
+server = Flask(__name__)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+@server.route('/display/state', methods=['GET'])
+@auth_required
+def get_display_state():
+    """GET endpoint to get display state over Sway IPC"""
+    try:
+        ipc = SwayIPC()
+        outputs = ipc.get_outputs()
+        for o in outputs:
+            if o.name == 'DSI-1':
+                if o.dpms:
+                    return 'ON', 200
+                else:
+                    return 'OFF', 200
+        raise ValueError('Output not found')
+    except Exception as e:
+        return f'Failed to get display state: {e}', 500
+
+
+@server.route('/display/state', methods=['POST'])
+@auth_required
+def set_display_state():
+    """POST endpoint to set display state"""
+    try:
+        state = request.get_data(as_text=True).strip().upper()
+        if not state:
+            raise ValueError('Invalid state: empty')
+        if state not in ['ON', 'OFF']:
+            raise ValueError('Invalid state: must be "ON" or "OFF"')
+
+        try:
+            ipc = SwayIPC()
+            if state == 'ON':
+                result = ipc.command('output DSI-1 power on')
+            else:
+                result = ipc.command('output DSI-1 power off')
+            if result and result[0].success:
+                return state, 200
+            else:
+                error_msg = result[0].error if result and result[0].error else 'Unknown error'
+                raise Exception(f'IPC command error: {error_msg}')
+        except Exception as e:
+            return f'Failed to set display state: {e}', 500
+    except Exception as e:
+        return str(e), 400
+
+class ScreensaverWindow(Gtk.Window):
+    def __init__(self, app, **kwargs):
+        super().__init__(**kwargs)
+        self.app = app
+        self.set_default_size(1280, 800)
+        LayerShell.init_for_window(self)
+        LayerShell.set_layer(self, LayerShell.Layer.OVERLAY)
+        LayerShell.set_anchor(self, LayerShell.Edge.LEFT, True)
+        LayerShell.set_anchor(self, LayerShell.Edge.TOP, True)
+        self.hue = 0
+        self.drawing_area = Gtk.DrawingArea()
+        self.drawing_area.set_draw_func(self.on_draw)
+        self.set_child(self.drawing_area)
+        click = Gtk.GestureClick.new()
+        click.connect('pressed', lambda *args: self.close())  # close on click
+        self.add_controller(click)
+        GLib.timeout_add(15, self.update_color)
+
+    def on_draw(self, area, ctx, width, height):
+        r, g, b = hsv_to_rgb(self.hue / 360.0, 1.0, 1.0)
+        ctx.set_source_rgb(r, g, b)
+        ctx.paint()
+
+    def update_color(self):
+        self.hue += 1
+        if self.hue > 360:
+            self.close()
+            return False
+        self.drawing_area.queue_draw()
+        return True
+
+class ScreensaverApp(Gtk.Application):
+    def __init__(self, enabled: bool = True):
+        super().__init__(application_id=APP_ID)
+        self.connect('activate', self.on_activate)
+        self.enabled = enabled
+        self.scheduler = None
+        self.current_window = None
+
+    def show_screensaver_window(self):
+        def show_window():
+            if self.current_window:
+                self.current_window.close()
+            self.current_window = ScreensaverWindow(self, application=self)
+            self.current_window.present()
+        GLib.idle_add(show_window)
+
+    def on_activate(self, app):
+        self.scheduler = BackgroundScheduler()
+        if self.enabled:
+            self.scheduler.add_job(
+                func=self.show_screensaver_window,
+                trigger='cron',
+                hour='*',
+            )
+        self.scheduler.start()
+        self.hold()
+
+def run_api_server(host: str, port: int, token: str):
+    """Run the Flask API server"""
+    server.config['TOKEN'] = token
+    server.run(host=host, port=port, debug=False, use_reloader=False)
+
+if __name__ == '__main__':
+    host = os.getenv('HOST', '0.0.0.0')
+    port = os.getenv('PORT', 8080)
+    token = os.getenv('TOKEN', '')
+    # start API server in a separate thread
+    server_thread = threading.Thread(target=run_api_server, args=(host, port, token,), daemon=True)
+    server_thread.start()
+    print(f'HTTP API server started on http://{host}:{port}')
+    # start GTK application in the main thread
+    screensaver_enabled = os.getenv('SCREENSAVER_ENABLED', '1') == '1'
+    gtk_app = ScreensaverApp(screensaver_enabled)
+    gtk_app.run(None)
+```
+
+</details><br>
+
+Create the file `~/.config/systemd/user/panel-controller.service` with the following content:
+
+```systemd
+[Unit]
+Description=Panel controller
+BindsTo=sway-session.target
+After=sway.service
+
+[Service]
+Environment=TOKEN=aa83720a-0bc1-4d5b-82fc-bf27a6682aa4
+Type=simple
+ExecStart=%h/panel-controller/bin/python %h/panel-controller/app.py
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=10
+
+[Install]
+WantedBy=sway-session.target
+```
+
+Then execute `systemctl --user daemon-reload && systemctl --user enable --now panel-controller.service` to make it run at startup.
 
 Create a [RESTful Switch](https://www.home-assistant.io/integrations/switch.rest/) in your Home Assistant's YAML config like:
 
@@ -423,88 +539,18 @@ Reload your Home Assistant instance, use _Developer Tools_ to test the switch an
 
 Then you can use it in Automations, e.g., turn it off when you go to sleep at night and turn it back on when you get up in the morning.
 
-### Prevent screen burn-in
-
 Since it will mostly be used to display a Home Assistant dashboard 24/7, it's very likely to get [screen burn-in](https://en.wikipedia.org/wiki/Screen_burn-in) after some time, albeit having an LCD screen.
 
-To prevent that, a Python script can be used to have it periodically flash several colors in full screen to refresh all the pixels. If you prefer, it can also refresh the browser tab at the same time to fix any potential problem like tab crashing.
+To prevent that, this Python script also periodically (every hour) flashes several colors in full screen to refresh all the pixels. You can disable this feature by adding an environment variable `SCREENSAVER_ENABLED=0` in the service file like below:
 
-> [!CAUTION]
-> **DO NOT USE this script if you or a family member has [photosensitive epilepsy](https://en.wikipedia.org/wiki/Photosensitive_epilepsy)!**
-
-Install the required packages with `sudo pacman -S tk xdotool` and create the file `~/.local/bin/screensaver.py` with the following content:
-
-<details>
-
-<summary>Python script screensaver.py</summary>
-
-```python
-#!/usr/bin/env python3
-import os
-import threading
-import tkinter as tk
-from subprocess import run
-from time import time
-
-color_interval = int(os.environ.get('COLOR_INTERVAL', 300))  # milliseconds
-total_time = int(os.environ.get('TOTAL_TIME', 10))  # seconds, exit after that
-colors = ['red', 'green', 'blue', 'black', 'white']
-
-root = tk.Tk()
-w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-root.overrideredirect(True)
-root.attributes('-fullscreen', True)
-canvas = tk.Canvas(root, width=w, height=h, background='black', highlightthickness=0)
-canvas.pack()
-canvas.focus_set()
-canvas.bind('<Button-1>', lambda _: root.destroy())  # exit on touch
-
-color_index = 0
-
-
-def show_color():
-    global color_index
-    if time() - time_start > total_time:
-        root.destroy()
-        return
-    canvas.configure(background=colors[color_index])
-    color_index = (color_index + 1) % len(colors)
-    root.after(color_interval, show_color)
-
-
-def refresh_browser(window_class: str):
-    window_id = run(f'xdotool search --onlyvisible --class "{window_class}" | head -1',
-                    shell=True, capture_output=True).stdout.decode().strip()
-    ret = run(f'xdotool windowactivate {window_id}', shell=True).returncode
-    if ret != 0:
-        print(f'Failed to activate window {window_id}')
-    ret = run(f'xdotool key F5', shell=True).returncode
-    if ret != 0:
-        print(f'Failed to send F5 key to window {window_id}')
-
-
-# refresh browser window
-browser_window_class = os.environ.get('BROWSER_WINDOW_CLASS', '')
-if browser_window_class:
-    refresh_thread = threading.Thread(target=refresh_browser, args=(browser_window_class,))
-    refresh_thread.start()
-# screensaver
-time_start = time()
-show_color()
-root.mainloop()
+```systemd
+# ...
+[Service]
+Environment=TOKEN=aa83720a-0bc1-4d5b-82fc-bf27a6682aa4
+Environment=SCREENSAVER_ENABLED=0
+Type=simple
+# ...
 ```
-
-</details>
-
-Execute `chmod +x ~/.local/bin/screensaver.py` to make it executable, then execute `crontab -e` and add a cron job like below, which will run the script every hour:
-
-```crontab
-0 * * * *	DISPLAY=:0 COLOR_INTERVAL=300 TOTAL_TIME=10 BROWSER_WINDOW_CLASS="firefox" /home/panel/.local/bin/screensaver.py  # replace it with your actual path
-```
-
-Adjust the two environment variables `COLOR_INTERVAL` and `TOTAL_TIME` to your liking, with a `TOTAL_TIME` of 10 it will be running for 10 seconds. If you need to stop it immediately, just touch the screen.
-
-If you are using another browser (e.g., `chromium`) for the dashboard, change the value of `BROWSER_WINDOW_CLASS` accordingly; if you don't want to refresh the browser tab, just remove it.
 
 ## Resources
 
