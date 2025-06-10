@@ -29,9 +29,9 @@ as a Home Assistant dashboard panel.
 
 You don't need (and likely very difficult) to install Linux like with the model `IGW-5000A2BKMP-I v2`.
 
-If your have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard. If you don't have one, you can try using a virtual Bluetooth keyboard app on your Android phone. You can skip the next section and go directly to the [configurations part](#configurations).
+If your have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your Android phone. You can now skip the next section and go directly to the [configurations part](#configurations).
 
-But if you don't have a Movistar Wi-Fi, you'll have to dissemble it and do some soldering. For dissembling, you can refer to [the section in IGW5000/README.en.md](../IGW5000/README.en.md#disassembling).
+But if you don't have a Movistar Wi-Fi, you cannot skip the Wi-Fi connection screen and access the Bluetooth settings. You'll have to dissemble it and do some soldering. For dissembling, you can refer to [the section in IGW5000/README.en.md](../IGW5000/README.en.md#disassembling) as the chassis are identical.
 
 ### Connecting a USB keyboard
 
@@ -59,14 +59,14 @@ Unfortunately, we still haven't found a way to enable USB debugging on the Rev5 
 
 However, you can still install APKs by using the built-in E-mail app. You can open that app by pressing the keys <kbd>Super</kbd> + <kbd>E</kbd>, then configure an email account. After that, you can send an email to this address with the APK attached, then open the email in the app and tap the attachment to download and install it.
 
+**For more information on hacks for the Rev5, please refer to [RG3205W/rev5_howto.en.md](../RG3205W/rev5_howto.en.md).**
+
 > [!TIP]
 > You should not use Gmail either for sending or receiving, because APK attachments are not allowed.
 
 First app you should definitely install is a [launcher](https://search.f-droid.org/?q=launcher), and set it as the default launcher (_Settings > Apps & notifications > Advanced > Default apps > Home app_), otherwise you'll still be stuck in the onboarding app every time it reboots.
 
 But be aware that the onboarding app sometimes will disconnect the Wi-Fi and locks you out. So we still need to find a way to uninstall them.
-
-For more information on hacks for the Rev5, please refer to [RG3205W/rev5_howto.en.md](../RG3205W/rev5_howto.en.md).
 
 ## Resources
 

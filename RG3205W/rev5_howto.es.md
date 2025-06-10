@@ -38,7 +38,7 @@ o la tecla <kbd>⌘ Command</kbd> en un de Macs).
 
 ### Configurar correo electrónico para recibir e instalar un .apk de la tienda de aplicaciones
 
-Configura la aplicación de correo para conectarse a un buzón remoto. En mi experiencia, los buzones de _gmx.com_ funcionan bien (puedes crear uno dedicado a tu dispositivo); asegúrate de usar el protocolo _IMAP_, ya que el protocolo _POP_*_ no descarga correctamente los archivos adjuntos en mi caso. Según mi experiencia, Outlook y Yahoo Mail no funcionan (siempre obtengo un error de usuario/contraseña, incluso al usar contraseñas de aplicaciones);
+Configura la aplicación de correo para conectarse a un buzón remoto. En mi experiencia, los buzones de _gmx.com_ funcionan bien (puedes crear uno dedicado a tu dispositivo); asegúrate de usar el protocolo _IMAP_, ya que el protocolo _POP_ no descarga correctamente los archivos adjuntos en mi caso. Según mi experiencia, Outlook y Yahoo Mail no funcionan (siempre obtengo un error de usuario/contraseña, incluso al usar contraseñas de aplicaciones);
 Gmail no permite adjuntar archivos .apk, lo cual es fundamental para nuestro siguiente paso.
 
 Ve a la interfaz web de gmx.com en tu PC y crea un correo (puedes guardarlo como borrador o enviártelo a ti mismo), donde adjuntas el .apk de una tienda de aplicaciones.

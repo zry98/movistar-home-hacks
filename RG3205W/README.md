@@ -29,9 +29,9 @@ como un panel de dashboard para Home Assistant.
 
 No necesitas (y probablemente sea muy difícil) instalar Linux como con el modelo `IGW-5000A2BKMP-I v2`.
 
-Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder a la pantalla principal después de conectarte. Desliza hacia abajo el panel superior y toca "Ajustes" para abrir los ajustes, luego toca _Conectividad > Altavoz bluetooth_ para entrar al menú para conectarse a un altavoz Bluetooth. Pero por alguna razón, también se puede usar para conectar un teclado Bluetooth. Si no tienes uno, puedes intentar usar una aplicación de teclado Bluetooth virtual en tu móvil Android. Puedes saltarte la siguiente sección e ir directamente a [la parte de configuraciones](#configuraciones).
+Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder a la pantalla principal después de conectarte. Desliza hacia abajo el panel superior y toca "Ajustes" para abrir los ajustes, luego toca _Conectividad > Altavoz bluetooth_ para entrar al menú originalmente para conectarse a un altavoz Bluetooth. Pero por alguna razón, también se puede usar para conectar un teclado Bluetooth; si no tienes uno, puedes intentar usar una aplicación de teclado Bluetooth virtual en tu móvil Android. Ahora puedes saltarte la siguiente sección e ir directamente a [la parte de configuraciones](#configuraciones).
 
-Pero si no tienes un Wi-Fi de Movistar, tendrás que desmontarlo y hacer algo de soldadura. Para desmontarlo, puedes consultar [la sección en IGW5000/README.md](../IGW5000/README.md#desmontaje).
+Pero si no tienes un Wi-Fi de Movistar, no podrás saltar la pantalla de conexión de Wi-Fi y acceder a la configuración de Bluetooth. Tendrás que desmontarlo y hacer algo de soldadura. Para desmontarlo, puedes consultar [la sección en IGW5000/README.md](../IGW5000/README.md#desmontaje) ya que los chasis son idénticos.
 
 ## Conectar un teclado USB
 
@@ -59,14 +59,14 @@ Desafortunadamente, todavía no hemos encontrado una manera de habilitar la Depu
 
 Sin embargo, todavía puedes instalar APKs usando la aplicación incorporada de correo electrónico. Puedes abrir esa aplicación presionando las teclas <kbd>Super</kbd> + <kbd>E</kbd>, luego configurar una cuenta de correo electrónico. Después de eso, puedes enviar un correo a esta dirección con el APK adjunto, luego abrir el correo en la app y tocar el adjunto para descargarlo e instalarlo.
 
+**Para más información sobre hacks para el Rev5, por favor consulta [RG3205W/rev5_howto.es.md](../RG3205W/rev5_howto.es.md).**
+
 > [!TIP]
 > No deberías usar Gmail ni para enviar ni recibir, porque no se permiten los adjuntos de APK.
 
 La primera aplicación que definitivamente debes instalar es un [lanzador](https://search.f-droid.org/?q=launcher), y configurarlo como lanzador predeterminado (_Ajustes > Aplicaciones y notificaciones > Ajustes avanzados > Aplicaciones predeterminadas > Aplicación de página principal_), de lo contrario, seguirás atrapado en la aplicación de incorporación cada vez que se reinice.
 
 Pero ten en cuenta que la aplicación de incorporación a veces desconectará el Wi-Fi y te bloqueará. Así que todavía necesitamos encontrar una manera de desinstalarlas.
-
-Para más información sobre hacks para el Rev5, por favor consulta [RG3205W/rev5_howto.es.md](../RG3205W/rev5_howto.es.md).
 
 ## Recursos
 
