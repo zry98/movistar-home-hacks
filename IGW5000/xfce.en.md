@@ -8,7 +8,9 @@ The following configurations were made for Manjaro with Xfce and may need some m
 
 Considering the limited hardware resources (2 GB RAM) of the IGW5000, it is highly recommended to only use a [window manager](https://wiki.archlinux.org/title/Window_manager). Please refer to the [latest guide](../IGW5000/README.en.md) for more details.
 
-### Fix screen rotation
+## Configurations
+
+### Screen rotation
 
 Install the driver `xf86-video-intel` with the command `sudo pacman -S xf86-video-intel`.
 
@@ -30,7 +32,7 @@ EndSection
 
 In Xfce's Display Settings, adjust the scaling to your liking, I found 0.8x (1024x640 effectively) being the most suitable for this screen.
 
-### Fix touch screen
+### Touch screen
 
 For some reason the touch screen won't work at all unless it has been soft rebooted once, in dmesg the driver says "Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults".
 
@@ -60,7 +62,7 @@ Section "InputClass"
 EndSection
 ```
 
-#### Fix touch control in Firefox
+#### Touch control in Firefox
 
 _Source: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)_
 
@@ -131,7 +133,7 @@ Terminal=false
 Hidden=false
 ```
 
-### Fix sound
+### Sound
 
 > [!NOTE]
 > **WORK IN PROGRESS**
@@ -225,6 +227,7 @@ Run `sudo pacman -S python-flask` to install _Flask_, then create the file `~/.l
 
 <summary markdown="span">Python script panel_server.py</summary>
 
+<!-- {% raw %} -->
 ```python
 #!/usr/bin/env python3
 import logging
@@ -302,6 +305,7 @@ if __name__ == '__main__':
 
     app.run(host=os.environ.get('HOST', '0.0.0.0'), port=os.environ.get('PORT', 8080))
 ```
+<!-- {% endraw %} -->
 
 </details>
 
@@ -327,6 +331,7 @@ Save it and execute `systemctl --user daemon-reload && systemctl --user enable -
 
 Create a [RESTful Switch](https://www.home-assistant.io/integrations/switch.rest/) in your Home Assistant's YAML config like:
 
+<!-- {% raw %} -->
 ```yaml
 switch:
   - platform: rest
@@ -341,6 +346,7 @@ switch:
     verify_ssl: false
     icon: mdi:tablet-dashboard
 ```
+<!-- {% endraw %} -->
 
 Reload your Home Assistant instance, use _Developer Tools_ to test the switch and sensor.
 

@@ -8,7 +8,9 @@ Las siguientes configuraciones se realizaron para Manjaro con Xfce y es posible 
 
 Teniendo en cuenta los recursos de hardware limitados (2 GB de RAM) del IGW5000, se recomienda encarecidamente usar solo un [gestor de ventanas](https://wiki.archlinux.org/title/Window_manager_(Espa%C3%B1ol)). Consulta la [guía más reciente](../IGW5000/README.md) para más detalles.
 
-### Corregir la rotación de la pantalla
+## Configuraciones
+
+### Rotación de la pantalla
 
 Instala el driver `xf86-video-intel` con el comando `sudo pacman -S xf86-video-intel`.
 
@@ -30,7 +32,7 @@ EndSection
 
 En la Configuración de Pantalla de Xfce, ajusta la escala a tu gusto, descubrí que 0.8x (equivalente a 1024x640) es el más adecuado para esta pantalla.
 
-### Arreglar la pantalla táctil
+### Pantalla táctil
 
 Por alguna razón, la pantalla táctil no funciona en absoluto a menos que se haya reiniciado una vez, en _dmesg_ el driver dice "Goodix-TS i2c-GDIX1001:00: Invalid config (0, 0, 0), using defaults".
 
@@ -60,7 +62,7 @@ Section "InputClass"
 EndSection
 ```
 
-#### Arreglar el control táctil en Firefox
+#### Control táctil en Firefox
 
 _Fuente: [Firefox/Tweaks - ArchWiki](https://wiki.archlinux.org/title/Firefox/Tweaks#Enable_touchscreen_gestures)_
 
@@ -68,7 +70,7 @@ Abre la Firefox y acceda a `about:config`, busca por `dom.w3c_touch_events.enabl
 
 También añade `MOZ_USE_XINPUT2 DEFAULT=1` al `/etc/security/pam_env.conf`.
 
-### Reducción automática de brillo
+### Reducción automática de retroiluminación
 
 Modifica el fichero `/etc/mkinitcpio.conf` para incluir `i915` y `pwm-lpss-platform` en la matriz `MODULES` como sigue:
 
@@ -131,7 +133,7 @@ Terminal=false
 Hidden=false
 ```
 
-### Arreglar el sonido
+### Sonido
 
 > [!NOTE]
 > **TRABAJO EN CURSO**
@@ -225,6 +227,7 @@ Ejecuta `sudo pacman -S python-flask` para instalar _Flask_, luego crea el fiche
 
 <summary markdown="span">script de Python panel_server.py</summary>
 
+<!-- {% raw %} -->
 ```python
 #!/usr/bin/env python3
 import logging
@@ -302,6 +305,7 @@ if __name__ == '__main__':
 
     app.run(host=os.environ.get('HOST', '0.0.0.0'), port=os.environ.get('PORT', 8080))
 ```
+<!-- {% endraw %} -->
 
 </details>
 
@@ -327,6 +331,7 @@ Guárdalo y ejecuta `systemctl --user daemon-reload && systemctl --user enable -
 
 Crea un [Interruptor de RESTful](https://www.home-assistant.io/integrations/switch.rest/) en la configuración YAML de tu Home Assistant como:
 
+<!-- {% raw %} -->
 ```yaml
 switch:
   - platform: rest
@@ -341,6 +346,7 @@ switch:
     verify_ssl: false
     icon: mdi:tablet-dashboard
 ```
+<!-- {% endraw %} -->
 
 Recarga tu instancia de Home Assistant, usa las _Herramientas de desarrollador_ para probar el interruptor y el sensor.
 

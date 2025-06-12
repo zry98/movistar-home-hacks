@@ -87,6 +87,8 @@ Install your Linux distro as usual, it might be necessary to include _non-free_ 
 
 The following configurations were made for [Arch Linux](https://archlinux.org/) with the [_Sway_](https://wiki.archlinux.org/title/Sway) window manager (based on the Wayland compositor _wlroots_), some modifications may be needed for other distros, window managers or desktop environments.
 
+Sway being a tiling window manager is not necessary for the use case of kiosk (displaying one browser tab only), I used it because of its high performance and the support of IPC commands (useful for e.g. backlight control). You can also try [others](https://wiki.archlinux.org/title/Wayland#Compositors) like [_cage_](https://github.com/cage-kiosk/cage), a minimal compositor designed for kiosk mode.
+
 If you prefer to use a full desktop environment, please refer to the [legacy guide](../IGW5000/xfce.en.md) for Xfce.
 
 ### Improve Wi-Fi stability
@@ -103,7 +105,22 @@ options rtw_pci disable_msi=y disable_aspm=y
 
 Then execute `sudo mkinitcpio -P` to regenerate the initramfs.
 
-### Fix screen rotation and backlight control
+### Power button
+
+Edit the file `/etc/systemd/logind.conf` to change the values in section `[Login]` as follows:
+
+```systemd
+HandlePowerKey=ignore
+HandlePowerKeyLongPress=poweroff
+```
+
+This will make the power button do nothing on a short press, and power off the device gracefully on a long press.
+
+If you have configured a [screen lock](https://wiki.archlinux.org/title/Session_lock), you can also set `HandlePowerKey=lock` to lock the screen.
+
+Then execute `sudo systemctl enable --now systemd-logind.service`.
+
+### Screen rotation and backlight control
 
 Create the file `/etc/mkinitcpio.conf.d/99-movistar-home-panel.conf` with the following content:
 
@@ -140,7 +157,7 @@ output DSI-1 {
 
 If you prefer the full resolution of 1280x800, you can change the `scale` to `1.0`.
 
-### Fix touch screen
+### Touch screen
 
 Add the following content to your Sway config file:
 
@@ -163,6 +180,12 @@ Description=SwayWM session
 BindsTo=graphical-session.target
 Wants=graphical-session-pre.target
 After=graphical-session-pre.target
+```
+
+Edit the Sway config file and add the following content to the end:
+
+```nginx
+exec_always systemctl --user start sway-session.target
 ```
 
 Install [_swayidle_](https://man.archlinux.org/man/swayidle.1) with `sudo pacman -S swayidle`, then create the file `~/.config/systemd/user/swayidle.service` with the following content:
@@ -191,7 +214,7 @@ TimeoutStopSec=10
 WantedBy=sway-session.target
 ```
 
-Then execute `systemctl --user daemon-reload && systemctl --user enable --now sway-session.target swayidle.service` to make it run at startup.
+Then execute `systemctl --user daemon-reload && systemctl --user enable --now swayidle.service` to make it run at startup.
 
 The first rule (`timeout 3 ':' ...`) is for reactivating the screen and resuming the backlight after touching the screen when the screen had been turned off.
 
@@ -222,7 +245,7 @@ seat seat0 {
 # ...
 ```
 
-### Fix sound
+### Sound
 
 > [!NOTE]
 > **WORK IN PROGRESS**
@@ -274,6 +297,51 @@ exec alsaucm --card cht-bsw-rt5672 set _verb HiFi set _enadev Headphones
 # ...
 ```
 
+### Improve performance and reduce eMMC wearing
+
+#### CPU frequency
+
+Add the kernel parameter `cpufreq.default_governor=performance` to the boot loader configuration file:
+
+- for systemd-boot, edit `/boot/loader/entries/arch.conf` and add it to the end of the `options` line.
+- for GRUB, edit `/etc/default/grub` and add it to the end of the `GRUB_CMDLINE_LINUX_DEFAULT` line (inside quotes).
+- for other [boot loaders](https://wiki.archlinux.org/title/Arch_boot_process#Feature_comparison), refer to their documentation.
+
+Then execute `sudo mkinitcpio -P` to regenerate the initramfs, and `sudo grub-mkconfig -o /boot/grub/grub.cfg` for GRUB.
+
+Create the file `/etc/systemd/system/set-energy-perf-bias.service` with the following content:
+
+```systemd
+[Unit]
+Description=Set ENERGY_PERF_BIAS
+
+[Service]
+Type=oneshot
+ExecStart=sh -c 'for f in /sys/devices/system/cpu/cpu*/power/energy_perf_bias; do echo 0 > "$f"; done'
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Execute `sudo systemctl daemon-reload && sudo systemctl enable --now set-energy-perf-bias.service` to make it run at startup.
+
+#### Logging
+
+Edit the file `/etc/systemd/journald.conf` to change the values in section `[Journal]` as follows:
+
+```systemd
+Storage=volatile
+Compress=yes
+SystemMaxUse=10M
+ForwardToSyslog=no
+ForwardToKMsg=no
+ForwardToConsole=no
+MaxLevelStore=notice
+MaxLevelSyslog=notice
+MaxLevelKMsg=notice
+MaxLevelConsole=info
+```
+
 ### Home Assistant dashboard
 
 Create the file `~/.config/systemd/user/hass-dashboard.service` with the following content:
@@ -323,11 +391,11 @@ If you prefer Firefox, replace the `ExecStart` line with:
 ExecStart=firefox -kiosk -url "${HASS_DASHBOARD_URL}"
 ```
 
-Based on my testing, Chromium consumes less memory, is more responsive and stable than Firefox on this device, and has support for hardware acceleration (useful for viewing camera streams). You can also try [ungoogled-chromium](https://aur.archlinux.org/packages/ungoogled-chromium).
+Based on my testing, Chromium consumes less memory, is more responsive and stable than Firefox on this device, and has support for hardware acceleration (useful for viewing camera streams). You can also try [ungoogled-chromium](https://aur.archlinux.org/packages/ungoogled-chromium) on AUR.
 
 #### Control backlight from Home Assistant
 
-Execute the command `python3 -m venv ~/panel-controller` to create a Python virtual environment, then execute `sudo pacman -S gtk4-layer-shell && ~/panel-controller/bin/pip install Flask==3.1.1 i3ipc==2.2.1 PyGObject==3.52.3 apscheduler==3.11.0` to install the required dependencies.
+Execute the command `python3 -m venv ~/panel-controller` to create a Python virtual environment, then execute `sudo pacman -S gtk4 gtk4-layer-shell && ~/panel-controller/bin/pip install Flask==3.1.1 i3ipc==2.2.1 PyGObject==3.52.3 apscheduler==3.11.0` to install the required dependencies.
 
 Then create the file `~/panel-controller/app.py` with the following content:
 
@@ -520,6 +588,7 @@ Then execute `systemctl --user daemon-reload && systemctl --user enable --now pa
 
 Create a [RESTful Switch](https://www.home-assistant.io/integrations/switch.rest/) in your Home Assistant's YAML config like:
 
+<!-- {% raw %} -->
 ```yaml
 switch:
   - platform: rest
@@ -534,6 +603,7 @@ switch:
     verify_ssl: false
     icon: mdi:tablet-dashboard
 ```
+<!-- {% endraw %} -->
 
 Reload your Home Assistant instance, use _Developer Tools_ to test the switch and sensor.
 

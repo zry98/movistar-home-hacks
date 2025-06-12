@@ -87,6 +87,8 @@ Instala tu distribución de Linux como de costumbre, puede ser necesario incluir
 
 Las siguientes configuraciones se realizaron para [Arch Linux](https://archlinux.org/) con el gestor de ventanas [_Sway_](https://wiki.archlinux.org/title/Sway) (basado en el compositor de Wayland _wlroots_), y es posible que necesiten algunas modificaciones para las otras distribuciones, gestores de ventanas o entornos de escritorio.
 
+Sway, al ser un gestor de ventanas de mosaico (_tiling_), no es necesario para el caso de uso de kiosk (mostrar solo una pestaña del navegador); lo utilicé por su alto rendimiento y por el soporte de comandos _IPC_ (útiles, por ejemplo, para el control del brillo). También puedes probar [otros](https://wiki.archlinux.org/title/Wayland_(Espa%C3%B1ol)#Compositores) como [_cage_](https://github.com/cage-kiosk/cage), un compositor minimalista diseñado para el modo quiosco.
+
 Si deseas usar un entorno de escritorio completo, consulta la [guía antigua](../IGW5000/xfce.md) para Xfce.
 
 ### Mejorar la estabilidad del Wi-Fi
@@ -94,7 +96,7 @@ Si deseas usar un entorno de escritorio completo, consulta la [guía antigua](..
 Crea el fichero `/etc/modprobe.d/99-movistar-home-panel.conf` con el siguiente contenido:
 
 ```plaintext
-# disable RTL8822BE power-saving
+# desactiva el ahorro de energía del RTL8822BE
 options rtw88_core disable_lps_deep=y
 options rtw88_pci disable_msi=y disable_aspm=y
 options rtw_core disable_lps_deep=y
@@ -103,7 +105,22 @@ options rtw_pci disable_msi=y disable_aspm=y
 
 Y ejecuta `sudo mkinitcpio -P` para regenerar el _initramfs_.
 
-### Arreglar la pantalla táctil y el control de la retroiluminación
+### Botón de encendido
+
+Edita el fichero `/etc/systemd/logind.conf` para cambiar los valores en la sección `[Login]` como sigue:
+
+```systemd
+HandlePowerKey=ignore
+HandlePowerKeyLongPress=poweroff
+```
+
+Esto hará que el botón de encendido no haga nada al pulsarlo brevemente y que el dispositivo se apague correctamente al pulsarlo prolongadamente.
+
+Si has configurado una [pantalla de bloqueo](https://wiki.archlinux.org/title/Session_lock), también puedes configurar `HandlePowerKey=lock` para habilitarla.
+
+Y ejecuta `sudo systemctl enable --now systemd-logind.service`.
+
+### Rotación de la pantalla y control de la retroiluminación
 
 Crea el fichero `/etc/mkinitcpio.conf.d/99-movistar-home-panel.conf` con el siguiente contenido:
 
@@ -140,7 +157,7 @@ output DSI-1 {
 
 Si prefieres la resolución completa de 1280x800, puedes cambiar el `scale` a `1.0`.
 
-### Arreglar la pantalla táctil
+### Pantalla táctil
 
 Añade el siguiente contenido al fichero de configuración de Sway:
 
@@ -153,7 +170,7 @@ input "1046:911:Goodix_Capacitive_TouchScreen" {
 # ...
 ```
 
-### Reducción automática de brillo
+### Reducción automática de retroiluminación
 
 Crea el fichero `~/.config/systemd/user/sway-session.target` con el siguiente contenido:
 
@@ -163,6 +180,12 @@ Description=Sesión SwayWM
 BindsTo=graphical-session.target
 Wants=graphical-session-pre.target
 After=graphical-session-pre.target
+```
+
+Edita el fichero de configuración de Sway y añade el siguiente contenido al final:
+
+```nginx
+exec_always systemctl --user start sway-session.target
 ```
 
 Instala [_swayidle_](https://man.archlinux.org/man/swayidle.1) con `sudo pacman -S swayidle`, y crea el fichero `~/.config/systemd/user/swayidle.service` con el siguiente contenido:
@@ -191,7 +214,7 @@ TimeoutStopSec=10
 WantedBy=sway-session.target
 ```
 
-Luego ejecuta `systemctl --user daemon-reload && systemctl --user enable --now sway-session.target swayidle.service` para que se ejecute al iniciar.
+Luego ejecuta `systemctl --user daemon-reload && systemctl --user enable --now swayidle.service` para que se ejecute al iniciar.
 
 La primera regla (`timeout 3 ':' ...`) sirve para reactivar la pantalla tras tocarla si estaba apagada.
 
@@ -222,7 +245,7 @@ seat seat0 {
 # ...
 ```
 
-### Arreglar el sonido
+### Sonido
 
 > [!NOTE]
 > **TRABAJO EN CURSO**
@@ -274,6 +297,51 @@ exec alsaucm --card cht-bsw-rt5672 set _verb HiFi set _enadev Headphones
 # ...
 ```
 
+### Mejorar el rendimiento y reducir el desgaste de la eMMC
+
+#### Frecuencia de la CPU
+
+Añade el parámetro de kernel `cpufreq.default_governor=performance` al fichero de configuración del gestor de arranque:
+
+- Para systemd-boot, edita `/boot/loader/entries/arch.conf` y añádelo al final de la línea `options`.
+- Para GRUB, edita `/etc/default/grub` y añádelo al final de la línea `GRUB_CMDLINE_LINUX_DEFAULT` (entre comillas).
+- Para otros [gestores de arranque](https://wiki.archlinux.org/title/Arch_boot_process_(Espa%C3%B1ol)#Comparaci%C3%B3n_de_caracter%C3%ADsticas), consulta su documentación.
+
+Ejecuta `sudo mkinitcpio -P` para regenerar el initramfs y `sudo grub-mkconfig -o /boot/grub/grub.cfg` para GRUB.
+
+Crea el fichero `/etc/systemd/system/set-energy-perf-bias.service` con el siguiente contenido:
+
+```systemd
+[Unit]
+Description=Set ENERGY_PERF_BIAS
+
+[Service]
+Type=oneshot
+ExecStart=sh -c 'for f in /sys/devices/system/cpu/cpu*/power/energy_perf_bias; do echo 0 > "$f"; done'
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Ejecuta `sudo systemctl daemon-reload && sudo systemctl enable --now set-energy-perf-bias.service` para que se ejecute al iniciar.
+
+#### Logging
+
+Edita el fichero `/etc/systemd/journald.conf` para cambiar los valores en la sección `[Journal]` como sigue:
+
+```systemd
+Storage=volatile
+Compress=yes
+SystemMaxUse=10M
+ForwardToSyslog=no
+ForwardToKMsg=no
+ForwardToConsole=no
+MaxLevelStore=notice
+MaxLevelSyslog=notice
+MaxLevelKMsg=notice
+MaxLevelConsole=info
+```
+
 ### Home Assistant dashboard
 
 Crea el fichero `~/.config/systemd/user/hass-dashboard.service` con el siguiente contenido:
@@ -323,11 +391,11 @@ Si prefieres Firefox, reemplaza la línea `ExecStart` por:
 ExecStart=firefox -kiosk -url "${HASS_DASHBOARD_URL}"
 ```
 
-Según mis pruebas, Chromium consume menos memoria, es más fluido y soporta aceleración por hardware (útil para ver cámaras). También puedes probar [ungoogled-chromium](https://aur.archlinux.org/packages/ungoogled-chromium).
+Según mis pruebas, Chromium consume menos memoria, es más fluido y soporta aceleración por hardware (útil para ver cámaras). También puedes probar [ungoogled-chromium](https://aur.archlinux.org/packages/ungoogled-chromium) en AUR.
 
 ### Controlar la retroiluminación desde Home Assistant
 
-Ejecuta `python3 -m venv ~/panel-controller` para crear un entorno virtual de Python, y ejecuta `sudo pacman -S gtk4-layer-shell && ~/panel-controller/bin/pip install Flask==3.1.1 i3ipc==2.2.1 PyGObject==3.52.3 apscheduler==3.11.0` para instalar las dependencias necesarias.
+Ejecuta `python3 -m venv ~/panel-controller` para crear un entorno virtual de Python, y ejecuta `sudo pacman -S gtk4 gtk4-layer-shell && ~/panel-controller/bin/pip install Flask==3.1.1 i3ipc==2.2.1 PyGObject==3.52.3 apscheduler==3.11.0` para instalar las dependencias necesarias.
 
 Luego crea el fichero `~/panel-controller/app.py` con el siguiente contenido:
 
@@ -520,6 +588,7 @@ Y ejecuta `systemctl --user daemon-reload && systemctl --user enable --now panel
 
 Crea un [Interruptor de RESTful](https://www.home-assistant.io/integrations/switch.rest/) en la configuración YAML de tu Home Assistant como:
 
+<!-- {% raw %} -->
 ```yaml
 switch:
   - platform: rest
@@ -534,6 +603,7 @@ switch:
     verify_ssl: false
     icon: mdi:tablet-dashboard
 ```
+<!-- {% endraw %} -->
 
 Recarga tu instancia de Home Assistant, usa las _Herramientas de desarrollador_ para probar el interruptor y el sensor.
 
