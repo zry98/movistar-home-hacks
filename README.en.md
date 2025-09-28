@@ -50,3 +50,18 @@ Special thanks to everyone who has contributed!
 - P4blo24
 - josemoraocana
 - Alfredo [@alfredopironti](https://github.com/alfredopironti)
+
+## Disclaimer
+
+This project is an **unofficial, community-driven effort** and is **not affiliated with, endorsed by, or sponsored by Movistar, Telefónica, MitraStar, Askey, or any of their subsidiaries or partners**.
+
+All trademarks, service marks, product names, and logos mentioned in this repository are the property of their respective owners. Their use here is **solely for identification and descriptive purposes**, to refer to the original device and services in a factual manner.
+
+This software is provided **"as-is"** and is intended **for personal, educational, and research purposes only**.
+
+* No part of this project should be interpreted as an attempt to **circumvent security protections** or to **infringe upon intellectual property rights**.
+* Following the guides or instructions in this repository will certainly **void the warranty** of your device and may violate your service agreement or contract.
+* You are **solely responsible** for ensuring that your use of this project complies with all applicable laws, terms of service, and agreements.
+* The authors of this project assume **no liability** for any damages or legal issues that may result from its use.
+
+If you represent Movistar, Telefónica, MitraStar, or Askey and have concerns about the content of this repository, please open an issue or contact the repository owner (@zry98[https://github.com/zry98]) directly, who will address it promptly.
