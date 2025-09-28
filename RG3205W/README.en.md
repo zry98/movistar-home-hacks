@@ -62,14 +62,50 @@ Unfortunately, we still haven't found a way to enable USB debugging on the Rev5 
 
 However, you can still install APKs by using the built-in E-mail app. You can open that app by pressing the keys <kbd>Super</kbd> + <kbd>E</kbd>, then configure an email account. After that, you can send an email to this address with the APK attached, then open the email in the app and tap the attachment to download and install it.
 
-**For more information on hacks for the Rev5, please refer to [RG3205W/rev5_howto.en.md](../RG3205W/rev5_howto.en.md).**
-
 > [!TIP]
-> You should not use Gmail either for sending or receiving, because APK attachments are not allowed.
+> You should not use major email providers like Gmail either for sending or receiving, because they normally do not allow APK attachments. You can use the "[email-file-server](https://github.com/zry98/movistar-home-hacks/tree/main/email-file-server)" tool provided in this repository, please check the [next subsection](#use-the-email-file-server-tool) for detailed instructions.
+
+**For more information on hacks for the Rev5, please refer to [RG3205W/rev5_howto.en.md](../RG3205W/rev5_howto.en.md).**
 
 First app you should definitely install is a [launcher](https://search.f-droid.org/?q=launcher), and set it as the default launcher (_Settings > Apps & notifications > Advanced > Default apps > Home app_), otherwise you'll still be stuck in the onboarding app every time it reboots.
 
 But be aware that the onboarding app sometimes will disconnect the Wi-Fi and locks you out. So we still need to find a way to uninstall them.
+
+#### Use the email-file-server tool
+
+You should have a PC that is accessible from your Movistar Home, for example, in the same LAN.
+
+Download the email-file-server release suitable for your PC from its [release page](https://github.com/zry98/movistar-home-hacks/releases/tag/v0.0.1), for example, `email-file-server_v0.0.1_windows_amd64.zip` for most Windows PC. Decompress the archive and open the decompressed folder.
+
+Put the APK files you want to install on Movistar Home inside the `files` folder in the decompressed folder.
+
+Open a terminal in the same folder, execute `./email-file-server`. By default, it will read all files inside `./files`, and start a minimal POP3 server listening on the 8110 port, and a minimal SMTP server listening on the 8025 port.
+
+You can run `./email-file-server --help` to see its usage if you want to customize anything.
+
+In the mail app on your Movistar Home, configure an account with any address, then click the button "AJUSTES MANUALES":
+
+![email-apks-step-1](../assets/img/email-apks/step-1.png)
+
+Select the "PERSONAL (POP3)" type of account.
+
+Input any password, then click the button "SIGUIENTE".
+
+Input the IP address of your PC running the server in the "SERVIDOR" field, select "Ninguna" as the "TIPO DE SEGURIDAD", and input the POP3 port (`8110` by default) in the "PUERTO" field. Then click "SIGUIENTE":
+
+![email-apks-step-4](../assets/img/email-apks/step-4.png)
+
+Input the same IP address in the "SERVIDOR SMTP" field, select "Ninguna" as the "TIPO DE SEGURIDAD", input the SMTP port (`8025` by default) in the "PUERTO" field, and uncheck the box "Solicitar inicio de sesión". Then click "SIGUIENTE":
+
+![email-apks-step-5](../assets/img/email-apks/step-5.png)
+
+Select "Nunca" as the "Frecuencia de sincronización", and click "SIGUIENTE".
+
+You can give a name to the account but it's not necessary, just click "SIGUIENTE" and you should see the inbox. By default, it will start fetching all the mails (with APK attached, which can be huge), please wait for the loading spinner to finish. If you don't see anything, swipe down to force sync.
+
+After you see the mail containing the APK you want, open it and click the attachment, then click any of the two buttons to install it:
+
+![email-apks-install-apk](../assets/img/email-apks/install-apk.png)
 
 ## Resources
 

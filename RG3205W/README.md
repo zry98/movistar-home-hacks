@@ -62,14 +62,50 @@ Desafortunadamente, todavía no hemos encontrado una manera de habilitar la Depu
 
 Sin embargo, todavía puedes instalar APKs usando la aplicación incorporada de correo electrónico. Puedes abrir esa aplicación presionando las teclas <kbd>Super</kbd> + <kbd>E</kbd>, luego configurar una cuenta de correo electrónico. Después de eso, puedes enviar un correo a esta dirección con el APK adjunto, luego abrir el correo en la app y tocar el adjunto para descargarlo e instalarlo.
 
-**Para más información sobre hacks para el Rev5, por favor consulta [RG3205W/rev5_howto.es.md](../RG3205W/rev5_howto.es.md).**
-
 > [!TIP]
-> No deberías usar Gmail ni para enviar ni recibir, porque no se permiten los adjuntos de APK.
+> No deberías usar proveedores de correo principales como Gmail, ni para enviar ni para recibir, porque normalmante no se permiten los adjuntos de APK. Puedes usar la herramienta "[email-file-server](https://github.com/zry98/movistar-home-hacks/tree/main/email-file-server)" incluida en este repositorio; consulta la [siguiente subsección](#usar-la-herramienta-mail-file-server) para obtener instrucciones detalladas.
+
+**Para más información sobre hacks para el Rev5, por favor consulta [RG3205W/rev5_howto.es.md](../RG3205W/rev5_howto.es.md).**
 
 La primera aplicación que definitivamente debes instalar es un [lanzador](https://search.f-droid.org/?q=launcher), y configurarlo como lanzador predeterminado (_Ajustes > Aplicaciones y notificaciones > Ajustes avanzados > Aplicaciones predeterminadas > Aplicación de página principal_), de lo contrario, seguirás atrapado en la aplicación de incorporación cada vez que se reinice.
 
 Pero ten en cuenta que la aplicación de incorporación a veces desconectará el Wi-Fi y te bloqueará. Así que todavía necesitamos encontrar una manera de desinstalarlas.
+
+#### Usar la herramienta mail-file-server
+
+Debes tener un PC accesible desde tu Movistar Home, por ejemplo, en la misma red LAN.
+
+Descarga la versión de email-file-server adecuada para tu PC desde su [página de releases](https://github.com/zry98/movistar-home-hacks/releases/tag/v0.0.1), por ejemplo, `email-file-server_v0.0.1_windows_amd64.zip` para la mayoría de los PC con Windows. Descomprime el archivo y abre la carpeta resultante.
+
+Pon los ficheros APK que quieras instalar en tu Movistar Home dentro de la carpeta `files` en la carpeta descomprimida.
+
+Abre una terminal en esa carpeta, y ejecuta `./email-file-server`. Por defecto, leerá todos los ficheros dentro de `./files` y arrancará un servidor POP3 mínimo escuchando en el puerto 8110, y un servidor SMTP mínimo escuchando en el puerto 8025.
+
+Puedes ejecutar `./email-file-server --help` para ver las opciones disponibles si quieres personalizar algo.
+
+En la app de correo de tu Movistar Home, configura una cuenta con cualquier dirección y luego pulsa el botón "AJUSTES MANUALES":
+
+![email-apks-step-1](../assets/img/email-apks/step-1.png)
+
+Selecciona el tipo de cuenta "PERSONAL (POP3)".
+
+Introduce cualquier contraseña y pulsa el botón "SIGUIENTE".
+
+Introduce la dirección IP de tu PC (el que está ejecutando el servidor) en el campo "SERVIDOR", selecciona "Ninguna" como "TIPO DE SEGURIDAD", e introduce el puerto de POP3 (`8110` por defecto) en el campo "PUERTO". Luego pulsa "SIGUIENTE":
+
+![email-apks-step-4](../assets/img/email-apks/step-4.png)
+
+Introduce la misma dirección IP en el campo "SERVIDOR SMTP", selecciona "Ninguna" como "TIPO DE SEGURIDAD", e introduce el puerto de SMTP (`8025` por defecto) en el campo "PUERTO", y desmarca la casilla "Solicitar inicio de sesión". Luego pulsa "SIGUIENTE":
+
+![email-apks-step-5](../assets/img/email-apks/step-5.png)
+
+Selecciona "Nunca" como "Frecuencia de sincronización", luego pulsa "SIGUIENTE".
+
+Puedes darle un nombre a la cuenta, pero no es necesario. Simplemente pulsa "SIGUIENTE" y deberías ver la bandeja de entrada. Por defecto, comenzará a descargar todos los correos (con los APK adjuntos, que pueden ser grandes), así que espera a que termine el indicador de carga. Si no ves nada, desliza hacia abajo para forzar la sincronización.
+
+Cuando veas el correo que contiene el APK que quieres instalar, ábrelo y pulsa el fichero adjunto, luego pulsa cualquiera de los dos botones que aparecen para instalarlo:
+
+![email-apks-install-apk](../assets/img/email-apks/install-apk.png)
 
 ## Recursos
 
