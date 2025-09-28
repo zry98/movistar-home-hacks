@@ -27,11 +27,18 @@ archives:
     files:
       - "README.md"
       - "README.en.md"
+      - "LICENSE"
       - src: "email-file-server/files/*"
         dst: "files"
         strip_parent: true
     name_template: |-
-      email-file-server_{{ .Tag }}_{{ .Os }}_{{ .Arch }}
+      email-file-server_{{ .Tag }}_
+      {{- with .Os -}}
+        {{- if (eq . "darwin") -}}macOS
+        {{- else -}}{{- . -}}
+        {{- end -}}
+      {{- end -}}
+      _{{ .Arch }}
     formats: ["tar.gz"]
     format_overrides:
       - goos: windows
