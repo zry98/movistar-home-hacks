@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+builds:
+  - id: email-file-server
+    dir: email-file-server
+    main: .
+    binary: email-file-server
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -v
+      - -trimpath
+    ldflags:
+      - -s -w -extldflags "-static" -buildid=
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+archives:
+  - id: email-file-server-archive
+    ids:
+      - email-file-server
+    wrap_in_directory: true
+    files:
+      - "README.md"
+      - "README.en.md"
+      - src: "email-file-server/files/*"
+        dst: "files"
+        strip_parent: true
+    name_template: |-
+      email-file-server_{{ .Tag }}_{{ .Os }}_{{ .Arch }}
+    formats: ["tar.gz"]
+    format_overrides:
+      - goos: windows
+        formats: ["zip"]
+release:
+  ids:
+    - email-file-server-archive
+  make_latest: true
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256

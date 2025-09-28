@@ -1,0 +1,32 @@
+name: Build & Release email-file-server
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+    paths:
+      - 'email-file-server/**'
+  workflow_dispatch:
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5 
+        with:
+          fetch-depth: 0
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.x'
+          cache-dependency-path: './email-file-server/go.sum'
+      - name: GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: 'latest'
+          args: 'release --clean'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
