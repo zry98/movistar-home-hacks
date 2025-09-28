@@ -64,4 +64,19 @@ This software is provided **"as-is"** and is intended **for personal, educationa
 * You are **solely responsible** for ensuring that your use of this project complies with all applicable laws, terms of service, and agreements.
 * The authors of this project assume **no liability** for any damages or legal issues that may result from its use.
 
-If you represent Movistar, Telefónica, MitraStar, or Askey and have concerns about the content of this repository, please open an issue or contact the repository owner (@zry98[https://github.com/zry98]) directly, who will address it promptly.
+If you represent Movistar, Telefónica, MitraStar, or Askey and have concerns about the content of this repository, please open an issue or contact the repository owner ([@zry98](https://github.com/zry98]) directly, who will address it promptly.
+
+## Aviso legal
+
+Este proyecto es un **esfuerzo no oficial impulsado por la comunidad** y **no está afiliado, respaldado ni patrocinado por Movistar, Telefónica, MitraStar, Askey ni por ninguna de sus filiales o socios**.
+
+Todas las marcas comerciales, marcas de servicio, nombres de productos y logotipos mencionados en este repositorio son propiedad de sus respectivos dueños. Su uso aquí es **únicamente con fines de identificación y descriptivos**, para referirse al dispositivo y a los servicios originales de manera objetiva.
+
+Este software se proporciona **"tal cual"** *("as-is")* y está destinado **exclusivamente a fines personales, educativos y de investigación**.
+
+* Ninguna parte de este proyecto debe interpretarse como un intento de **eludir protecciones de seguridad** o de **infringir derechos de propiedad intelectual**.
+* Seguir las guías o instrucciones de este repositorio **anulará la garantía** de tu dispositivo y puede violar tu contrato o acuerdo de servicio.
+* Tú eres el **único responsable** de garantizar que tu uso de este proyecto cumpla con todas las leyes, términos de servicio y acuerdos aplicables.
+* Los autores de este proyecto **no asumen ninguna responsabilidad** por daños o problemas legales que puedan derivarse de su uso.
+
+Si representas a Movistar, Telefónica, MitraStar o Askey y tienes alguna preocupación sobre el contenido de este repositorio, abre un *issue* o contacta directamente con el propietario del repositorio ([@zry98](https://github.com/zry98)), quien lo atenderá de manera inmediata.
