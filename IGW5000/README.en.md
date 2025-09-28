@@ -56,6 +56,9 @@ As in the latest Arch Linux with 6.14.10-arch1-1 kernel, on June 10, 2025:
 
 ## Linux installation
 
+> [!CAUTION]
+> Following the instructions below will certainly **void the warranty** of your device and **may violate your service agreement or contract** with Movistar. Proceed entirely at your own risk.
+
 ### Disassembling
 
 Disassemble the device, it has **10 snap-fits** under the back panel edges, be careful not to damage them; then **8 screws** under the panel, and **4 screws** hidden under the rubber strip at the bottom of the device.

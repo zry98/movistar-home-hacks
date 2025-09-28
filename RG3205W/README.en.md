@@ -27,6 +27,9 @@ as a Home Assistant dashboard panel.
 
 ## Kiosk escaping
 
+> [!CAUTION]
+> Following the instructions below will certainly **void the warranty** of your device and **may violate your service agreement or contract** with Movistar. Proceed entirely at your own risk.
+
 You don't need (and likely very difficult) to install Linux like with the model `IGW-5000A2BKMP-I v2`.
 
 If your have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your Android phone. You can now skip the next section and go directly to the [configurations part](#configurations).

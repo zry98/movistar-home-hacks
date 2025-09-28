@@ -56,6 +56,9 @@ Como en el último Arch Linux con kernel 6.14.10-arch1-1, el 10 de junio de 2025
 
 ## Instalación de Linux
 
+> [!CAUTION]
+> Seguir las instrucciones a continuación **anulará la garantía** de tu dispositivo y **puede violar tu contrato o acuerdo de servicio** con Movistar. Procede completamente bajo tu propio riesgo.
+
 ### Desmontaje
 
 Desmonta el dispositivo, tiene **10 presillas** debajo de los bordes del panel posterior, ten cuidado de no dañarlos; luego hay **8 tornillos** debajo del panel, y **4 tornillos** ocultos debajo de la tira de goma en la parte de abajo del dispositivo.
