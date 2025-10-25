@@ -65,13 +65,13 @@ Desmonta el dispositivo, tiene **10 presillas** debajo de los bordes del panel p
 
 Localiza el puerto micro USB desocupado en el borde izquierdo de la placa base:
 
-![inside-with-usb-port-location](../assets/img/inside-with-usb-port-location.jpg)
+![usb-port-location](../assets/img/IGW5000-usb-port-location.jpg)
 
 Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID` cercano) a el quinto pin GND (o cualquier pad de tierra en la placa), haciendo que el puerto funcione como un _OTG host_.
 
 Aquí es un ejemplo para soldar un conector USB-A hembra:
 
-![igw5000-usb-port-connection-1](../assets/img/igw5000-usb-port-connection-1.jpg)
+![usb-port-connection](../assets/img/IGW5000-usb-port-connection.jpg)
 
 Flashea un pendrive USB con tu distribución de Linux favorita.
 
@@ -79,7 +79,7 @@ Teniendo en cuenta que el Movistar Home solo tiene 2 GB de RAM, se recomienda en
 
 Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. Enciéndelo mientras presiona la tecla <kbd>F2</kbd>, se iniciará a la configuración del BIOS (UEFI), navega a la última pestaña (`Save & Exit`), selecciona tu pendrive (debería ser algo así como `UEFI: USB, Partition 1`) en el menú `Boot Override`, presiona la tecla <kbd>Intro</kbd> (<kbd>Enter</kbd>) para iniciarlo.
 
-![bios](../assets/img/bios.jpg)
+![bios](../assets/img/IGW5000-bios.jpg)
 
 Instala tu distribución de Linux como de costumbre, puede ser necesario incluir los drivers y firmwares _non-free_.
 

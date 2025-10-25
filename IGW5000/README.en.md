@@ -65,13 +65,13 @@ Disassemble the device, it has **10 snap-fits** under the back panel edges, be c
 
 Locate the unpopulated micro USB port on the left edge of the motherboard:
 
-![inside-with-usb-port-location](../assets/img/inside-with-usb-port-location.jpg)
+![usb-port-location](../assets/img/IGW5000-usb-port-location.jpg)
 
 Solder a micro USB female connector and connect an OTG adapter cable; or just solder a cable with a standard USB-A female connector to it, then short the fourth pin (or the `ID` pad nearby) to the fifth pin GND (or any ground pad on the motherboard), making the port function as OTG host.
 
 Here is an example for soldering a USB-A female connector:
 
-![igw5000-usb-port-connection-1](../assets/img/igw5000-usb-port-connection-1.jpg)
+![usb-port-connection](../assets/img/IGW5000-usb-port-connection.jpg)
 
 Flash a USB drive with your favorite Linux distro.
 
@@ -79,7 +79,7 @@ Considering the Movistar Home has only 2 GB of RAM, it is highly recommended to 
 
 Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. Power it up while pressing the <kbd>F2</kbd> key, it will boot into the BIOS (UEFI) setup, navigate to the last tab (`Save & Exit`), select your USB drive (should be something like `UEFI: USB, Partition 1`) in the `Boot Override` menu, press <kbd>Enter</kbd> key to boot it.
 
-![bios](../assets/img/bios.jpg)
+![bios](../assets/img/IGW5000-bios.jpg)
 
 Install your Linux distro as usual, it might be necessary to include _non-free_ drivers and firmwares.
 

@@ -42,11 +42,13 @@ If yours has a `Rev4` (a known manufacturing date (YYMM): `2001`) PCB then you a
 
 But unfortunately, the more common one on the market is `Rev5` (a known manufacturing date (YYMM): `2008`) which not only comes with the USB Type-C connector unpopulated, but also lacks a 5.1 kΩ pull-down resistor between the `CC` (`CC1` or `CC2` depending on the side) and `GND` pins to put it in host mode. So you'll have to solder the resistor yourself like below:
 
-![RG3205W-Rev5-USB-pull-down-resistor](../assets/img/RG3205W-Rev5-USB-pull-down-resistor.jpg)
+![rev5-usb-pull-down-resistor](../assets/img/RG3205W-rev5-usb-pull-down-resistor.jpg)
 
-![USB-Type-C-pinout](../assets/img/USB-Type-C-pinout.png)
+![usb-type-c-pinout](../assets/img/usb-type-c-pinout.png)
 
 The 4-pin white female JST-PH connector nearby is also connected to the USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder a USB Type-C SMD connector (which is very difficult to do).
+
+![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
 ## Configurations
 
@@ -85,7 +87,7 @@ You can run `./email-file-server --help` to see its usage if you want to customi
 
 In the mail app on your Movistar Home, configure an account with any address, then click the button "AJUSTES MANUALES":
 
-![email-apks-step-1](../assets/img/email-apks/step-1.png)
+![email-apks-step-1](../assets/img/email-apks-step-1.png)
 
 Select the "PERSONAL (POP3)" type of account.
 
@@ -93,11 +95,11 @@ Input any password, then click the button "SIGUIENTE".
 
 Input the IP address of your PC running the server in the "SERVIDOR" field, select "Ninguna" as the "TIPO DE SEGURIDAD", and input the POP3 port (`8110` by default) in the "PUERTO" field. Then click "SIGUIENTE":
 
-![email-apks-step-4](../assets/img/email-apks/step-4.png)
+![email-apks-step-4](../assets/img/email-apks-step-4.png)
 
 Input the same IP address in the "SERVIDOR SMTP" field, select "Ninguna" as the "TIPO DE SEGURIDAD", input the SMTP port (`8025` by default) in the "PUERTO" field, and uncheck the box "Solicitar inicio de sesión". Then click "SIGUIENTE":
 
-![email-apks-step-5](../assets/img/email-apks/step-5.png)
+![email-apks-step-5](../assets/img/email-apks-step-5.png)
 
 Select "Nunca" as the "Frecuencia de sincronización", and click "SIGUIENTE".
 
@@ -105,7 +107,7 @@ You can give a name to the account but it's not necessary, just click "SIGUIENTE
 
 After you see the mail containing the APK you want, open it and click the attachment, then click any of the two buttons to install it:
 
-![email-apks-install-apk](../assets/img/email-apks/install-apk.png)
+![email-apks-install](../assets/img/email-apks-install.png)
 
 ## Resources
 

@@ -22,7 +22,7 @@ It has a Qualcomm Snapdragon 625 (**arm64**) SoC.
 
 If you have this model, please refer to [RG3205W/README.en.md](RG3205W/README.en.md).
 
-![label-RG3202W](assets/img/label-RG3205W.jpg)
+![label-RG3202W](assets/img/RG3205W-label.jpg)
 
 Albeit with some limitations, the device can be used with its stock Android, by following [this tutorial](RG3205W/rev5_howto.en.md).
 
@@ -34,7 +34,7 @@ It has an Intel Atom x5-Z8350 (**x86-64**) CPU.
 
 If you have this model, please refer to [IGW5000/README.en.md](IGW5000/README.en.md).
 
-![label-IGW5000](assets/img/label-IGW5000.jpg)
+![label-IGW5000](assets/img/IGW5000-label.jpg)
 
 ## Credits
 

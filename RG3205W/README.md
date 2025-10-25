@@ -42,11 +42,13 @@ Si tienes un PCB `Rev4` (una fecha de fabricación conocida (AAMM): `2001`) ento
 
 Pero desafortunadamente, el más común en el mercado es el `Rev5` (una fecha de fabricación conocida (AAMM): `2008`) que no solo viene con el conector USB Tipo-C no poblado, sino que también carece de una resistencia de _pull-down_ de 5,1 kΩ entre los pines `CC` (`CC1` o `CC2` dependiendo del lado) y `GND` para ponerlo en modo host. Así que tendrás que soldar la resistencia tú mismo como se muestra a continuación:
 
-![RG3205W-Rev5-USB-resistencia-pull-down](../assets/img/RG3205W-Rev5-USB-pull-down-resistor.jpg)
+![rev5-usb-resistencia-pull-down](../assets/img/RG3205W-rev5-usb-pull-down-resistor.jpg)
 
-![pinout-USB-tipo-C](../assets/img/USB-Type-C-pinout.png)
+![pinout-usb-tipo-c](../assets/img/usb-type-c-pinout.png)
 
 El conector hembra blanco de 4 pines JST-PH cercano también está conectado a los pines USB 2.0, con el pinout de izquierda a derecha: `D-`, `D+`, `GND`, `+5V`, puedes usarlo para sacar la conexión USB sin necesidad de soldar un conector SMD USB Tipo-C (lo cual es muy difícil de hacer).
+
+![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
 ## Configuraciones
 
@@ -85,7 +87,7 @@ Puedes ejecutar `./email-file-server --help` para ver las opciones disponibles s
 
 En la app de correo de tu Movistar Home, configura una cuenta con cualquier dirección y luego pulsa el botón "AJUSTES MANUALES":
 
-![email-apks-step-1](../assets/img/email-apks/step-1.png)
+![email-apks-paso-1](../assets/img/email-apks-step-1.png)
 
 Selecciona el tipo de cuenta "PERSONAL (POP3)".
 
@@ -93,11 +95,11 @@ Introduce cualquier contraseña y pulsa el botón "SIGUIENTE".
 
 Introduce la dirección IP de tu PC (el que está ejecutando el servidor) en el campo "SERVIDOR", selecciona "Ninguna" como "TIPO DE SEGURIDAD", e introduce el puerto de POP3 (`8110` por defecto) en el campo "PUERTO". Luego pulsa "SIGUIENTE":
 
-![email-apks-step-4](../assets/img/email-apks/step-4.png)
+![email-apks-paso-4](../assets/img/email-apks-step-4.png)
 
 Introduce la misma dirección IP en el campo "SERVIDOR SMTP", selecciona "Ninguna" como "TIPO DE SEGURIDAD", e introduce el puerto de SMTP (`8025` por defecto) en el campo "PUERTO", y desmarca la casilla "Solicitar inicio de sesión". Luego pulsa "SIGUIENTE":
 
-![email-apks-step-5](../assets/img/email-apks/step-5.png)
+![email-apks-paso-5](../assets/img/email-apks-step-5.png)
 
 Selecciona "Nunca" como "Frecuencia de sincronización", luego pulsa "SIGUIENTE".
 
@@ -105,7 +107,7 @@ Puedes darle un nombre a la cuenta, pero no es necesario. Simplemente pulsa "SIG
 
 Cuando veas el correo que contiene el APK que quieres instalar, ábrelo y pulsa el fichero adjunto, luego pulsa cualquiera de los dos botones que aparecen para instalarlo:
 
-![email-apks-install-apk](../assets/img/email-apks/install-apk.png)
+![email-apks-instalar](../assets/img/email-apks-install.png)
 
 ## Recursos
 
