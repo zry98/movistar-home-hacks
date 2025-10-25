@@ -261,7 +261,7 @@ The built-in speaker amplifier is not enabled correctly by the driver for sound 
 
 <details markdown="1">
 
-<summary markdown="span">Technical details</summary>
+<summary markdown="span">Click to show technical details</summary>
 
 The amplifier IC Realtek ALC1304 is compatible with the TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -404,7 +404,7 @@ Then create the file `~/panel-controller/app.py` with the following content:
 
 <details markdown="1">
 
-<summary markdown="span">Python script app.py</summary>
+<summary markdown="span">Click to show the Python script app.py</summary>
 
 ```python
 import logging

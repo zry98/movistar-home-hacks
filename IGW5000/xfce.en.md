@@ -146,7 +146,7 @@ The built-in speaker amplifier is not enabled correctly by the driver for sound 
 
 <details markdown="1">
 
-<summary markdown="span">Technical details</summary>
+<summary markdown="span">Click to show technical details</summary>
 
 The amplifier IC Realtek ALC1304 is compatible with the TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -225,7 +225,7 @@ Run `sudo pacman -S python-flask` to install _Flask_, then create the file `~/.l
 
 <details markdown="1">
 
-<summary markdown="span">Python script panel_server.py</summary>
+<summary markdown="span">Click to show the Python script panel_server.py</summary>
 
 <!-- {% raw %} -->
 ```python
@@ -365,7 +365,7 @@ Install the required packages with `sudo pacman -S tk xdotool` and create the fi
 
 <details markdown="1">
 
-<summary markdown="span">Python script screensaver.py</summary>
+<summary markdown="span">Click to show the Python script screensaver.py</summary>
 
 ```python
 #!/usr/bin/env python3

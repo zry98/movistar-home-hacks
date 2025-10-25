@@ -261,7 +261,7 @@ El amplificador integrado para los altavoces no se activa correctamente mediante
 
 <details markdown="1">
 
-<summary markdown="span">Detalles técnicos</summary>
+<summary markdown="span">Haz clic para mostrar los detalles técnicos</summary>
 
 El amplificador integrado Realtek ALC1304 es compatible con el TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -404,7 +404,7 @@ Luego crea el fichero `~/panel-controller/app.py` con el siguiente contenido:
 
 <details markdown="1">
 
-<summary markdown="span">Python script app.py</summary>
+<summary markdown="span">Haz clic para mostrar el script de Python app.py</summary>
 
 ```python
 import logging

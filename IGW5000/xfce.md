@@ -146,7 +146,7 @@ El amplificador integrado para los altavoces no se activa correctamente mediante
 
 <details markdown="1">
 
-<summary markdown="span">Detalles técnicos</summary>
+<summary markdown="span">Haz clic para mostrar los detalles técnicos</summary>
 
 El amplificador integrado Realtek ALC1304 es compatible con el TI [TPA313xD2](https://www.ti.com/lit/ds/slos841b/slos841b.pdf).
 
@@ -225,7 +225,7 @@ Ejecuta `sudo pacman -S python-flask` para instalar _Flask_, luego crea el fiche
 
 <details markdown="1">
 
-<summary markdown="span">script de Python panel_server.py</summary>
+<summary markdown="span">Haz clic para mostrar el script de Python panel_server.py</summary>
 
 <!-- {% raw %} -->
 ```python
@@ -365,7 +365,7 @@ Instala los paquetes necesarios con `sudo pacman -S tk xdotool` y crea el ficher
 
 <details markdown="1">
 
-<summary markdown="span">script de Python screensaver.py</summary>
+<summary markdown="span">Haz clic para mostrar el script de Python screensaver.py</summary>
 
 ```python
 #!/usr/bin/env python3
