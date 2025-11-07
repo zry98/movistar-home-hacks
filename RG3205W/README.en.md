@@ -38,9 +38,24 @@ But if you don't have a Movistar Wi-Fi, you cannot skip the Wi-Fi connection scr
 
 ### Connecting a USB keyboard
 
+Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `Rev4` and `Rev5`.
+
+> [!IMPORTANT]
+> To identify these 2 variants, **the only reliable way** is to take off the back panel, to see the markings on the PCB, or the existence of USB Type-C connector.
+>
+> There have been several exceptions reported on the manufacture date on the adhesive label, for example, `2001` can be Rev4 or Rev5.
+
+#### Rev4
+
+![RG3205W-rev4-internal](../assets/img/RG3205W-rev4-internal.jpg)
+
 If yours has a `Rev4` PCB, then you are very lucky that it comes with a female USB Type-C connector already soldered and functioning!
 
-But unfortunately, the more common variant on the market is `Rev5` which not only comes without the USB Type-C connector populated, but also lacks a 5.1 kΩ pull-down resistor between the `CC` (`CC1` or `CC2` depending on the side) and `GND` pins to put it in host mode. So you'll have to solder the resistor yourself like below:
+#### Rev5
+
+![RG3205W-rev5-internal](../assets/img/RG3205W-rev5-internal.jpg)
+
+But unfortunately, the more common variant on the market is `Rev5`, which not only comes without the USB Type-C connector populated, but also lacks a 5.1 kΩ pull-down resistor between the `CC` (`CC1` or `CC2` depending on the side) and `GND` pins to put it in host mode. So you'll have to solder the resistor yourself like below:
 
 ![rev5-usb-pull-down-resistor](../assets/img/RG3205W-rev5-usb-pull-down-resistor.jpg)
 
@@ -54,13 +69,9 @@ The 4-pin white female JST-PH2.0 connector nearby is also connected to the 4 USB
 
 Anyway, with a USB or Bluetooth keyboard connected, you can press the keys <kbd>Super</kbd> + <kbd>N</kbd> (<kbd>Super</kbd> is usually the <kbd>⊞ Win</kbd> key) to open the notification panel, then tap the gear icon to open the Android system settings.
 
-### Rev4
-
 If you got a Rev4 variant, you are so lucky that it doesn't have any restrictions in the ROM, so you can just enable the Developer options by tapping the build number 7 times, then enable USB debugging and do any kind of stuff via ADB.
 
-### Rev5
-
-Unfortunately, we still haven't found a way to enable USB debugging on the Rev5 variant, because the whole "Developer options" menu is removed from the ROM, along with many many other things.
+Unfortunately, for the Rev5 variant we still haven't found a way to enable USB debugging (ADB), because the whole "Developer options" menu is removed completely from the ROM, along with many many other things.
 
 However, you can still install APKs by using the built-in E-mail app. You can open that app by pressing the keys <kbd>Super</kbd> + <kbd>E</kbd>, then configure an email account. After that, you can send an email to this address with the APK attached, then open the email in the app and tap the attachment to download and install it.
 
@@ -109,5 +120,6 @@ After you see the mail containing the APK you want, open it and click the attach
 
 ## Resources
 
+- [Rev4 stock ROM partial dump](./stock-rom-dumps/ES_g1.0_RG3205W1.2.4_201912112049) using ADB, made by _Cansi_ in our Telegram group
 - [Rev5 stock ROM dump](./stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) using EDL mode, made by _P4blo24_ in our Telegram group
 - [Virtual Bluetooth Keyboard & Mouse](https://play.google.com/store/apps/details?id=io.appground.blek) for Android, suggested by _josemoraocana_ in our Telegram group

@@ -36,9 +36,24 @@ Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder
 
 Pero si no tienes un Wi-Fi de Movistar, no podrás saltar la pantalla de conexión de Wi-Fi y acceder a la configuración de Bluetooth. Tendrás que desmontarlo y hacer algo de soldadura. Para desmontarlo, puedes consultar [la sección en IGW5000/README.md](../IGW5000/README.md#desmontaje) ya que los chasis son idénticos.
 
-## Conectar un teclado USB
+### Conectar un teclado USB
+
+Actualmente existen al menos 2 variantes (revisiones de hardware) del RG3205W: `Rev4` y `Rev5`.
+
+> [!IMPORTANT]
+> Para identificar las 2 variantes, **la única forma fiable** es retirar el panel posterior y comprobar las marcas en la placa o la presencia del conector USB Tipo-C.
+> 
+> Se han reportado varias excepciones sobre la fecha de fabricación "F.Fab(AAMM)" en la etiqueta adhesiva, por ejemplo, `2001` puede ser Rev4 o Rev5.
+
+#### Rev4
+
+![RG3205W-rev4-internal](../assets/img/RG3205W-rev4-internal.jpg)
 
 Si el tuyo tiene una PCB `Rev4`, tienes mucha suerte de que venga con un conector hembra USB Tipo-C ya soldado y funcionando!
+
+#### Rev5
+
+![RG3205W-rev5-internal](../assets/img/RG3205W-rev5-internal.jpg)
 
 Pero desafortunadamente, la variante más común en el mercado es la `Rev5` que no solo viene sin el conector USB Tipo-C populado, sino que también falta una resistencia _pull-down_ de 5,1 kΩ entre los pines `CC` (`CC1` o `CC2` dependiendo del lado) y `GND` para ponerlo en modo _host_. Así que tendrás que soldar la resistencia tú mismo como se muestra a continuación:
 
@@ -54,13 +69,9 @@ El conector JST-PH2.0 hembra blanco de 4 pines que se encuentra cerca también e
 
 De todos modos, con un teclado USB o Bluetooth conectado, puedes presionar las teclas <kbd>Super</kbd> + <kbd>N</kbd> (<kbd>Super</kbd> es usualmente la tecla <kbd>⊞ Win</kbd>) para abrir el panel de notificaciones, luego toca el icono de engranaje para abrir los ajustes del sistema Android.
 
-### Rev4
-
 Si conseguiste una variante Rev4, tienes tanta suerte de que no tiene restricciones en la ROM, así que puedes simplemente habilitar las Opciones para desarrolladores tocando el número de compilación 7 veces, luego habilitar la Depuración por USB y cualquier tipo de cosas a través de ADB.
 
-### Rev5
-
-Desafortunadamente, todavía no hemos encontrado una manera de habilitar la Depuración por USB en la variante Rev5, porque se ha eliminado todo el menú de "Opciones para desarrolladores" en la ROM, junto con muchas muchas más cosas.
+Desafortunadamente, para la variante Rev5 todavía no hemos encontrado una manera de habilitar la Depuración por USB (ADB), porque se ha eliminado todo el menú de "Opciones para desarrolladores" por completo en la ROM, junto con muchas muchas más cosas.
 
 Sin embargo, todavía puedes instalar APKs usando la aplicación incorporada de correo electrónico. Puedes abrir esa aplicación presionando las teclas <kbd>Super</kbd> + <kbd>E</kbd>, luego configurar una cuenta de correo electrónico. Después de eso, puedes enviar un correo a esta dirección con el APK adjunto, luego abrir el correo en la app y tocar el adjunto para descargarlo e instalarlo.
 
@@ -109,5 +120,6 @@ Cuando veas el correo que contiene el APK que quieres instalar, ábrelo y pulsa 
 
 ## Recursos
 
+- [Volcado parcial de la ROM original de Rev4](./stock-rom-dumps/ES_g1.0_RG3205W1.2.4_201912112049) usando ADB, hecho por _Cansi_ en nuestro grupo de Telegram
 - [Volcado de la ROM original de Rev5](./stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) usando el modo EDL, hecho por _P4blo24_ en nuestro grupo de Telegram
 - [Teclado y Ratón Bluetooth Virtual](https://play.google.com/store/apps/details?id=io.appground.blek) para Android, sugerido por _josemoraocana_ en nuestro grupo de Telegram

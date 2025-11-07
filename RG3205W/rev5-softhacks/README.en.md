@@ -1,4 +1,4 @@
-# Hacks for RG3205W Rev5
+# Soft-hacks for RG3205W Rev5
 
 _Author:_ [@alfredopironti](https://github.com/alfredopironti)
 

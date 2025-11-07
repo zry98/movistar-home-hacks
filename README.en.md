@@ -24,8 +24,6 @@ If you have this model, please refer to [RG3205W/README.en.md](./RG3205W/README.
 
 ![label-RG3202W](./assets/img/RG3205W-label.jpg)
 
-Albeit with some limitations, the device can be soft-hacked with its stock Android, by following [this tutorial](./RG3205W/rev5-softhacks/README.en.md).
-
 ### IGW-5000A2BKMP-I v2
 
 Manufactured by _MitraStar_, likely from 2018 to 2020.

@@ -24,8 +24,6 @@ Si tienes este modelo, por favor consulta [RG3205W/README.md](./RG3205W/README.m
 
 ![label-RG3202W](./assets/img/RG3205W-label.jpg)
 
-Aunque si de forma algo limitada, puedes aprovechar el dispositivo sin necesidad de soldar cables o abrir su caja, siguiendo [este tutorial](./RG3205W/rev5_howto.es.md).
-
 ### IGW-5000A2BKMP-I v2
 
 Fabricado por _MitraStar_, probablemente desde 2018 hasta 2020.
