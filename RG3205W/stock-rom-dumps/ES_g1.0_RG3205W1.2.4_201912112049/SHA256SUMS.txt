@@ -1,0 +1,3 @@
+0c16819cbab2d5a2f1c617d8d370d368a1cb91f9e391790b93cf91bb981ce7bd  boot.img
+84aa0b6bca901db2d475bd83661fe38a38bb490ae34dfb3ce8ab7fb23cf6b8cf  recovery.img
+7553b0718458367b5d5a3175edf7ec3f722c1db3f69bc5aada0d77facd0c52d6  system.img
