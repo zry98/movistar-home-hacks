@@ -32,7 +32,7 @@ as a Home Assistant dashboard panel.
 
 You don't need (and very difficult) to install Linux like with the model `IGW-5000A2BKMP-I v2`.
 
-If your have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your Android phone. You can now skip the next section and go directly to the [configurations part](#configurations).
+If your have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your phone (see [Resources](#resources) for some suggested apps). You can now skip the next section and go directly to the [configurations part](#configurations).
 
 But if you don't have a Movistar Wi-Fi, you cannot skip the Wi-Fi connection screen and access the Bluetooth settings. You'll have to dissemble it and do some soldering. For dissembling, you can refer to [the section in IGW5000/README.en.md](../IGW5000/README.en.md#disassembling) as the chassis are identical.
 
@@ -43,7 +43,7 @@ Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `
 > [!IMPORTANT]
 > To identify these 2 variants, **the only reliable way** is to take off the back panel, to see the markings on the PCB, or the existence of USB Type-C connector.
 >
-> There have been several exceptions reported on the manufacture date on the adhesive label, for example, `2001` can be Rev4 or Rev5.
+> There have been several exceptions reported regarding the manufacture date "F.Fab(AAMM)" on the adhesive label, for example, `2001` can be Rev4 or Rev5.
 
 #### Rev4
 
@@ -120,6 +120,7 @@ After you see the mail containing the APK you want, open it and click the attach
 
 ## Resources
 
-- [Rev4 stock ROM partial dump](./stock-rom-dumps/ES_g1.0_RG3205W1.2.4_201912112049) using ADB, made by _Cansi_ in our Telegram group
-- [Rev5 stock ROM dump](./stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) using EDL mode, made by _P4blo24_ in our Telegram group
-- [Virtual Bluetooth Keyboard & Mouse](https://play.google.com/store/apps/details?id=io.appground.blek) for Android, suggested by _josemoraocana_ in our Telegram group
+- [Bluetooth Keyboard & Mouse](https://play.google.com/store/apps/details?id=io.appground.blek) for Android, suggested by _josemoraocana_ in our Telegram group
+- [KeyPad - Bluetooth Keyboard](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442) for iPhone / iPad, suggested by [@alfredopironti](https://github.com/alfredopironti)
+- [Rev4 stock ROM partial dump](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W1.2.4_201912112049) using ADB, made by _Cansi_ in our Telegram group
+- [Rev5 stock ROM dump](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) using EDL mode, made by _P4blo24_ in our Telegram group

@@ -30,7 +30,7 @@ Como se documenta en otros lugares, en esta etapa (y solo en esta etapa), necesi
 
 Asegúrate de que la configuración se complete y que estés en la pantalla de inicio de Movistar Home. Desde allí, ve a la configuración e intenta agregar un altavoz Bluetooth. Cuando el Movistar Home acepte conexiones Bluetooth, usa un teclado Bluetooth para conectarte.
 
-Deberías poder usar un teclado físico. Si tienes una computadora con MacOS, puedes usar la aplicación [keyPad](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442),
+Deberías poder usar un teclado físico. Si tienes una computadora con MacOS, puedes usar la aplicación [KeyPad](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442),
 que es útil ya que también permite pegar cadenas largas (por ejemplo, tokens Bearer).
 
 Una vez conectado el teclado Bluetooth, presiona las teclas <kbd>Super</kbd> + <kbd>E</kbd> (<kbd>Super</kbd> es la tecla <kbd>⊞ Win</kbd> en un teclado típico de Windows,

@@ -30,7 +30,7 @@ As documented elsewhere in the docs, at this stage (and only at this stage), you
 
 Make sure the setup completes and you are in the Movistar Home homepage. From there, go to the config and try to add a bluetooth speaker. When the Movistar Home is accepting Bluetooth connections, use a bluetooth keyboard to connect.
 
-You should be able to use a physical keyboard. If you have a computer with MacOS, you can use the [keyPad](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442) app; it's handy as it also allows you to paste long strings (e.g., Bearer tokens).
+You should be able to use a physical keyboard. If you have a computer with MacOS, you can use the [KeyPad](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442) app; it's handy as it also allows you to paste long strings (e.g., Bearer tokens).
 
 Once the Bluetooth keyboard is connected, press the keys <kbd>Super</kbd> + <kbd>E</kbd> (<kbd>Super</kbd> is the <kbd>⊞ Win</kbd> key on a typical keyboard for Windows, or the <kbd>⌘ Command</kbd> key on one for Macs).
 

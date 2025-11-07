@@ -32,7 +32,7 @@ como un panel de dashboard para Home Assistant.
 
 No necesitas (y sea muy difícil) instalar Linux como con el modelo `IGW-5000A2BKMP-I v2`.
 
-Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder a la pantalla principal después de conectarte. Desliza hacia abajo el panel superior y toca "Ajustes" para abrir los ajustes, luego toca _Conectividad > Altavoz bluetooth_ para entrar al menú originalmente para conectarse a un altavoz Bluetooth. Pero por alguna razón, también se puede usar para conectar un teclado Bluetooth; si no tienes uno, puedes intentar usar una aplicación de teclado Bluetooth virtual en tu móvil Android. Ahora puedes saltarte la siguiente sección e ir directamente a [la parte de configuraciones](#configuraciones).
+Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder a la pantalla principal después de conectarte. Desliza hacia abajo el panel superior y toca "Ajustes" para abrir los ajustes, luego toca _Conectividad > Altavoz bluetooth_ para entrar al menú originalmente para conectarse a un altavoz Bluetooth. Pero por alguna razón, también se puede usar para conectar un teclado Bluetooth; si no tienes uno, puedes intentar usar una aplicación de teclado Bluetooth virtual en tu móvil (consulta [Recursos](#recursos) para unas apps sugeridas). Ahora puedes saltarte la siguiente sección e ir directamente a [la parte de configuraciones](#configuraciones).
 
 Pero si no tienes un Wi-Fi de Movistar, no podrás saltar la pantalla de conexión de Wi-Fi y acceder a la configuración de Bluetooth. Tendrás que desmontarlo y hacer algo de soldadura. Para desmontarlo, puedes consultar [la sección en IGW5000/README.md](../IGW5000/README.md#desmontaje) ya que los chasis son idénticos.
 
@@ -120,6 +120,7 @@ Cuando veas el correo que contiene el APK que quieres instalar, ábrelo y pulsa 
 
 ## Recursos
 
-- [Volcado parcial de la ROM original de Rev4](./stock-rom-dumps/ES_g1.0_RG3205W1.2.4_201912112049) usando ADB, hecho por _Cansi_ en nuestro grupo de Telegram
-- [Volcado de la ROM original de Rev5](./stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) usando el modo EDL, hecho por _P4blo24_ en nuestro grupo de Telegram
-- [Teclado y Ratón Bluetooth Virtual](https://play.google.com/store/apps/details?id=io.appground.blek) para Android, sugerido por _josemoraocana_ en nuestro grupo de Telegram
+- [Bluetooth Keyboard & Mouse](https://play.google.com/store/apps/details?id=io.appground.blek) para Android, sugerido por _josemoraocana_ en nuestro grupo de Telegram
+- [KeyPad - Bluetooth Keyboard](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442) para iPhone / iPad, sugerido por [@alfredopironti](https://github.com/alfredopironti)
+- [Volcado parcial de la ROM original de Rev4](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W1.2.4_201912112049) usando ADB, hecho por _Cansi_ en nuestro grupo de Telegram
+- [Volcado de la ROM original de Rev5](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) usando el modo EDL, hecho por _P4blo24_ en nuestro grupo de Telegram
