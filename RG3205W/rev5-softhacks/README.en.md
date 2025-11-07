@@ -4,7 +4,7 @@ _Author:_ [@alfredopironti](https://github.com/alfredopironti)
 
 **This document is only intended for the model `RG3205W` with a Qualcomm arm64 SoC. For the model `IGW-5000A2BKMP-I v2` with an Intel x86 CPU, please refer to [IGW5000/README.en.md](../IGW5000/README.en.md).  [_How to identify?_](../README.en.md#important-note)**
 
-[🇪🇸 Versión en castellano](../RG3205W/rev5_howto.es.md)
+[🇪🇸 Versión en castellano](../rev5-softhacks/README.md)
 
 **No need to open the box; no soldering; no root; no Linux**
 
@@ -82,11 +82,11 @@ Crucially, when the display goes idle due to inactivity, the Android OS doesn't 
 
 ### Putting the screen to sleep
 
-I ended up installing _Automate_ (`com.llamalab.automate`), that now manages the screensaver/screen lock, and [a few other bits](../RG3205W/automate_examples) you can import into your instance (see below for details about each script).
+I ended up installing _Automate_ (`com.llamalab.automate`), that now manages the screensaver/screen lock, and [a few other bits](../rev5-softhacks/automate-examples) you can import into your instance (see below for details about each script).
 
 Since we can't tell when the display dims or, in general, when the device is idle, I've automated a workaround that, well, works, albeit it doesn't make me proud.
 
-The [auto-screensaver automation](../RG3205W/automate_examples/Run%20screensaver%20every%203min.flo) starts, waits for 3 minutes (you can tweak the flow to pick the average amount of time you think you'll be continuously interacting with the screen), and then just launches the screensaver (the `Somnambulator` activity) -- alternatively you can modify the flow to lock the screen instead.
+The [auto-screensaver automation](../rev5-softhacks/automate-examples/Run-screensaver-every-3min.flo) starts, waits for 3 minutes (you can tweak the flow to pick the average amount of time you think you'll be continuously interacting with the screen), and then just launches the screensaver (the `Somnambulator` activity) -- alternatively you can modify the flow to lock the screen instead.
 
 Then, the automation waits for the `DREAMING_STOPPED` broadcast intent (if you decided to lock the screen instead, pick the proper broadcast event on wake up), which triggers once someone touches the screen, waking the device up. At which points, the automation loops on the 3 minutes wait.
 
@@ -98,7 +98,7 @@ But, yes, you read well: Automate will _resume_ automations, not _restart_ them 
 
 Suppose your device was idle, with the screensaver active, and the power goes down. When the power comes back up, your device reboots... and the screensaver never kicks in. This is because with the screensaver active, the automation was waiting for the `DREAMING_STOPPED` intent. After reboot, the device has no screensaver active, so unless you run and then exit from it manually, the `DREAMING_STOPPED` intent will never be sent, deadlocking your resumed automation.
 
-Current dirty solution: create [another automation](../RG3205W/automate_examples/Start%20Firefox%20and%20screensaver%20at%20boot.flo) that waits for the `BOOT_COMPLETED` intent, then launches the Screen Saver, and loops waiting again for the boot intent.
+Current dirty solution: create [another automation](../rev5-softhacks/automate-examples/Start-Firefox-and-screensaver-at-boot.flo) that waits for the `BOOT_COMPLETED` intent, then launches the Screen Saver, and loops waiting again for the boot intent.
 
 (Another solution could be: create an automation that, on boot, kills and re-start all other automations -- requires more nodes that eat against the Automate free tier.)
 
@@ -116,7 +116,7 @@ Maybe being an automation freak, I can't have a display going dim at, say, 8PM. 
 
 Luckily, I found a [nice automation by Sándor Illés](https://llamalab.com/automate/community/flows/2103) that would compute locally (no Internet access required, which is the case for my setup) the sunrise and sunset times for a given day, based on which I now alter the display brightness. Automate is free for automations with up to 30 nodes -- so I had to spend quite some time tweaking it, to minimize it so that I could run it within the free tier.
 
-You can download my custom [dim brightness based on time of day automation](../RG3205W/automate_examples/Dim%20brightness%20at%20calculated%20sunrise-sunset%20times.flo), import it and then set the `lat` and `lng` variables to your location. You can derive your location from any map application.
+You can download my custom [dim brightness based on time of day automation](../rev5-softhacks/automate-examples/Dim-brightness-at-calculated-sunrise-sunset-times.flo), import it and then set the `lat` and `lng` variables to your location. You can derive your location from any map application.
 
 For example, set `lat` to `40.4163889` and `lng` to `-3.7036111111111114` (without quotes, as you want numbers), to set it to the Km0 sign in Madrid, Puerta del Sol.
 
@@ -151,7 +151,7 @@ Plan B: Install Firefox (`org.mozilla.firefox`). Now, Firefox really doesn't wor
 
 However, using plain Firefox, and setting my Home Assistance instance as the home page does the trick.
 
-Then, remember the [automation that at boot runs the screensaver](../RG3205W/automate_examples/Start%20Firefox%20and%20screensaver%20at%20boot.flo)? Well, it now starts Firefox first, then the screensaver immediately after.
+Then, remember the [automation that at boot runs the screensaver](../rev5-softhacks/automate-examples/Start-Firefox-and-screensaver-at-boot.flo)? Well, it now starts Firefox first, then the screensaver immediately after.
 
 So that, after a boot, I touch the screen and my Home Assistant home screen is there, waiting for me.
 

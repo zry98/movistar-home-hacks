@@ -30,7 +30,7 @@ as a Home Assistant dashboard panel.
 > [!CAUTION]
 > Following the instructions below will certainly **void the warranty** of your device and **may violate your service agreement or contract** with Movistar. Proceed entirely at your own risk.
 
-You don't need (and likely very difficult) to install Linux like with the model `IGW-5000A2BKMP-I v2`.
+You don't need (and very difficult) to install Linux like with the model `IGW-5000A2BKMP-I v2`.
 
 If your have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your Android phone. You can now skip the next section and go directly to the [configurations part](#configurations).
 
@@ -38,15 +38,15 @@ But if you don't have a Movistar Wi-Fi, you cannot skip the Wi-Fi connection scr
 
 ### Connecting a USB keyboard
 
-If yours has a `Rev4` (a known manufacturing date (YYMM): `2001`) PCB then you are very lucky that it comes with a female USB Type-C connector already soldered and functioning!
+If yours has a `Rev4` PCB, then you are very lucky that it comes with a female USB Type-C connector already soldered and functioning!
 
-But unfortunately, the more common one on the market is `Rev5` (a known manufacturing date (YYMM): `2008`) which not only comes with the USB Type-C connector unpopulated, but also lacks a 5.1 kΩ pull-down resistor between the `CC` (`CC1` or `CC2` depending on the side) and `GND` pins to put it in host mode. So you'll have to solder the resistor yourself like below:
+But unfortunately, the more common variant on the market is `Rev5` which not only comes without the USB Type-C connector populated, but also lacks a 5.1 kΩ pull-down resistor between the `CC` (`CC1` or `CC2` depending on the side) and `GND` pins to put it in host mode. So you'll have to solder the resistor yourself like below:
 
 ![rev5-usb-pull-down-resistor](../assets/img/RG3205W-rev5-usb-pull-down-resistor.jpg)
 
 ![usb-type-c-pinout](../assets/img/usb-type-c-pinout.png)
 
-The 4-pin white female JST-PH connector nearby is also connected to the USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder a USB Type-C SMD connector (which is very difficult to do).
+The 4-pin white female JST-PH2.0 connector nearby is also connected to the 4 USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder an SMD USB Type-C connector (which is very difficult to do).
 
 ![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
@@ -56,7 +56,7 @@ Anyway, with a USB or Bluetooth keyboard connected, you can press the keys <kbd>
 
 ### Rev4
 
-If you got a Rev4 variant, you are so lucky that it doesn't have any restrictions in the ROM, so you can just enable the Developer options by tapping the build number 7 times, then enable USB debugging and do stuff via ADB.
+If you got a Rev4 variant, you are so lucky that it doesn't have any restrictions in the ROM, so you can just enable the Developer options by tapping the build number 7 times, then enable USB debugging and do any kind of stuff via ADB.
 
 ### Rev5
 
@@ -67,21 +67,19 @@ However, you can still install APKs by using the built-in E-mail app. You can op
 > [!TIP]
 > You should not use major email providers like Gmail either for sending or receiving, because they normally do not allow APK attachments. You can use the "[email-file-server](https://github.com/zry98/movistar-home-hacks/tree/main/email-file-server)" tool provided in this repository, please check the [next subsection](#use-the-email-file-server-tool) for detailed instructions.
 
-**For more information on hacks for the Rev5, please refer to [RG3205W/rev5_howto.en.md](../RG3205W/rev5_howto.en.md).**
+**For more information on soft-hacks for the Rev5, please refer to [RG3205W/rev5-softhacks/README.en.md](../RG3205W/rev5-softhacks/README.en.md).**
 
 First app you should definitely install is a [launcher](https://search.f-droid.org/?q=launcher), and set it as the default launcher (_Settings > Apps & notifications > Advanced > Default apps > Home app_), otherwise you'll still be stuck in the onboarding app every time it reboots.
 
-But be aware that the onboarding app sometimes will disconnect the Wi-Fi and locks you out. So we still need to find a way to uninstall them.
+But be aware that the onboarding app will still show up and lock you out when the Wi-Fi connection changes. So we still need to find a way to uninstall them.
 
 #### Use the email-file-server tool
 
 You should have a PC that is accessible from your Movistar Home, for example, in the same LAN.
 
-Download the email-file-server release suitable for your PC from its [release page](https://github.com/zry98/movistar-home-hacks/releases/tag/v0.0.1), for example, `email-file-server_v0.0.1_windows_amd64.zip` for most Windows PC. Decompress the archive and open the decompressed folder.
+Download the email-file-server release suitable for your PC from its [release page](https://github.com/zry98/movistar-home-hacks/releases/tag/v0.0.1), for example, `email-file-server_v0.0.1_windows_amd64.zip` for most Windows PC. Decompress the archive and put the APK files you want to install on Movistar Home inside the `files` folder in the decompressed folder.
 
-Put the APK files you want to install on Movistar Home inside the `files` folder in the decompressed folder.
-
-Open a terminal in the same folder, execute `./email-file-server`. By default, it will read all files inside `./files`, and start a minimal POP3 server listening on the 8110 port, and a minimal SMTP server listening on the 8025 port.
+Open a terminal in the same folder, execute `./email-file-server`. By default, it will read all files inside the `files` folder, and start a minimal POP3 server listening on the 8110 port, and a minimal SMTP server listening on the 8025 port.
 
 You can run `./email-file-server --help` to see its usage if you want to customize anything.
 
@@ -111,5 +109,5 @@ After you see the mail containing the APK you want, open it and click the attach
 
 ## Resources
 
-- [Rev5 ROM dump](https://t.me/movistar_home_hacking/1426) using EDL mode, made by _P4blo24_ in our Telegram group
+- [Rev5 stock ROM dump](../RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) using EDL mode, made by _P4blo24_ in our Telegram group
 - [Virtual Bluetooth Keyboard & Mouse](https://play.google.com/store/apps/details?id=io.appground.blek) for Android, suggested by _josemoraocana_ in our Telegram group

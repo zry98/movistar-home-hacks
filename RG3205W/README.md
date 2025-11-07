@@ -30,7 +30,7 @@ como un panel de dashboard para Home Assistant.
 > [!CAUTION]
 > Seguir las instrucciones a continuación **anulará la garantía** de tu dispositivo y **puede violar tu contrato o acuerdo de servicio** con Movistar. Procede completamente bajo tu propio riesgo.
 
-No necesitas (y probablemente sea muy difícil) instalar Linux como con el modelo `IGW-5000A2BKMP-I v2`.
+No necesitas (y sea muy difícil) instalar Linux como con el modelo `IGW-5000A2BKMP-I v2`.
 
 Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder a la pantalla principal después de conectarte. Desliza hacia abajo el panel superior y toca "Ajustes" para abrir los ajustes, luego toca _Conectividad > Altavoz bluetooth_ para entrar al menú originalmente para conectarse a un altavoz Bluetooth. Pero por alguna razón, también se puede usar para conectar un teclado Bluetooth; si no tienes uno, puedes intentar usar una aplicación de teclado Bluetooth virtual en tu móvil Android. Ahora puedes saltarte la siguiente sección e ir directamente a [la parte de configuraciones](#configuraciones).
 
@@ -38,15 +38,15 @@ Pero si no tienes un Wi-Fi de Movistar, no podrás saltar la pantalla de conexi�
 
 ## Conectar un teclado USB
 
-Si tienes un PCB `Rev4` (una fecha de fabricación conocida (AAMM): `2001`) entonces tienes mucha suerte de que venga con un conector hembra USB Tipo-C ya soldado y funcionando!
+Si el tuyo tiene una PCB `Rev4`, tienes mucha suerte de que venga con un conector hembra USB Tipo-C ya soldado y funcionando!
 
-Pero desafortunadamente, el más común en el mercado es el `Rev5` (una fecha de fabricación conocida (AAMM): `2008`) que no solo viene con el conector USB Tipo-C no poblado, sino que también carece de una resistencia de _pull-down_ de 5,1 kΩ entre los pines `CC` (`CC1` o `CC2` dependiendo del lado) y `GND` para ponerlo en modo host. Así que tendrás que soldar la resistencia tú mismo como se muestra a continuación:
+Pero desafortunadamente, la variante más común en el mercado es la `Rev5` que no solo viene sin el conector USB Tipo-C populado, sino que también falta una resistencia _pull-down_ de 5,1 kΩ entre los pines `CC` (`CC1` o `CC2` dependiendo del lado) y `GND` para ponerlo en modo _host_. Así que tendrás que soldar la resistencia tú mismo como se muestra a continuación:
 
 ![rev5-usb-resistencia-pull-down](../assets/img/RG3205W-rev5-usb-pull-down-resistor.jpg)
 
 ![pinout-usb-tipo-c](../assets/img/usb-type-c-pinout.png)
 
-El conector hembra blanco de 4 pines JST-PH cercano también está conectado a los pines USB 2.0, con el pinout de izquierda a derecha: `D-`, `D+`, `GND`, `+5V`, puedes usarlo para sacar la conexión USB sin necesidad de soldar un conector SMD USB Tipo-C (lo cual es muy difícil de hacer).
+El conector JST-PH2.0 hembra blanco de 4 pines que se encuentra cerca también está conectado a los 4 pines de USB 2.0, con el pinout de izquierda a derecha: `D-`, `D+`, `GND`, `+5V`, puedes usarlo para sacar la conexión USB sin necesidad de soldar un conector SMD de USB Tipo-C (lo cual es muy difícil de hacer).
 
 ![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
@@ -56,7 +56,7 @@ De todos modos, con un teclado USB o Bluetooth conectado, puedes presionar las t
 
 ### Rev4
 
-Si conseguiste una variante Rev4, tienes tanta suerte de que no tiene restricciones en la ROM, así que puedes habilitar las Opciones para desarrolladores tocando el número de compilación 7 veces, luego habilitar la Depuración por USB y hacer cosas a través de ADB.
+Si conseguiste una variante Rev4, tienes tanta suerte de que no tiene restricciones en la ROM, así que puedes simplemente habilitar las Opciones para desarrolladores tocando el número de compilación 7 veces, luego habilitar la Depuración por USB y cualquier tipo de cosas a través de ADB.
 
 ### Rev5
 
@@ -67,21 +67,19 @@ Sin embargo, todavía puedes instalar APKs usando la aplicación incorporada de 
 > [!TIP]
 > No deberías usar proveedores de correo principales como Gmail, ni para enviar ni para recibir, porque normalmante no se permiten los adjuntos de APK. Puedes usar la herramienta "[email-file-server](https://github.com/zry98/movistar-home-hacks/tree/main/email-file-server)" incluida en este repositorio; consulta la [siguiente subsección](#usar-la-herramienta-mail-file-server) para obtener instrucciones detalladas.
 
-**Para más información sobre hacks para el Rev5, por favor consulta [RG3205W/rev5_howto.es.md](../RG3205W/rev5_howto.es.md).**
+**Para más información sobre hacks por software para el Rev5, por favor consulta [RG3205W/rev5-softhacks/README.md](../RG3205W/rev5-softhacks/README.md).**
 
-La primera aplicación que definitivamente debes instalar es un [lanzador](https://search.f-droid.org/?q=launcher), y configurarlo como lanzador predeterminado (_Ajustes > Aplicaciones y notificaciones > Ajustes avanzados > Aplicaciones predeterminadas > Aplicación de página principal_), de lo contrario, seguirás atrapado en la aplicación de incorporación cada vez que se reinice.
+La primera aplicación que definitivamente debes instalar es un [lanzador](https://search.f-droid.org/?q=launcher), y configurarlo como el lanzador predeterminado (_Ajustes > Aplicaciones y notificaciones > Ajustes avanzados > Aplicaciones predeterminadas > Aplicación de página principal_), de lo contrario, seguirás atrapado en la aplicación de incorporación cada vez que se reinice.
 
-Pero ten en cuenta que la aplicación de incorporación a veces desconectará el Wi-Fi y te bloqueará. Así que todavía necesitamos encontrar una manera de desinstalarlas.
+Pero ten en cuenta que la aplicación de incorporación seguirá apareciendo y te bloqueará cuando cambie la conexión Wi-Fi. Así que aún necesitamos encontrar una manera de desinstalarla.
 
 #### Usar la herramienta mail-file-server
 
 Debes tener un PC accesible desde tu Movistar Home, por ejemplo, en la misma red LAN.
 
-Descarga la versión de email-file-server adecuada para tu PC desde su [página de releases](https://github.com/zry98/movistar-home-hacks/releases/tag/v0.0.1), por ejemplo, `email-file-server_v0.0.1_windows_amd64.zip` para la mayoría de los PC con Windows. Descomprime el archivo y abre la carpeta resultante.
+Descarga la versión de email-file-server adecuada para tu PC desde su [página de releases](https://github.com/zry98/movistar-home-hacks/releases/tag/v0.0.1), por ejemplo, `email-file-server_v0.0.1_windows_amd64.zip` para la mayoría de los PC con Windows. Descomprime el archivo y pon los ficheros APK que quieras instalar en tu Movistar Home dentro de la carpeta `files` en la carpeta descomprimida.
 
-Pon los ficheros APK que quieras instalar en tu Movistar Home dentro de la carpeta `files` en la carpeta descomprimida.
-
-Abre una terminal en esa carpeta, y ejecuta `./email-file-server`. Por defecto, leerá todos los ficheros dentro de `./files` y arrancará un servidor POP3 mínimo escuchando en el puerto 8110, y un servidor SMTP mínimo escuchando en el puerto 8025.
+Abre una terminal en esa carpeta, y ejecuta `./email-file-server`. Por defecto, leerá todos los ficheros dentro de la carpeta `files`, y arrancará un servidor POP3 mínimo escuchando en el puerto 8110, y un servidor SMTP mínimo escuchando en el puerto 8025.
 
 Puedes ejecutar `./email-file-server --help` para ver las opciones disponibles si quieres personalizar algo.
 
@@ -111,5 +109,5 @@ Cuando veas el correo que contiene el APK que quieres instalar, ábrelo y pulsa 
 
 ## Recursos
 
-- [Volcado de la ROM de Rev5](https://t.me/movistar_home_hacking/1426) usando el modo EDL, hecho por _P4blo24_ en nuestro grupo de Telegram
+- [Volcado de la ROM original de Rev5](../RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) usando el modo EDL, hecho por _P4blo24_ en nuestro grupo de Telegram
 - [Teclado y Ratón Bluetooth Virtual](https://play.google.com/store/apps/details?id=io.appground.blek) para Android, sugerido por _josemoraocana_ en nuestro grupo de Telegram
