@@ -4,7 +4,7 @@ como un panel de dashboard para Home Assistant.
 
 **Este documento solo está destinado al modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel. Para el modelo `RG3205W` con un SoC arm64 de Qualcomm, por favor consulta [RG3205W/README.md](../RG3205W/README.md). [_¿Cómo identificarlo?_](../README.md#nota-importante)**
 
-[🇺🇸 English version](../IGW5000/README.en.md)
+[🇺🇸 English version](./README.en.md)
 
 [Notas de investigación (en inglés)](../researches/IGW5000.md)
 
@@ -92,7 +92,7 @@ Las siguientes configuraciones se realizaron para [Arch Linux](https://archlinux
 
 Sway, al ser un gestor de ventanas de mosaico (_tiling_), no es necesario para el caso de uso de kiosk (mostrar solo una pestaña del navegador); lo utilicé por su alto rendimiento y por el soporte de comandos _IPC_ (útiles, por ejemplo, para el control del brillo). También puedes probar [otros](https://wiki.archlinux.org/title/Wayland_(Espa%C3%B1ol)#Compositores) como [_cage_](https://github.com/cage-kiosk/cage), un compositor minimalista diseñado para el modo quiosco.
 
-Si deseas usar un entorno de escritorio completo, consulta la [guía antigua](../IGW5000/xfce.md) para Xfce.
+Si deseas usar un entorno de escritorio completo, consulta la [guía antigua](./xfce.md) para Xfce.
 
 ### Mejorar la estabilidad del Wi-Fi
 

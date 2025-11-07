@@ -2,11 +2,11 @@
 
 **Este documento solo está destinado al modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel. Para el modelo `RG3205W` con un SoC arm64 de Qualcomm, por favor consulta [RG3205W/README.md](../RG3205W/README.md). [_¿Cómo identificarlo?_](../README.md#nota-importante)**
 
-[🇺🇸 English version](../IGW5000/xfce.en.md)
+[🇺🇸 English version](./xfce.en.md)
 
 Las siguientes configuraciones se realizaron para Manjaro con Xfce y es posible que necesiten algunas modificaciones para las otras distribuciones o entornos de escritorio.
 
-Teniendo en cuenta los recursos de hardware limitados (2 GB de RAM) del IGW5000, se recomienda encarecidamente usar solo un [gestor de ventanas](https://wiki.archlinux.org/title/Window_manager_(Espa%C3%B1ol)). Consulta la [guía más reciente](../IGW5000/README.md) para más detalles.
+Teniendo en cuenta los recursos de hardware limitados (2 GB de RAM) del IGW5000, se recomienda encarecidamente usar solo un [gestor de ventanas](https://wiki.archlinux.org/title/Window_manager_(Espa%C3%B1ol)). Consulta la [guía más reciente](./README.md) para más detalles.
 
 ## Configuraciones
 

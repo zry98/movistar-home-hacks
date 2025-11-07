@@ -4,7 +4,7 @@ as a Home Assistant dashboard panel.
 
 **This document is only intended for the model `RG3205W` with a Qualcomm arm64 SoC. For the model `IGW-5000A2BKMP-I v2` with an Intel x86 CPU, please refer to [IGW5000/README.en.md](../IGW5000/README.en.md).  [_How to identify?_](../README.en.md#important-note)**
 
-[🇪🇸 Versión en castellano](../RG3205W/README.md)
+[🇪🇸 Versión en castellano](./README.md)
 
 > [!IMPORTANT]
 > **WORK IN PROGRESS**, especially for the Rev5 variant.
@@ -67,7 +67,7 @@ However, you can still install APKs by using the built-in E-mail app. You can op
 > [!TIP]
 > You should not use major email providers like Gmail either for sending or receiving, because they normally do not allow APK attachments. You can use the "[email-file-server](https://github.com/zry98/movistar-home-hacks/tree/main/email-file-server)" tool provided in this repository, please check the [next subsection](#use-the-email-file-server-tool) for detailed instructions.
 
-**For more information on soft-hacks for the Rev5, please refer to [RG3205W/rev5-softhacks/README.en.md](../RG3205W/rev5-softhacks/README.en.md).**
+**For more information on soft-hacks for the Rev5, please refer to [rev5-softhacks/README.en.md](./rev5-softhacks/README.en.md).**
 
 First app you should definitely install is a [launcher](https://search.f-droid.org/?q=launcher), and set it as the default launcher (_Settings > Apps & notifications > Advanced > Default apps > Home app_), otherwise you'll still be stuck in the onboarding app every time it reboots.
 
@@ -109,5 +109,5 @@ After you see the mail containing the APK you want, open it and click the attach
 
 ## Resources
 
-- [Rev5 stock ROM dump](../RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) using EDL mode, made by _P4blo24_ in our Telegram group
+- [Rev5 stock ROM dump](./stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) using EDL mode, made by _P4blo24_ in our Telegram group
 - [Virtual Bluetooth Keyboard & Mouse](https://play.google.com/store/apps/details?id=io.appground.blek) for Android, suggested by _josemoraocana_ in our Telegram group

@@ -4,7 +4,7 @@ as a Home Assistant dashboard panel.
 
 **This document is only intended for the model `IGW-5000A2BKMP-I v2` with an Intel x86 CPU. For the model `RG3205W` with a Qualcomm arm64 SoC, please refer to [RG3205W/README.en.md](../RG3205W/README.en.md). [_How to identify?_](../README.en.md#important-note)**
 
-[🇪🇸 Versión en castellano](../IGW5000/README.md)
+[🇪🇸 Versión en castellano](./README.md)
 
 [Research notes](../researches/IGW5000.md)
 
@@ -92,7 +92,7 @@ The following configurations were made for [Arch Linux](https://archlinux.org/) 
 
 Sway being a tiling window manager is not necessary for the use case of kiosk (displaying one browser tab only), I used it because of its high performance and the support of IPC commands (useful for e.g. backlight control). You can also try [others](https://wiki.archlinux.org/title/Wayland#Compositors) like [_cage_](https://github.com/cage-kiosk/cage), a minimal compositor designed for kiosk mode.
 
-If you prefer to use a full desktop environment, please refer to the [legacy guide](../IGW5000/xfce.en.md) for Xfce.
+If you prefer to use a full desktop environment, please refer to the [legacy guide](./xfce.en.md) for Xfce.
 
 ### Improve Wi-Fi stability
 

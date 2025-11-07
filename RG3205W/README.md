@@ -4,7 +4,7 @@ como un panel de dashboard para Home Assistant.
 
 **Este documento solo está destinado al modelo `RG3205W` con un SoC arm64 de Qualcomm. Para el modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel, por favor consulta [IGW5000/README.md](../IGW5000/README.md). [_¿Cómo identificarlo?_](../README.md#nota-importante)**
 
-[🇺🇸 English version](../RG3205W/README.en.md)
+[🇺🇸 English version](./README.en.md)
 
 > [!IMPORTANT]
 > **TRABAJO EN CURSO**, especialmente para la variante Rev5.
@@ -67,7 +67,7 @@ Sin embargo, todavía puedes instalar APKs usando la aplicación incorporada de 
 > [!TIP]
 > No deberías usar proveedores de correo principales como Gmail, ni para enviar ni para recibir, porque normalmante no se permiten los adjuntos de APK. Puedes usar la herramienta "[email-file-server](https://github.com/zry98/movistar-home-hacks/tree/main/email-file-server)" incluida en este repositorio; consulta la [siguiente subsección](#usar-la-herramienta-mail-file-server) para obtener instrucciones detalladas.
 
-**Para más información sobre hacks por software para el Rev5, por favor consulta [RG3205W/rev5-softhacks/README.md](../RG3205W/rev5-softhacks/README.md).**
+**Para más información sobre hacks por software para el Rev5, por favor consulta [rev5-softhacks/README.md](./rev5-softhacks/README.md).**
 
 La primera aplicación que definitivamente debes instalar es un [lanzador](https://search.f-droid.org/?q=launcher), y configurarlo como el lanzador predeterminado (_Ajustes > Aplicaciones y notificaciones > Ajustes avanzados > Aplicaciones predeterminadas > Aplicación de página principal_), de lo contrario, seguirás atrapado en la aplicación de incorporación cada vez que se reinice.
 
@@ -109,5 +109,5 @@ Cuando veas el correo que contiene el APK que quieres instalar, ábrelo y pulsa 
 
 ## Recursos
 
-- [Volcado de la ROM original de Rev5](../RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) usando el modo EDL, hecho por _P4blo24_ en nuestro grupo de Telegram
+- [Volcado de la ROM original de Rev5](./stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) usando el modo EDL, hecho por _P4blo24_ en nuestro grupo de Telegram
 - [Teclado y Ratón Bluetooth Virtual](https://play.google.com/store/apps/details?id=io.appground.blek) para Android, sugerido por _josemoraocana_ en nuestro grupo de Telegram

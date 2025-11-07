@@ -2,9 +2,9 @@
 
 _Autor:_ [@alfredopironti](https://github.com/alfredopironti)
 
-**Este documento solo está destinado al modelo `RG3205W` con un SoC arm64 de Qualcomm. Para el modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel, por favor consulta [IGW5000/README.md](../IGW5000/README.md). [_¿Cómo identificarlo?_](../README.md#nota-importante)**
+**Este documento solo está destinado al modelo `RG3205W` con un SoC arm64 de Qualcomm. Para el modelo `IGW-5000A2BKMP-I v2` con una CPU x86 de Intel, por favor consulta [IGW5000/README.md](../../IGW5000/README.md). [_¿Cómo identificarlo?_](../../README.md#nota-importante)**
 
-[🇺🇸 English version](../rev5-softhacks/README.en.md)
+[🇺🇸 English version](./README.en.md)
 
 **No es necesario abrir la caja; nada de soldar; no root; no Linux**
 
@@ -78,11 +78,11 @@ Lamentablemente, cuando la pantalla entra en reposo por inactividad, el sistema 
 
 ### Poner la pantalla en reposo
 
-Terminé instalando _Automate_ (`com.llamalab.automate`), que ahora gestiona el salvapantallas/bloqueo de pantalla, y [algunas otras funciones](../rev5-softhacks/automate-examples) que puedes importar a tu instancia (ver más detalles abajo sobre cada script).
+Terminé instalando _Automate_ (`com.llamalab.automate`), que ahora gestiona el salvapantallas/bloqueo de pantalla, y [algunas otras funciones](./automate-examples) que puedes importar a tu instancia (ver más detalles abajo sobre cada script).
 
 Dado que no podemos detectar cuándo la pantalla se atenúa o, en general, cuándo el dispositivo está inactivo, he automatizado una solución alternativa que funciona, aunque no me enorgullece.
 
-La [automatización de salvapantallas automático](../rev5-softhacks/automate-examples/Run-screensaver-every-3min.flo) inicia, espera 3 minutos (puedes modificar el flujo para elegir el tiempo promedio que crees que interactuarás con la pantalla), y luego simplemente activa el salvapantallas (la actividad `Somnambulator`) —- alternativamente puedes modificar el flujo para bloquear la pantalla en su lugar.
+La [automatización de salvapantallas automático](./automate-examples/Run-screensaver-every-3min.flo) inicia, espera 3 minutos (puedes modificar el flujo para elegir el tiempo promedio que crees que interactuarás con la pantalla), y luego simplemente activa el salvapantallas (la actividad `Somnambulator`) —- alternativamente puedes modificar el flujo para bloquear la pantalla en su lugar.
 
 Luego, la automatización espera el _broadcast intent_ `DREAMING_STOPPED` (si decidiste bloquear la pantalla en su lugar, elige el evento de difusión correcto para activar el dispositivo), que se activa cuando alguien toca la pantalla, despertando el dispositivo. En ese momento, la automatización vuelve a esperar 3 minutos en un bucle. No es tan limpio como me gustaría, pero funciona lo suficientemente bien.
 
@@ -90,7 +90,7 @@ Debes configurar Automate para que reanude tus automatizaciones en el arranque, 
 
 Pero, sí, leíste bien: Automate _reanuda_ las automatizaciones, no las _reinicia_ al arrancar. ¿Qué significa esto? Supongamos que tu dispositivo estaba inactivo, con el salvapantallas activo, y la energía se corta. Cuando la energía vuelve, tu dispositivo se reinicia... y el salvapantallas nunca se activa. Esto se debe a que, con el salvapantallas activo, la automatización estaba esperando el _intent_ `DREAMING_STOPPED`. Después del reinicio, el dispositivo no tiene el salvapantallas activo, por lo que, a menos que lo inicies y lo cierres manualmente, el _intent_ `DREAMING_STOPPED` nunca se enviará, bloqueando la automatización reanudada.
 
-Solución temporal actual: crear [otra automatización](../rev5-softhacks/automate-examples/Start-Firefox-and-screensaver-at-boot.flo) que espere el _intent_ `BOOT_COMPLETED`, luego inicia el salvapantallas y vuelve a esperar la intención de arranque en un bucle.
+Solución temporal actual: crear [otra automatización](./automate-examples/Start-Firefox-and-screensaver-at-boot.flo) que espere el _intent_ `BOOT_COMPLETED`, luego inicia el salvapantallas y vuelve a esperar la intención de arranque en un bucle.
 
 (Otra solución podría ser: crear una automatización que, al arrancar, elimine y reinicie todas las demás automatizaciones, aunque requiere más nodos que afectan al límite de la versión gratuita de Automate).
 
@@ -108,7 +108,7 @@ Tal vez por ser un entusiasta de la automatización, no puedo tolerar que la pan
 
 Afortunadamente, encontré una [buena automatización de Sándor Illés](https://llamalab.com/automate/community/flows/2103) que calcula localmente (sin necesidad de acceso a Internet, algo crucial para mi configuración) las horas de salida y puesta del sol para un día determinado, en función de las cuales ahora ajusto el brillo de la pantalla. Automate es gratuito para automatizaciones de hasta 30 nodos, así que tuve que trabajar bastante para minimizarlo y ejecutarlo dentro del límite de la versión gratuita.
 
-Puedes descargar [mi automatización personalizada de ajuste de brillo según la hora del día](../rev5-softhacks/automate-examples/Dim-brightness-at-calculated-sunrise-sunset-times.flo), importa el archivo y configura las variables `lat` y `lng` con tu ubicación. Puedes derivar tu ubicación desde cualquier aplicación de mapas.
+Puedes descargar [mi automatización personalizada de ajuste de brillo según la hora del día](./automate-examples/Dim-brightness-at-calculated-sunrise-sunset-times.flo), importa el archivo y configura las variables `lat` y `lng` con tu ubicación. Puedes derivar tu ubicación desde cualquier aplicación de mapas.
 
 Por ejemplo, establece `lat` como `40.4163889` y `lng` como `-3.7036111111111114` (sin comillas, ya que deben ser números) para establecer la ubicación en el Km0 en Madrid, en la Puerta del Sol.
 
@@ -143,7 +143,7 @@ Plan B: Instalar Firefox (`org.mozilla.firefox`). Sin embargo, Firefox no maneja
 
 Pero, si usas Firefox sin más y configuras tu instancia de Home Assistant como la página de inicio de Firefox, esto funciona bien.
 
-Luego, ¿recuerdas la [automatización que ejecuta el salvapantallas al arrancar](../rev5-softhacks/automate-examples/Start-Firefox-and-screensaver-at-boot.flo)? Ahora, primero inicia Firefox y luego el salvapantallas inmediatamente después.
+Luego, ¿recuerdas la [automatización que ejecuta el salvapantallas al arrancar](./automate-examples/Start-Firefox-and-screensaver-at-boot.flo)? Ahora, primero inicia Firefox y luego el salvapantallas inmediatamente después.
 
 Así que, después de un reinicio, solo debes tocar la pantalla y la pantalla de inicio de Home Assistant estará lista para ti.
 
