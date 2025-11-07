@@ -2,7 +2,7 @@
 
 as a Home Assistant dashboard panel.
 
-[![Telegram group chat](https://img.shields.io/badge/Telegram-Group-blue.svg?logo=telegram)](https://t.me/movistar_home_hacking)
+[![Telegram group chat](https://telegram-badge.vercel.app/api/telegram-badge?channelId=@movistar_home_hacking&style=for-the-badge&label=Telegram%20Group%20-%20Movistar%20Home%20Hacking)](https://t.me/movistar_home_hacking)
 
 [🇪🇸 Versión en castellano](./README.md)
 
