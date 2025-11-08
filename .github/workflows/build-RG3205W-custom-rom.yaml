@@ -1,0 +1,118 @@
+name: 'Build & Release custom ROM for RG3205W'
+  
+on:
+  workflow_dispatch:
+    inputs:
+      stock-dump:
+        description: 'Path to stock ROM dump file'
+        required: true
+        type: choice
+        options:
+          - 'ES_g1.0_RG3205W3.7.0_202209282206'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for cached images
+        id: check-cached-images
+        uses: actions/cache/restore@v4
+        with:
+          key: stock-images-${{ inputs.stock-dump }}
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/*.bin
+          fail-on-cache-miss: false
+          lookup-only: true
+
+      - name: Checkout
+        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        uses: actions/checkout@v5
+        with:
+          lfs: false
+
+      - name: Fetch LFS
+        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        working-directory: './RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/'
+        run: |
+          git lfs pull --include "${{ inputs.stock-dump }}.7z"
+
+      - name: Unpack
+        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        working-directory: './RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/'
+        run: |
+          7z e "${{ inputs.stock-dump }}.7z" boot.bin system.bin vendor.bin
+
+      - name: Cache images
+        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: stock-images-${{ inputs.stock-dump }}
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/*.bin
+
+  patch:
+    needs:
+      - prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image-type:
+          - system
+          - vendor
+          - boot
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          lfs: false
+
+      - name: Restore cached images
+        uses: actions/cache/restore@v4
+        with:
+          key: stock-images-${{ inputs.stock-dump }}
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/*.bin
+          fail-on-cache-miss: true
+
+      - name: Set up Ansible
+        uses: alex-oleshkevich/setup-ansible@v1.0.1
+        with:
+          version: '12.2.0'
+
+      - name: Run Ansible playbooks
+        working-directory: './RG3205W/custom-rom-build/'
+        run: |
+          ansible-playbook .ansible/patch-${{ matrix.image-type }}.yaml -l localhost -c local --extra-vars "image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ inputs.base-dump }}/${{ matrix.image-type }}.bin"
+
+      - name: Upload patched images
+        uses: actions/upload-artifact@v5
+        with:
+          name: patched-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ inputs.base-dump }}/${{ matrix.image-type }}.bin
+          if-no-files-found: error
+          compression-level: 6
+          overwrite: true
+
+  release:
+    needs:
+      - prepare
+      - patch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          lfs: false
+
+      - name: Download patched images
+        uses: actions/download-artifact@v5
+        with:
+          pattern: patched-image-${{ inputs.stock-dump }}-*
+          path: ./RG3205W/custom-rom-build/.patched-images/
+          merge-multiple: true
+
+      - name: Test
+        working-directory: './RG3205W/custom-rom-build/.patched-images/'
+        run: |
+          ls -lAhF .
+          sha256sum *.bin
