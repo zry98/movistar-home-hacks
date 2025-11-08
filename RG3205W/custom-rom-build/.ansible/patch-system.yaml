@@ -1,0 +1,192 @@
+---
+- name: Patch system image
+  hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    cwd: '{{ [ playbook_dir, ".." ] | path_join | realpath }}'
+    src_dir: '{{ [ cwd, "system" ] | path_join | realpath }}'
+    image_path: '/images/system.img'
+    mount_point: '/mnt/system'
+    user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
+    files_to_remove:
+      - 'priv-app/BlockedNumberProvider/'
+      - 'priv-app/CellBroadcastReceiver/'
+      - 'priv-app/SocketService/'
+      - 'priv-app/Mms/'
+      - 'app/access-qcom-logkit/'
+      - 'app/AntHalService/'
+      - 'app/Browser2/'
+      - 'app/embms/'
+      - 'app/FM2/'
+      - 'app/NetworkSetting/'
+      - 'app/Protips/'
+      - 'app/QuickSearchBox/'
+      - 'app/Stk/'
+      - 'app/uceShimService/'
+      - 'app/xdivert/'
+      - 'app/webview/'
+      - 'xbin/antradio_app'
+      - 'recovery-from-boot.p'
+    files_to_remove_by_glob:
+      - 'priv-app/troya-*'
+      - 'priv-app/AskeyTR69*'
+    apks_to_add:
+      apkmirror:
+        - name: 'WebView.apk'
+          url: 'https://www.apkmirror.com/apk/lineageos/android-system-webview-2/android-system-webview-138-0-7204-63-2-release/android-system-webview-138-0-7204-63-9-android-apk-download/'
+        - name: 'Chrome.apk'
+          url: 'https://www.apkmirror.com/apk/google-inc/chrome/google-chrome-138-0-7204-63-release/google-chrome-138-0-7204-63-8-android-apk-download/'
+        - name: 'Trebuchet.apk'
+          url: 'https://www.apkmirror.com/apk/lineageos/lineageos-trebuchet/trebuchet-4-8-1-0-release/trebuchet-8-1-0-android-apk-download/'
+      direct:
+        - name: 'AuroraStore.apk'
+          url: 'https://auroraoss.com/downloads/AuroraStore/Latest/latest.apk'
+    files_to_add:
+      - source: 'bin/install-recovery.sh'
+        target: 'bin/install-recovery.sh'
+        mode: '0755'
+        selinux_context: 'u:object_r:install_recovery_exec:s0'
+      - source: 'app/WebView/'
+        target: 'app/WebView/'
+        selinux_context: 'u:object_r:system_file:s0'
+      - source: 'app/Trebuchet/'
+        target: 'app/Trebuchet/'
+        selinux_context: 'u:object_r:system_file:s0'
+      - source: 'app/AuroraStore/'
+        target: 'app/AuroraStore/'
+        selinux_context: 'u:object_r:system_file:s0'
+      - source: 'app/Chrome/'
+        target: 'app/Chrome/'
+        selinux_context: 'u:object_r:system_file:s0'
+    ca_certificates_source: '/etc/ssl/certs/*.0'
+    replacements_in_files:
+      - file: 'etc/prop.default'
+        pattern: '^qemu\.hw\.mainkeys=.*$'
+        replace: 'qemu.hw.mainkeys=0'
+      - file: 'etc/prop.default'
+        pattern: '^ro\.secure=.*$'
+        replace: 'ro.secure=0'
+      - file: 'etc/prop.default'
+        pattern: '^ro\.adb\.secure=.*$'
+        replace: 'ro.adb.secure=0'
+      - file: 'etc/prop.default'
+        pattern: '^ro\.allow\.mock\.location=.*$'
+        replace: 'ro.allow.mock.location=1'
+      - file: 'etc/prop.default'
+        pattern: '^ro\.debuggable=.*$'
+        replace: 'ro.debuggable=0'
+      - file: 'etc/prop.default'
+        pattern: '^persist\.sys\.usb\.config=.*$'
+        replace: 'persist.sys.usb.config=adb'
+
+  tasks:
+    # Preparation
+    - name: Make new app directories
+      loop: '{{ (apks_to_add.apkmirror + apks_to_add.direct) | map(attribute="name") | list }}'
+      ansible.builtin.file:
+        path: '{{ [ src_dir, "app", item | splitext | first ] | path_join }}'
+        state: directory
+        mode: '0755'
+
+    - name: Check missing APKs
+      loop: '{{ apks_to_add.apkmirror + apks_to_add.direct }}'
+      loop_control:
+        label: '{{ item.name }}'
+      ansible.builtin.stat:
+        path: '{{ (src_dir, "app", item.name | splitext | first, item.name) | path_join }}'
+      register: apk_stats
+
+    - name: Download new APKs from APKMirror
+      loop: '{{ apks_to_add.apkmirror }}'
+      loop_control:
+        label: '{{ item.name }}'
+        extended: true
+      when: not apk_stats.results[ansible_loop.index0].stat.exists
+      ansible.builtin.include_role:
+        name: apkmirror-downloader
+      vars:
+        url: '{{ item.url }}'
+        dest: '{{ [ src_dir, "app", item.name | splitext | first, item.name ] | path_join }}'
+        user_agent: '{{ user_agent }}'
+
+    - name: Download new APKs from direct links
+      loop: '{{ apks_to_add.direct }}'
+      loop_control:
+        label: '{{ item.name }}'
+        extended: true
+      when: not apk_stats.results[apks_to_add.apkmirror | length + ansible_loop.index0].stat.exists
+      ansible.builtin.get_url:
+        url: '{{ item.url }}'
+        dest: '{{ [ src_dir, "app", item.name | splitext | first, item.name ] | path_join }}'
+        headers:
+          User-Agent: '{{ user_agent }}'
+
+    - name: Make mounting point
+      ansible.builtin.file:
+        path: '{{ mount_point }}'
+        state: directory
+        mode: '0755'
+
+    - name: Try unmounting system image
+      become: true
+      ansible.builtin.command:
+        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+      failed_when: false
+      changed_when: false
+
+    - name: Mount system image
+      become: true
+      ansible.builtin.command:
+        cmd: 'mount -o loop {{ image_path }} {{ mount_point }}'
+
+    # Patching
+    - name: Remove unwanted stuff
+      loop: '{{ files_to_remove }}'
+      ansible.builtin.file:
+        path: '{{ [ mount_point, item ] | path_join }}'
+        state: absent
+
+    - name: Remove unwanted stuff by glob
+      loop: '{{ files_to_remove_by_glob }}'
+      ansible.builtin.shell: # ansible.builtin.fileglob doesn't work for directories
+        cmd: |
+          rm -rf {{ mount_point }}/{{ item }} || true
+      failed_when: false
+
+    - name: Add new stuff
+      loop: '{{ files_to_add }}'
+      ansible.builtin.copy:
+        src: '{{ [ src_dir, item.source ] | path_join }}'
+        dest: '{{ [ mount_point, item.target ] | path_join }}'
+        mode: '{{ item.mode | default(omit) }}'
+        directory_mode: '{{ item.directory_mode | default(omit) }}'
+
+    # setting SELinux context not working with ansible.builtin.file module
+    - name: Set SELinux context on added stuff
+      loop: '{{ files_to_add }}'
+      ansible.builtin.command:
+        cmd: 'chcon --recursive "{{ item.selinux_context }}" "{{ [ mount_point, item.target ] | path_join }}"'
+
+    - name: Update CA certificates
+      ansible.builtin.shell:
+        cmd: |
+          set -e
+          cp --remove-destination --dereference --force {{ ca_certificates_source }} {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/
+          chcon 'u:object_r:system_file:s0' {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*
+
+    - name: Replace in files
+      loop: '{{ replacements_in_files }}'
+      ansible.builtin.replace:
+        path: '{{ [ mount_point, item.file ] | path_join }}'
+        regexp: '{{ item.pattern }}'
+        replace: '{{ item.replace }}'
+        backup: false
+
+    # Finalization
+    - name: Unmount system image
+      when: (lookup('env', 'CI') | default('')) | lower == 'true'
+      become: true
+      ansible.builtin.command:
+        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'

@@ -1,0 +1,26 @@
+---
+- name: Fetch APP info page
+  ansible.builtin.uri:
+    url: "{{ url }}"
+    headers:
+      User-Agent: "{{ user_agent }}"
+    return_content: true
+  register: app_page
+
+- name: Fetch APK download page
+  ansible.builtin.uri:
+    url: >-
+      {{ url ~ 'download/?key=' ~ (app_page.content | regex_search('href="/apk/.+/download/\?key=([^"]+?)"', '\1') | first) }}
+    headers:
+      User-Agent: "{{ user_agent }}"
+    return_content: true
+  register: download_page
+
+- name: Download APK
+  ansible.builtin.get_url:
+    url: >-
+      {{ 'https://www.apkmirror.com' ~ (download_page.content | regex_search('<a .*?id="download-link" .*href="([^"]+?)".*?>', '\1') | first) }}
+    dest: "{{ dest }}"
+    backup: false
+    headers:
+      User-Agent: "{{ user_agent }}"

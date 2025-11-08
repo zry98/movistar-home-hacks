@@ -1,0 +1,102 @@
+---
+- name: Patch boot image
+  hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    cwd: '{{ [ playbook_dir, ".." ] | path_join | realpath }}'
+    src_dir: '{{ [ cwd, "boot" ] | path_join | realpath }}'
+    image_path: '/images/boot.img'
+    mount_point: '/mnt/boot'
+    android_boot_image_editor_release_url: 'https://github.com/cfig/Android_boot_image_editor/releases/download/v15_r1/boot_editor_v15_r1.zip'
+    replacements_in_files:
+      - file: 'init.rc'
+        pattern: '^\s*#?start askey_.+logd$'
+        replace: ''
+
+  tasks:
+    # Preparation
+    - name: Install dependencies
+      become: true
+      ansible.builtin.package:
+        name:
+          - unzip
+          - default-jre
+        state: present
+
+    - name: Download Android boot image editor
+      ansible.builtin.get_url:
+        url: '{{ android_boot_image_editor_release_url }}'
+        dest: '{{ [ cwd, android_boot_image_editor_release_url | basename ] | path_join }}'
+
+    - name: Unzip Android boot image editor
+      ansible.builtin.unarchive:
+        src: '{{ [ cwd, android_boot_image_editor_release_url | basename ] | path_join }}'
+        dest: '{{ cwd }}'
+        remote_src: true
+
+    - name: Set Android boot image editor dir path
+      ansible.builtin.set_fact:
+        android_boot_image_editor_dir: '{{ [ cwd, android_boot_image_editor_release_url | basename | splitext | first ] | path_join }}'
+
+    - name: Clear Android boot image editor workspace
+      ansible.builtin.command:
+        chdir: '{{ android_boot_image_editor_dir }}'
+        cmd: './gradlew clear'
+      failed_when: false
+      changed_when: false
+
+    - name: Get boot image size
+      ansible.builtin.stat:
+        path: '{{ image_path }}'
+      register: boot_image_stat
+
+    - name: Copy boot image
+      ansible.builtin.copy:
+        src: '{{ image_path }}'
+        dest: '{{ [ android_boot_image_editor_dir, "boot.img" ] | path_join }}'
+        remote_src: true
+
+    - name: Unpack boot image
+      ansible.builtin.command:
+        chdir: '{{ android_boot_image_editor_dir }}'
+        cmd: './gradlew unpack'
+
+    - name: Set ramdisk root path
+      ansible.builtin.set_fact:
+        ramdisk_root: '{{ [ android_boot_image_editor_dir, "build/unzip_boot/root" ] | path_join }}'
+
+    # Patching
+    - name: Replace in files
+      loop: '{{ replacements_in_files }}'
+      ansible.builtin.replace:
+        path: '{{ [ ramdisk_root, item.file ] | path_join }}'
+        regexp: '{{ item.pattern }}'
+        replace: '{{ item.replace }}'
+        backup: false
+
+    - name: Remove Askey log services from init.rc
+      ansible.builtin.blockinfile:
+        path: '{{ [ ramdisk_root, "init.rc" ] | path_join }}'
+        marker: '#{mark}'
+        marker_begin: 'Askey.Anderson add for logs'
+        marker_end: 'Askey.Anderson add end'
+        state: absent
+
+    # Finalization
+    - name: Repack boot image
+      ansible.builtin.command:
+        chdir: '{{ android_boot_image_editor_dir }}'
+        cmd: './gradlew pack'
+
+    - name: Pad boot image to original size
+      ansible.builtin.command:
+        chdir: '{{ android_boot_image_editor_dir }}'
+        cmd: 'truncate -c -s {{ boot_image_stat.stat.size }} boot.img.signed'
+
+    - name: Copy patched boot image
+      ansible.builtin.copy:
+        src: '{{ [ android_boot_image_editor_dir, "boot.img.signed" ] | path_join }}'
+        dest: '{{ image_path }}'
+        remote_src: true

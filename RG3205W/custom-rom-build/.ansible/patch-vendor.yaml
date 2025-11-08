@@ -1,0 +1,69 @@
+---
+- name: Patch vendor image
+  hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    cwd: '{{ [ playbook_dir, ".." ] | path_join | realpath }}'
+    src_dir: '{{ [ cwd, "vendor" ] | path_join | realpath }}'
+    image_path: '/images/vendor.img'
+    mount_point: '/mnt/vendor'
+    files_to_remove:
+      - 'app/CABLService/'
+      - 'app/improveTouchStudio/'
+      - 'app/Qmmi/'
+      - 'app/qti-logkit/'
+      - 'app/SVIService/'
+    replacements_in_files:
+      - file: 'default.prop'
+        pattern: '^ro\.adb\.secure=.*$'
+        replace: 'ro.adb.secure=0'
+      - file: 'default.prop'
+        pattern: '^ro\.oem_unlock_supported=.*$'
+        replace: 'ro.oem_unlock_supported=true'
+      - file: 'default.prop'
+        pattern: '^ro\.logdumpd\.enabled=.*$'
+        replace: 'ro.logdumpd.enabled=0'
+
+  tasks:
+    # Preparation
+    - name: Make mounting point
+      ansible.builtin.file:
+        path: '{{ mount_point }}'
+        state: directory
+        mode: '0755'
+
+    - name: Try unmounting vendor image
+      become: true
+      ansible.builtin.command:
+        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+      failed_when: false
+      changed_when: false
+
+    - name: Mount vendor image
+      become: true
+      ansible.builtin.command:
+        cmd: 'mount -o loop {{ image_path }} {{ mount_point }}'
+
+    # Patching
+    - name: Remove unwanted stuff
+      loop: '{{ files_to_remove }}'
+      ansible.builtin.file:
+        path: '{{ [ mount_point, item ] | path_join }}'
+        state: absent
+
+    - name: Replace in files
+      loop: '{{ replacements_in_files }}'
+      ansible.builtin.replace:
+        path: '{{ [ mount_point, item.file ] | path_join }}'
+        regexp: '{{ item.pattern }}'
+        replace: '{{ item.replace }}'
+        backup: false
+
+    # Finalization
+    - name: Unmount vendor image
+      when: (lookup('env', 'CI') | default('')) | lower == 'true'
+      become: true
+      ansible.builtin.command:
+        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
