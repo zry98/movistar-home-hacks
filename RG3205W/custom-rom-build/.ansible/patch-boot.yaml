@@ -1,7 +1,7 @@
 ---
 - name: Patch boot image
   hosts: localhost
-  become: false
+  become: true
   gather_facts: false
 
   vars:
@@ -18,7 +18,6 @@
   tasks:
     # Preparation
     - name: Install dependencies
-      become: true
       ansible.builtin.package:
         name:
           - unzip

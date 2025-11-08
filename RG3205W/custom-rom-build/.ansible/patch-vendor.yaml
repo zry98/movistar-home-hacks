@@ -1,7 +1,7 @@
 ---
 - name: Patch vendor image
   hosts: localhost
-  become: false
+  become: true
   gather_facts: false
 
   vars:
@@ -35,14 +35,12 @@
         mode: '0755'
 
     - name: Try unmounting vendor image
-      become: true
       ansible.builtin.command:
         cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
       failed_when: false
       changed_when: false
 
     - name: Mount vendor image
-      become: true
       ansible.builtin.command:
         cmd: 'mount -o loop {{ image_path }} {{ mount_point }}'
 
@@ -64,6 +62,5 @@
     # Finalization
     - name: Unmount vendor image
       when: (lookup('env', 'CI') | default('')) | lower == 'true'
-      become: true
       ansible.builtin.command:
         cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'

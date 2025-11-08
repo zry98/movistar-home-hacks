@@ -13,14 +13,20 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image-type:
+          - system
+          - vendor
+          - boot
 
     steps:
       - name: Check for cached images
         id: check-cached-images
         uses: actions/cache/restore@v4
         with:
-          key: stock-images-${{ inputs.stock-dump }}
-          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/*.bin
+          key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
           fail-on-cache-miss: false
           lookup-only: true
 
@@ -36,18 +42,19 @@ jobs:
         run: |
           git lfs pull --include "${{ inputs.stock-dump }}.7z"
 
-      - name: Unpack
+      - name: Unpack archive
         if: steps.check-cached-images.outputs.cache-hit != 'true'
         working-directory: './RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/'
         run: |
-          7z e "${{ inputs.stock-dump }}.7z" boot.bin system.bin vendor.bin
+          7z e -y "${{ inputs.stock-dump }}.7z" ${{ matrix.image-type }}.bin
+          sha256sum --check --ignore-missing SHA256SUMS.txt
 
-      - name: Cache images
+      - name: Cache image
         if: steps.check-cached-images.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          key: stock-images-${{ inputs.stock-dump }}
-          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/*.bin
+          key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
 
   patch:
     needs:
@@ -69,9 +76,14 @@ jobs:
       - name: Restore cached images
         uses: actions/cache/restore@v4
         with:
-          key: stock-images-${{ inputs.stock-dump }}
-          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/*.bin
+          key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
           fail-on-cache-miss: true
+
+      - name: Verify checksum
+        working-directory: './RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/'
+        run: |
+          sha256sum --check --ignore-missing SHA256SUMS.txt
 
       - name: Set up Ansible
         uses: alex-oleshkevich/setup-ansible@v1.0.1
@@ -81,16 +93,27 @@ jobs:
       - name: Run Ansible playbooks
         working-directory: './RG3205W/custom-rom-build/'
         run: |
-          ansible-playbook .ansible/patch-${{ matrix.image-type }}.yaml -l localhost -c local --extra-vars "image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ inputs.base-dump }}/${{ matrix.image-type }}.bin"
+          ansible-playbook .ansible/patch-${{ matrix.image-type }}.yaml -l localhost -c local --extra-vars "image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin"
+
+      - name: Calculate patched image checksum
+        id: checksum
+        working-directory: './RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/'
+        run: |
+          echo "sha256sum-${{ matrix.image-type }}=$(sha256sum ${{ matrix.image-type }}.bin)" >> "$GITHUB_OUTPUT"
 
       - name: Upload patched images
         uses: actions/upload-artifact@v5
         with:
           name: patched-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
-          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ inputs.base-dump }}/${{ matrix.image-type }}.bin
+          path: ./RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
           if-no-files-found: error
           compression-level: 6
           overwrite: true
+
+    outputs:
+      sha256sum-system: ${{ steps.checksum.outputs.sha256sum-system }}
+      sha256sum-vendor: ${{ steps.checksum.outputs.sha256sum-vendor }}
+      sha256sum-boot: ${{ steps.checksum.outputs.sha256sum-boot }}
 
   release:
     needs:
@@ -98,8 +121,12 @@ jobs:
       - patch
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
+        id: checkout
         uses: actions/checkout@v5
         with:
           lfs: false
@@ -108,11 +135,48 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           pattern: patched-image-${{ inputs.stock-dump }}-*
-          path: ./RG3205W/custom-rom-build/.patched-images/
+          path: ./.build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.checkout.outputs.commit }}/
           merge-multiple: true
 
-      - name: Test
-        working-directory: './RG3205W/custom-rom-build/.patched-images/'
+      - name: Verify patched images checksums
+        id: verify-checksums
+        working-directory: './.build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.checkout.outputs.commit }}/'
+        shell: bash
         run: |
-          ls -lAhF .
-          sha256sum *.bin
+          {
+            echo "${{ needs.patch.outputs.sha256sum-boot }}"
+            echo "${{ needs.patch.outputs.sha256sum-system }}"
+            echo "${{ needs.patch.outputs.sha256sum-vendor }}"
+          } > ../SHA256SUMS.txt
+          sha256sum --check ../SHA256SUMS.txt
+
+          {
+            echo "sha256sums<<EOF"
+            cat ../SHA256SUMS.txt
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Pack images
+        working-directory: './.build/'
+        run: |
+          zip -r -9 "RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.checkout.outputs.commit }}.zip" RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.checkout.outputs.commit }}/
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 'RG3205W custom ROM based on ${{ inputs.stock-dump }}'
+          tag_name: 'RG3205W-custom-rom-${{ inputs.stock-dump }}-${{ steps.checkout.outputs.commit }}'
+          files: |
+            ./.build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.checkout.outputs.commit }}.zip
+            ./.build/SHA256SUMS.txt
+          fail_on_unmatched_files: true
+          make_latest: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+          body: |
+            ## RG3205W Custom ROM
+
+            Based on the stock ROM dump [`${{ inputs.stock-dump }}`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}).
+
+            ### SHA256 checksums
+            ```
+            ${{ steps.verify-checksums.outputs.sha256sums }}
+            ```

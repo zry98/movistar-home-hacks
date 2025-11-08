@@ -1,7 +1,7 @@
 ---
 - name: Patch system image
   hosts: localhost
-  become: false
+  become: true
   gather_facts: false
 
   vars:
@@ -9,7 +9,7 @@
     src_dir: '{{ [ cwd, "system" ] | path_join | realpath }}'
     image_path: '/images/system.img'
     mount_point: '/mnt/system'
-    user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
+    http_user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
     files_to_remove:
       - 'priv-app/BlockedNumberProvider/'
       - 'priv-app/CellBroadcastReceiver/'
@@ -42,7 +42,7 @@
           url: 'https://www.apkmirror.com/apk/lineageos/lineageos-trebuchet/trebuchet-4-8-1-0-release/trebuchet-8-1-0-android-apk-download/'
       direct:
         - name: 'AuroraStore.apk'
-          url: 'https://auroraoss.com/downloads/AuroraStore/Latest/latest.apk'
+          url: 'https://gitlab.com/-/project/6922885/uploads/8196131660789dd6ad2618a76bcf1e37/AuroraStore-preload-4.7.5.apk'
     files_to_add:
       - source: 'bin/install-recovery.sh'
         target: 'bin/install-recovery.sh'
@@ -109,7 +109,7 @@
       vars:
         url: '{{ item.url }}'
         dest: '{{ [ src_dir, "app", item.name | splitext | first, item.name ] | path_join }}'
-        user_agent: '{{ user_agent }}'
+        user_agent: '{{ http_user_agent }}'
 
     - name: Download new APKs from direct links
       loop: '{{ apks_to_add.direct }}'
@@ -121,7 +121,7 @@
         url: '{{ item.url }}'
         dest: '{{ [ src_dir, "app", item.name | splitext | first, item.name ] | path_join }}'
         headers:
-          User-Agent: '{{ user_agent }}'
+          User-Agent: '{{ http_user_agent }}'
 
     - name: Make mounting point
       ansible.builtin.file:
@@ -130,14 +130,12 @@
         mode: '0755'
 
     - name: Try unmounting system image
-      become: true
       ansible.builtin.command:
         cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
       failed_when: false
       changed_when: false
 
     - name: Mount system image
-      become: true
       ansible.builtin.command:
         cmd: 'mount -o loop {{ image_path }} {{ mount_point }}'
 
@@ -162,6 +160,8 @@
         dest: '{{ [ mount_point, item.target ] | path_join }}'
         mode: '{{ item.mode | default(omit) }}'
         directory_mode: '{{ item.directory_mode | default(omit) }}'
+        owner: 'root'
+        group: 'root'
 
     # setting SELinux context not working with ansible.builtin.file module
     - name: Set SELinux context on added stuff
@@ -174,7 +174,8 @@
         cmd: |
           set -e
           cp --remove-destination --dereference --force {{ ca_certificates_source }} {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/
-          chcon 'u:object_r:system_file:s0' {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*
+          chown root:root {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*.0
+          chcon 'u:object_r:system_file:s0' {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*.0
 
     - name: Replace in files
       loop: '{{ replacements_in_files }}'
@@ -187,6 +188,5 @@
     # Finalization
     - name: Unmount system image
       when: (lookup('env', 'CI') | default('')) | lower == 'true'
-      become: true
       ansible.builtin.command:
         cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
