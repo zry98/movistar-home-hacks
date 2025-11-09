@@ -33,16 +33,18 @@
       - 'priv-app/troya-*'
       - 'priv-app/AskeyTR69*'
     apks_to_add:
-      apkmirror:
-        - name: 'WebView.apk'
-          url: 'https://www.apkmirror.com/apk/lineageos/android-system-webview-2/android-system-webview-138-0-7204-63-2-release/android-system-webview-138-0-7204-63-9-android-apk-download/'
-        - name: 'Chrome.apk'
-          url: 'https://www.apkmirror.com/apk/google-inc/chrome/google-chrome-138-0-7204-63-release/google-chrome-138-0-7204-63-8-android-apk-download/'
-        - name: 'Trebuchet.apk'
-          url: 'https://www.apkmirror.com/apk/lineageos/lineageos-trebuchet/trebuchet-4-8-1-0-release/trebuchet-8-1-0-android-apk-download/'
-      direct:
-        - name: 'AuroraStore.apk'
-          url: 'https://gitlab.com/-/project/6922885/uploads/8196131660789dd6ad2618a76bcf1e37/AuroraStore-preload-4.7.5.apk'
+      - name: 'WebView.apk'
+        description: 'Android System WebView 138.0.7204.63'
+        url: 'https://www.apkmirror.com/apk/lineageos/android-system-webview-2/android-system-webview-138-0-7204-63-2-release/android-system-webview-138-0-7204-63-9-android-apk-download/'
+      - name: 'Chrome.apk'
+        description: 'Google Chrome 138.0.7204.63'
+        url: 'https://www.apkmirror.com/apk/google-inc/chrome/google-chrome-138-0-7204-63-release/google-chrome-138-0-7204-63-8-android-apk-download/'
+      - name: 'Trebuchet.apk'
+        description: 'LineageOS Trebuchet 8.1.0'
+        url: 'https://www.apkmirror.com/apk/lineageos/lineageos-trebuchet/trebuchet-4-8-1-0-release/trebuchet-8-1-0-android-apk-download/'
+      - name: 'AuroraStore.apk'
+        description: 'Aurora Store 4.7.5'
+        url: 'https://gitlab.com/-/project/6922885/uploads/8196131660789dd6ad2618a76bcf1e37/AuroraStore-preload-4.7.5.apk'
     files_to_add:
       - source: 'bin/install-recovery.sh'
         target: 'bin/install-recovery.sh'
@@ -83,45 +85,34 @@
 
   tasks:
     # Preparation
+    - name: Update CA certificates source
+      ansible.builtin.package:
+        name: 'ca-certificates'
+        state: latest
     - name: Make new app directories
-      loop: '{{ (apks_to_add.apkmirror + apks_to_add.direct) | map(attribute="name") | list }}'
+      loop: '{{ apks_to_add | map(attribute="name") | list }}'
       ansible.builtin.file:
         path: '{{ [ src_dir, "app", item | splitext | first ] | path_join }}'
         state: directory
         mode: '0755'
 
     - name: Check missing APKs
-      loop: '{{ apks_to_add.apkmirror + apks_to_add.direct }}'
-      loop_control:
-        label: '{{ item.name }}'
+      loop: '{{ apks_to_add }}'
       ansible.builtin.stat:
         path: '{{ (src_dir, "app", item.name | splitext | first, item.name) | path_join }}'
       register: apk_stats
 
-    - name: Download new APKs from APKMirror
-      loop: '{{ apks_to_add.apkmirror }}'
+    - name: Download new APKs
+      loop: '{{ apks_to_add }}'
       loop_control:
-        label: '{{ item.name }}'
         extended: true
       when: not apk_stats.results[ansible_loop.index0].stat.exists
       ansible.builtin.include_role:
-        name: apkmirror-downloader
+        name: apk-downloader
       vars:
         url: '{{ item.url }}'
         dest: '{{ [ src_dir, "app", item.name | splitext | first, item.name ] | path_join }}'
         user_agent: '{{ http_user_agent }}'
-
-    - name: Download new APKs from direct links
-      loop: '{{ apks_to_add.direct }}'
-      loop_control:
-        label: '{{ item.name }}'
-        extended: true
-      when: not apk_stats.results[apks_to_add.apkmirror | length + ansible_loop.index0].stat.exists
-      ansible.builtin.get_url:
-        url: '{{ item.url }}'
-        dest: '{{ [ src_dir, "app", item.name | splitext | first, item.name ] | path_join }}'
-        headers:
-          User-Agent: '{{ http_user_agent }}'
 
     - name: Make mounting point
       ansible.builtin.file:
