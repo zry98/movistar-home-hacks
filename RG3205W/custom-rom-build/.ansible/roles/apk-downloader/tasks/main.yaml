@@ -1,0 +1,39 @@
+---
+- name: Download from direct URL
+  when: url is defined and not url.startswith('https://www.apkmirror.com/')
+  ansible.builtin.get_url:
+    url: "{{ url }}"
+    dest: "{{ dest }}"
+    backup: false
+    headers:
+      User-Agent: "{{ user_agent }}"
+
+# APKMirror download flow
+- name: Fetch APP info page
+  when: url is defined and url.startswith('https://www.apkmirror.com/')
+  ansible.builtin.uri:
+    url: "{{ url }}"
+    headers:
+      User-Agent: "{{ user_agent }}"
+    return_content: true
+  register: app_page
+
+- name: Fetch APK download page
+  when: url is defined and url.startswith('https://www.apkmirror.com/')
+  ansible.builtin.uri:
+    url: >-
+      {{ url ~ 'download/?key=' ~ (app_page.content | regex_search('href="/apk/.+/download/\?key=([^"]+?)"', '\1') | first) }}
+    headers:
+      User-Agent: "{{ user_agent }}"
+    return_content: true
+  register: download_page
+
+- name: Download APK
+  when: url is defined and url.startswith('https://www.apkmirror.com/')
+  ansible.builtin.get_url:
+    url: >-
+      {{ 'https://www.apkmirror.com' ~ (download_page.content | regex_search('<a .*?id="download-link" .*href="([^"]+?)".*?>', '\1') | first) }}
+    dest: "{{ dest }}"
+    backup: false
+    headers:
+      User-Agent: "{{ user_agent }}"

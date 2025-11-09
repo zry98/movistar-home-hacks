@@ -16,9 +16,9 @@
       - 'app/qti-logkit/'
       - 'app/SVIService/'
     replacements_in_files:
-      - file: 'default.prop'
-        pattern: '^ro\.adb\.secure=.*$'
-        replace: 'ro.adb.secure=0'
+      # - file: 'default.prop'
+      #   pattern: '^ro\.adb\.secure=.*$'
+      #   replace: 'ro.adb.secure=0'
       - file: 'default.prop'
         pattern: '^ro\.oem_unlock_supported=.*$'
         replace: 'ro.oem_unlock_supported=true'
