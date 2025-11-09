@@ -121,11 +121,18 @@ jobs:
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
+      - name: Get ca-certificates version
+        id: get-ca-certs-version
+        if: matrix.image-type == 'system'
+        run: |
+          echo "version=$(apt show ca-certificates | grep Version: | awk -F ': ' '{print $2}')" >> "$GITHUB_OUTPUT"
+
     outputs:
-      apks-to-add: ${{ steps.list-apks-to-add.outputs.apks-to-add }}
       sha256sum-system: ${{ steps.checksum.outputs.sha256sum-system }}
       sha256sum-vendor: ${{ steps.checksum.outputs.sha256sum-vendor }}
       sha256sum-boot: ${{ steps.checksum.outputs.sha256sum-boot }}
+      apks-to-add: ${{ steps.list-apks-to-add.outputs.apks-to-add }}
+      ca-certs-version: ${{ steps.get-ca-certs-version.outputs.version }}
 
   release:
     needs:
@@ -206,6 +213,7 @@ jobs:
             ### Pre-installed APPs / APPs Pre-instaladas
 
             ${{ needs.patch.outputs.apks-to-add }}
+            - Debian `ca-certificates` ${{ needs.patch.outputs.ca-certs-version }}
 
             ### SHA256 checksums
             ```
