@@ -2,7 +2,11 @@
 
 como un panel de dashboard para Home Assistant.
 
-[![Grupo de Telegram](https://telegram-badge.vercel.app/api/telegram-badge?channelId=@movistar_home_hacking&style=for-the-badge&label=Telegram%20Group%20-%20Movistar%20Home%20Hacking)](https://t.me/movistar_home_hacking)
+<p align="center">
+  <a href="https://t.me/movistar_home_hacking" rel="nofollow">
+    <img src="https://telegram-badge.vercel.app/api/telegram-badge?channelId=@movistar_home_hacking&style=for-the-badge&label=Telegram%20Group%20-%20Movistar%20Home%20Hacking" alt="Grupo de Telegram" style="max-width: 100%;">
+  </a>
+</p>
 
 [🇺🇸 English version](./README.en.md)
 
@@ -77,4 +81,4 @@ This project is provided **"as-is"** and is intended **for personal, educational
 * You are **solely responsible** for ensuring that your use of this project complies with all applicable laws, terms of service, and agreements.
 * The authors of this project assume **no liability** for any damages or legal issues that may result from its use.
 
-If you represent Movistar, Telefónica, MitraStar, or Askey and have concerns about the content of this repository, please open an Issue [here](https://github.com/zry98/movistar-home-hacks/issues/new) or contact the repository owner ([@zry98](https://github.com/zry98]) directly, who will address it promptly.
+If you represent Movistar, Telefónica, MitraStar, or Askey and have concerns about the content of this repository, please open an Issue [here](https://github.com/zry98/movistar-home-hacks/issues/new) or contact the repository owner ([@zry98](https://github.com/zry98])) directly, who will address it promptly.
