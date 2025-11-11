@@ -61,7 +61,11 @@ As in the latest Arch Linux with 6.14.10-arch1-1 kernel, on June 10, 2025:
 
 ### Disassembling
 
-Disassemble the device, it has **10 snap-fits** under the back panel edges, be careful not to damage them; then **8 screws** under the panel, and **4 screws** hidden under the rubber strip at the bottom of the device.
+To disassemble the device, un-clip **10 snap-fits** under the back panel edges, be careful not to damage them.
+
+Then remove **8 screws** under the panel, and **4 screws** hidden under the black rubber strip at the bottom of the device.
+
+### Connecting to USB OTG
 
 Locate the unpopulated micro USB port on the left edge of the motherboard:
 

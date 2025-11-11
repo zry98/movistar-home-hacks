@@ -61,7 +61,11 @@ Como en el último Arch Linux con kernel 6.14.10-arch1-1, el 10 de junio de 2025
 
 ### Desmontaje
 
-Desmonta el dispositivo, tiene **10 presillas** debajo de los bordes del panel posterior, ten cuidado de no dañarlos; luego hay **8 tornillos** debajo del panel, y **4 tornillos** ocultos debajo de la tira de goma en la parte de abajo del dispositivo.
+Para desmontar el dispositivo, suelta las **10 presillas** _("snap-fits")_ situadas bajo los bordes del panel trasero, teniendo cuidado de no dañarlas.
+
+Luego retira los **8 tornillos** situados bajo el panel y los **4 tornillos** ocultos bajo la tira de goma negra en la parte inferior del dispositivo.
+
+### Conectar al USB OTG
 
 Localiza el puerto micro USB desocupado en el borde izquierdo de la placa base:
 

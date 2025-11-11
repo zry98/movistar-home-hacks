@@ -32,9 +32,17 @@ as a Home Assistant dashboard panel.
 
 You don't need (and very difficult) to install Linux like with the model `IGW-5000A2BKMP-I v2`.
 
-If your have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your phone (see [Resources](#resources) for some suggested apps). You can now skip the next section and go directly to the [configurations part](#configurations).
+If you have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your phone (see [Resources](#resources) for some suggested apps). You can now skip the next section and go directly to the [configurations part](#configurations).
 
-But if you don't have a Movistar Wi-Fi, you cannot skip the Wi-Fi connection screen and access the Bluetooth settings. You'll have to dissemble it and do some soldering. For dissembling, you can refer to [the section in IGW5000/README.en.md](../IGW5000/README.en.md#disassembling) as the chassis are identical.
+But if you don't have a Movistar Wi-Fi, you cannot skip the Wi-Fi connection screen and access the Bluetooth settings. You'll have to dissemble it and do some soldering.
+
+### Disassembling
+
+(It has a chassis identical to that of [IGW5000](../IGW5000/README.en.md#disassembling))
+
+To disassemble the device, un-clip **10 snap-fits** under the back panel edges, be careful not to damage them.
+
+Then remove **8 screws** under the panel, and **4 screws** hidden under the black rubber strip at the bottom of the device.
 
 ### Connecting a USB keyboard
 

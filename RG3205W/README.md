@@ -36,6 +36,14 @@ Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder
 
 Pero si no tienes un Wi-Fi de Movistar, no podrás saltar la pantalla de conexión de Wi-Fi y acceder a la configuración de Bluetooth. Tendrás que desmontarlo y hacer algo de soldadura. Para desmontarlo, puedes consultar [la sección en IGW5000/README.md](../IGW5000/README.md#desmontaje) ya que los chasis son idénticos.
 
+### Desmontaje
+
+(Tiene un chasis idéntico al del [IGW5000](../IGW5000/README.md#desmontaje))
+
+Para desmontar el dispositivo, suelta las **10 presillas** _("snap-fits")_ situadas bajo los bordes del panel trasero, teniendo cuidado de no dañarlas.
+
+Luego retira los **8 tornillos** situados bajo el panel y los **4 tornillos** ocultos bajo la tira de goma negra en la parte inferior del dispositivo.
+
 ### Conectar un teclado USB
 
 Actualmente existen al menos 2 variantes (revisiones de hardware) del RG3205W: `Rev4` y `Rev5`.
