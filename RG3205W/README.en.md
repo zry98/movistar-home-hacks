@@ -6,9 +6,6 @@ as a Home Assistant dashboard panel.
 
 [🇪🇸 Versión en castellano](./README.md)
 
-> [!IMPORTANT]
-> **WORK IN PROGRESS**, especially for the Rev5 variant.
-
 ## Tech specs
 
 | | |
@@ -25,18 +22,10 @@ as a Home Assistant dashboard panel.
 | Dimensions | 21.2 x 23.5 x 12.2 cm (height x width x depth) |
 | Weight | 1.1 kg |
 
-## Kiosk escaping
+## Disassembling
 
 > [!CAUTION]
 > Following the instructions below will certainly **void the warranty** of your device and **may violate your service agreement or contract** with Movistar. Proceed entirely at your own risk.
-
-You don't need (and very difficult) to install Linux like with the model `IGW-5000A2BKMP-I v2`.
-
-If you have a Movistar Wi-Fi with valid _Fusión_ contract, you can enter the main screen after connecting to it. Pull down the top panel and tap "Ajustes" to open the settings, then tap _Conectividad > Altavoz bluetooth_ to enter the menu originally meant for connecting to a Bluetooth speaker. But for some reason, it can also be used to connect a Bluetooth keyboard; if you don't have one, you can try using a virtual Bluetooth keyboard app on your phone (see [Resources](#resources) for some suggested apps). You can now skip the next section and go directly to the [configurations part](#configurations).
-
-But if you don't have a Movistar Wi-Fi, you cannot skip the Wi-Fi connection screen and access the Bluetooth settings. You'll have to dissemble it and do some soldering.
-
-### Disassembling
 
 (It has a chassis identical to that of [IGW5000](../IGW5000/README.en.md#disassembling))
 
@@ -44,7 +33,16 @@ To disassemble the device, un-clip **10 snap-fits** under the back panel edges, 
 
 Then remove **8 screws** under the panel, and **4 screws** hidden under the black rubber strip at the bottom of the device.
 
-### Connecting a USB keyboard
+## Soft-hacks
+
+For limited software-only hacks please refer to [rev5-softhacks/README.en.md](./rev5-softhacks/README.en.md).
+
+## Flashing a custom ROM
+
+> [!IMPORTANT]
+> **WORK IN PROGRESS**
+
+Fortunately, the bootloader can be unlocked and boot any custom ROM. In order to do this, you may need to make a custom USB cable depending on the variant you have.
 
 Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `Rev4` and `Rev5`.
 
@@ -57,78 +55,59 @@ Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `
 
 ![RG3205W-rev4-internal](../assets/img/RG3205W-rev4-internal.jpg)
 
-If yours has a `Rev4` PCB, then you are very lucky that it comes with a female USB Type-C connector already soldered and functioning!
+If yours has a `Rev4` PCB, then you are very lucky that it comes with a female USB Type-C connector already soldered and functioning! You can just connect a normal cable between it and your PC.
 
 #### Rev5
 
 ![RG3205W-rev5-internal](../assets/img/RG3205W-rev5-internal.jpg)
 
-But unfortunately, the more common variant on the market is `Rev5`, which not only comes without the USB Type-C connector populated, but also lacks a 5.1 kΩ pull-down resistor between the `CC` (`CC1` or `CC2` depending on the side) and `GND` pins to put it in host mode. So you'll have to solder the resistor yourself like below:
+But unfortunately, the more common variant on the market is `Rev5`, which comes without the USB Type-C connector populated.
 
-![rev5-usb-pull-down-resistor](../assets/img/RG3205W-rev5-usb-pull-down-resistor.jpg)
-
-![usb-type-c-pinout](../assets/img/usb-type-c-pinout.png)
-
-The 4-pin white female JST-PH2.0 connector nearby is also connected to the 4 USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder an SMD USB Type-C connector (which is very difficult to do).
+However, the 4-pin white female JST-PH2.0 connector nearby is also connected to the 4 USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder an SMD USB Type-C connector (which is very difficult to do).
 
 ![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
-## Configurations
+You can make a simple custom cable using a JST-PH2.0 male plug, or a 4-pin female [pin header](https://en.wikipedia.org/wiki/Pin_header) of 2.0 mm pitch.
 
-Anyway, with a USB or Bluetooth keyboard connected, you can press the keys <kbd>Super</kbd> + <kbd>N</kbd> (<kbd>Super</kbd> is usually the <kbd>⊞ Win</kbd> key) to open the notification panel, then tap the gear icon to open the Android system settings.
+### EDL mode
 
-If you got a Rev4 variant, you are so lucky that it doesn't have any restrictions in the ROM, so you can just enable the Developer options by tapping the build number 7 times, then enable USB debugging and do any kind of stuff via ADB.
+> [!IMPORTANT]
+> It is recommended to use the [Qualcomm EDL mode](https://en.wikipedia.org/wiki/Qualcomm_EDL_mode) to make a full flash dump first, so that you can always restore it back to stock if anything goes wrong.
 
-Unfortunately, for the Rev5 variant we still haven't found a way to enable USB debugging (ADB), because the whole "Developer options" menu is removed completely from the ROM, along with many many other things.
+You can make the device enter EDL mode by shorting the USB `D+` and `GND` pins (for example, using metal knife or tweezers) while plugging in the power cable, and holding for 3 seconds before releasing.
 
-However, you can still install APKs by using the built-in E-mail app. You can open that app by pressing the keys <kbd>Super</kbd> + <kbd>E</kbd>, then configure an email account. After that, you can send an email to this address with the APK attached, then open the email in the app and tap the attachment to download and install it.
+Then you can use [Qualcomm's QPST tool](https://qpsttool.com/) on Windows, or better yet, B.Kerler's [edl](https://github.com/bkerler/edl) tool (cross-platform) to dump and flash the ROM.
 
-> [!TIP]
-> You should not use major email providers like Gmail either for sending or receiving, because they normally do not allow APK attachments. You can use the "[email-file-server](https://github.com/zry98/movistar-home-hacks/tree/main/email-file-server)" tool provided in this repository, please check the [next subsection](#use-the-email-file-server-tool) for detailed instructions.
+There are also several stock ROM dumps made by the community available in the [Resources](#resources) section below.
 
-**For more information on soft-hacks for the Rev5, please refer to [rev5-softhacks/README.en.md](./rev5-softhacks/README.en.md).**
+> [!CAUTION]
+> Proceed with extra caution when flashing custom ROMs, as it may brick your device.
+> 
+> You should only touch the `boot`, `recovery`, `system`, `vendor` partitions, and clear `userdata` and `cache` after flashing.
+>
+> **DO NOT EVER** touch the other partitions which can contain bootloader, firmware or device-specific data like MAC addresses, IMEI, calibration data, etc.
 
-First app you should definitely install is a [launcher](https://search.f-droid.org/?q=launcher), and set it as the default launcher (_Settings > Apps & notifications > Advanced > Default apps > Home app_), otherwise you'll still be stuck in the onboarding app every time it reboots.
+### Unlocking bootloader
 
-But be aware that the onboarding app will still show up and lock you out when the Wi-Fi connection changes. So we still need to find a way to uninstall them.
+Install the [Android SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools) on your PC to get `adb` and `fastboot` commands.
 
-#### Use the email-file-server tool
+Connect the device to your PC via USB, hold the volume "-" (down) and power buttons together until the blue screen with white Movistar logos appears and disappears to a black screen. It is now booted into the "fastboot" mode.
 
-You should have a PC that is accessible from your Movistar Home, for example, in the same LAN.
+Running `fastboot devices` should show your device is connected.
 
-Download the email-file-server release suitable for your PC from its [release page](https://github.com/zry98/movistar-home-hacks/releases/tag/v0.0.1), for example, `email-file-server_v0.0.1_windows_amd64.zip` for most Windows PC. Decompress the archive and put the APK files you want to install on Movistar Home inside the `files` folder in the decompressed folder.
+Run `fastboot flashing unlock` and then `fastboot oem unlock` to unlock the bootloader.
 
-Open a terminal in the same folder, execute `./email-file-server`. By default, it will read all files inside the `files` folder, and start a minimal POP3 server listening on the 8110 port, and a minimal SMTP server listening on the 8025 port.
+### Flashing partitions
 
-You can run `./email-file-server --help` to see its usage if you want to customize anything.
+You can now flash modified images to the partitions using `fastboot flash <partition> <image-file>` command. For example, `fastboot flash system system.bin`.
 
-In the mail app on your Movistar Home, configure an account with any address, then click the button "AJUSTES MANUALES":
+This repository provides a custom ROM based on stock ROM [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), with all the pre-installed bloatwares removed, added some useful apps, and some optimizations for better performance and prolonged eMMC lifespan. You can find it on the [Latest Release](https://github.com/zry98/movistar-home-hacks/releases/latest) page.
 
-![email-apks-step-1](../assets/img/email-apks-step-1.png)
+After flashing, run `fastboot erase userdata` and `fastboot erase cache` to clear the user data and cache partitions.
 
-Select the "PERSONAL (POP3)" type of account.
-
-Input any password, then click the button "SIGUIENTE".
-
-Input the IP address of your PC running the server in the "SERVIDOR" field, select "Ninguna" as the "TIPO DE SEGURIDAD", and input the POP3 port (`8110` by default) in the "PUERTO" field. Then click "SIGUIENTE":
-
-![email-apks-step-4](../assets/img/email-apks-step-4.png)
-
-Input the same IP address in the "SERVIDOR SMTP" field, select "Ninguna" as the "TIPO DE SEGURIDAD", input the SMTP port (`8025` by default) in the "PUERTO" field, and uncheck the box "Solicitar inicio de sesión". Then click "SIGUIENTE":
-
-![email-apks-step-5](../assets/img/email-apks-step-5.png)
-
-Select "Nunca" as the "Frecuencia de sincronización", and click "SIGUIENTE".
-
-You can give a name to the account but it's not necessary, just click "SIGUIENTE" and you should see the inbox. By default, it will start fetching all the mails (with APK attached, which can be huge), please wait for the loading spinner to finish. If you don't see anything, swipe down to force sync.
-
-After you see the mail containing the APK you want, open it and click the attachment, then click any of the two buttons to install it:
-
-![email-apks-install](../assets/img/email-apks-install.png)
+Finally, run `fastboot reboot` to reboot the device into the custom ROM.
 
 ## Resources
 
-- [Bluetooth Keyboard & Mouse](https://play.google.com/store/apps/details?id=io.appground.blek) for Android, suggested by _josemoraocana_ in our Telegram group
-- [KeyPad - Bluetooth Keyboard](https://apps.apple.com/us/app/keypad-bluetooth-keyboard/id1491684442) for iPhone / iPad, suggested by [@alfredopironti](https://github.com/alfredopironti)
 - [Rev4 stock ROM partial dump](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W1.2.4_201912112049) using ADB, made by _Cansi_ in our Telegram group
 - [Rev5 stock ROM dump](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206) using EDL mode, made by _P4blo24_ in our Telegram group
