@@ -75,6 +75,8 @@ Puedes hacer que el dispositivo entre en modo EDL cortocircuitando los pines `D+
 
 A continuación, puedes usar la herramienta [QPST de Qualcomm](https://qpsttool.com/) en Windows, o mejor aún, la herramienta [edl](https://github.com/bkerler/edl) de B.Kerler (multi-plataforma) para volcar y flashear la ROM.
 
+Un fichero de _Firehose Programmer_ (_bootloader_ externo) es necesario para que la herramienta EDL se comunique con el dispositivo. En este repositorio se proporciona un firehose funcional en [`RG3205W/firehose.mbn`](firehose.mbn) (SHA256:0e03a8189b7451d1bb81d6fb10efbcefd399623edcb015af45008eedf8fd1298).
+
 También hay unos volcados de ROM original aportados por la comunidad disponibles en la sección [Recursos](#recursos) más abajo.
 
 > [!CAUTION]

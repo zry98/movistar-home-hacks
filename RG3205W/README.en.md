@@ -78,6 +78,8 @@ You can make the device enter EDL mode by shorting the USB `D+` and `GND` pins (
 
 Then you can use [Qualcomm's QPST tool](https://qpsttool.com/) on Windows, or better yet, B.Kerler's [edl](https://github.com/bkerler/edl) tool (cross-platform) to dump and flash the ROM.
 
+An Firehose Programmer file (external bootloader) is required by EDL tool to communicate with the device. A working firehose is provided in this repository at [`RG3205W/firehose.mbn`](firehose.mbn) (SHA256:0e03a8189b7451d1bb81d6fb10efbcefd399623edcb015af45008eedf8fd1298).
+
 There are also several stock ROM dumps made by the community available in the [Resources](#resources) section below.
 
 > [!CAUTION]
