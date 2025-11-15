@@ -39,7 +39,7 @@ Para información sobre modificaciones solo por software con limitaciones, por f
 > [!IMPORTANT]
 > **TRABAJO EN PROGRESO**
 
-Afortunadamente, el *bootloader* se puede desbloquear y permite arrancar cualquier ROM personalizada. Para hacerlo, puede que necesites fabricar un cable USB personalizado, dependiendo de la variante que tengas.
+Afortunadamente, el *bootloader* se puede desbloquear y permite arrancar cualquier ROM personalizada. Para hacerlo, puede que necesites improvisar un cable USB, dependiendo de la variante que tengas.
 
 Actualmente existen al menos 2 variantes (revisiones de hardware) del RG3205W: `Rev4` y `Rev5`.
 
@@ -64,7 +64,7 @@ Sin embargo, el conector JST-PH2.0 blanco hembra de 4 pines que se encuentra cer
 
 ![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
-Puedes fabricar un cable personalizado sencillo utilizando un conector JST-PH2.0 macho o un [_pin header_](https://en.wikipedia.org/wiki/Pin_header) hembra de 4 pines con paso de 2,0 mm.
+Puedes improvisar un cable sencillo utilizando un conector JST-PH2.0 macho o un [_pin header_](https://en.wikipedia.org/wiki/Pin_header) hembra de 4 pines con paso de 2,0 mm.
 
 ### Modo EDL
 
@@ -115,9 +115,9 @@ Ahora puedes flashear imágenes modificadas a las particiones usando el comando
 
 Este repositorio ofrece una ROM personalizada basada en la ROM original [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), con todas las aplicaciones preinstaladas innecesarias eliminadas, algunas apps útiles añadidas y unas optimizaciones para mejorar el rendimiento y alargar la vida útil del disco eMMC. Puedes encontrarla en la página de [Latest Release](https://github.com/zry98/movistar-home-hacks/releases/latest).
 
-Después de flashear, ejecuta `fastboot erase userdata` y `fastboot erase cache` para borrar las particiones de datos de usuario y caché.
+Después de flashear, reinicia el dispositivo al modo recovery, selecciona la opción "Wipe data/factory reset" para formatear la partición `userdata`; luego selecciona la opción "Wipe cache partition" para formatear la partición `cache`.
 
-Finalmente, ejecuta `fastboot reboot` para reiniciar el dispositivo a la ROM personalizada.
+Finalmente, selecciona la opción "Reboot system now" para reiniciar el dispositivo a la nueva ROM personalizada.
 
 ## Recursos
 

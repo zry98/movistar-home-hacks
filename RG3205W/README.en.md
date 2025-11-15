@@ -42,7 +42,7 @@ For limited software-only hacks please refer to [rev5-softhacks/README.en.md](./
 > [!IMPORTANT]
 > **WORK IN PROGRESS**
 
-Fortunately, the bootloader can be unlocked and boot any custom ROM. In order to do this, you may need to make a custom USB cable depending on the variant you have.
+Fortunately, the bootloader can be unlocked and boot any custom ROM. In order to do this, you may need to improvise a custom USB cable depending on the variant you have.
 
 Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `Rev4` and `Rev5`.
 
@@ -67,7 +67,7 @@ However, the 4-pin white female JST-PH2.0 connector nearby is also connected to 
 
 ![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
-You can make a simple custom cable using a JST-PH2.0 male plug, or a 4-pin female [pin header](https://en.wikipedia.org/wiki/Pin_header) of 2.0 mm pitch.
+You can improvise a simple custom cable using a JST-PH2.0 male plug, or a 4-pin female [pin header](https://en.wikipedia.org/wiki/Pin_header) of 2.0 mm pitch.
 
 ### EDL mode
 
@@ -117,9 +117,9 @@ You can now flash modified images to the partitions using `fastboot flash <parti
 
 This repository provides a custom ROM based on stock ROM [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), with all the pre-installed bloatwares removed, added some useful apps, and some optimizations for better performance and prolonged eMMC lifespan. You can find it on the [Latest Release](https://github.com/zry98/movistar-home-hacks/releases/latest) page.
 
-After flashing, run `fastboot erase userdata` and `fastboot erase cache` to clear the user data and cache partitions.
+After flashing, reboot the device into the recovery mode, select the "Wipe data/factory reset" option to format the `userdata` partition; then select "Wipe cache partition" option to format the `cache` partition.
 
-Finally, run `fastboot reboot` to reboot the device into the custom ROM.
+Finally, select the "Reboot system now" option to reboot the device into the new custom ROM.
 
 ## Resources
 
