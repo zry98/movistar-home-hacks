@@ -86,13 +86,25 @@ También hay unos volcados de ROM original aportados por la comunidad disponible
 >
 > **NUNCA TOQUES** las demás particiones, ya que pueden contener el *bootloader*, firmware u otros datos específicos del dispositivo, como direcciones MAC, IMEI, datos de calibración, etc.
 
+### Entrar al modo recovery
+
+Para entrar al modo _recovery_, primero apaga el dispositivo.
+
+Mantén pulsados los botones de volumen "+" (subir), volumen "-" (bajar) y encendido juntos, hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego desaparezca quedándose la pantalla en negro (con un poco de retroiluminación), suelta todos los botones.
+
+Ahora, vuelve a mantener pulsados los botones de volumen "+" y encendido juntos, y suéltalos después de 3 segundos. Debería aparecer el menú de recovery.
+
+Puedes navegar en este menú con los botones de volumen y seleccionar una opción con el botón de encendido.
+
 ### Desbloquear el bootloader
 
-Instala las [Android SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools) en tu PC para obtener los comandos `adb` y `fastboot`.
+Instala en tu PC las [Android SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools) para obtener los comandos `adb` y `fastboot`.
 
-Conecta el dispositivo al PC mediante USB, mantén pulsados los botones de volumen "-" (bajar) y encendido hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego se desaparezca a una pantalla negra. En ese momento el dispositivo habrá arrancado en el modo *fastboot*.
+Conecta el dispositivo a tu PC mediante USB, mantén pulsados los botones de volumen "-" (bajar) y encendido juntos, hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego desaparezca quedándose la pantalla en negro (con un poco de retroiluminación), suelta los botones. Ahora estará arrancado al modo "_fastboot_".
 
-Al ejecutar `fastboot devices` deberías ver que el dispositivo está conectado.
+Si esto no te funciona, arranca el dispositivo al modo recovery siguiendo la sección anterior y luego selecciona la opción "Reboot to bootloader".
+
+Al ejecutar `fastboot devices` deberías ver que el dispositivo está identificado.
 
 Ejecuta `fastboot flashing unlock` y luego `fastboot oem unlock` para desbloquear el *bootloader*.
 

@@ -89,13 +89,25 @@ There are also several stock ROM dumps made by the community available in the [R
 >
 > **DO NOT EVER** touch the other partitions which can contain bootloader, firmware or device-specific data like MAC addresses, IMEI, calibration data, etc.
 
+### Entering recovery mode
+
+In order to enter the recovery mode, power off the device first.
+
+Hold the volume "+" (up), volume "-" (down) and power buttons all together, until the blue screen with white Movistar logo appears and disappears to a black screen (with a little bit backlight), release all the buttons.
+
+Then, hold the volume "+" and power buttons together again, release after 3 seconds. The recovery menu should appear.
+
+You can navigate in this menu using the volume buttons, and select an option using the power button.
+
 ### Unlocking bootloader
 
 Install the [Android SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools) on your PC to get `adb` and `fastboot` commands.
 
-Connect the device to your PC via USB, hold the volume "-" (down) and power buttons together until the blue screen with white Movistar logos appears and disappears to a black screen. It is now booted into the "fastboot" mode.
+Connect the device to your PC via USB, hold the volume "-" (down) and power buttons together, until the blue screen with white Movistar logo appears and disappears to a black screen (with a little bit backlight), release the buttons. It is now booted into the "fastboot" mode.
 
-Running `fastboot devices` should show your device is connected.
+If this didn't work for you, boot the device into recovery mode first following the previous section, then select "Reboot to bootloader" option.
+
+Running `fastboot devices` should show your device is identified.
 
 Run `fastboot flashing unlock` and then `fastboot oem unlock` to unlock the bootloader.
 
