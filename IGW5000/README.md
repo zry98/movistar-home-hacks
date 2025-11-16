@@ -79,7 +79,7 @@ Aquí es un ejemplo para soldar un conector USB-A hembra:
 
 Flashea un pendrive USB con tu distribución de Linux favorita.
 
-Teniendo en cuenta que el Movistar Home solo tiene 2 GB de RAM, se recomienda encarecidamente usar solo [gestor de ventanas](https://wiki.archlinux.org/title/Window_manager_(Espa%C3%B1ol)). Si deseas usar un entorno de escritorio completo, considera uno muy ligero como _Xfce_.
+Teniendo en cuenta que el Movistar Home solo tiene 2 GB de RAM, se recomienda encarecidamente usar solo [gestor de ventanas](https://wiki.archlinux.org/title/Window_manager_(Espa%C3%B1ol)). Si deseas usar un entorno de escritorio completo, considera uno muy ligero como _Xfce_. No se recomienda utilizar el SO _Android-x86_, ni entornos de escritorio pesados ​​como _GNOME_ o _KDE Plasma_.
 
 También es importante aplicar optimizaciones para mejorar el rendimiento y reducir el desgaste de la eMMC, consulta la sección [Mejorar el rendimiento y reducir el desgaste de la eMMC](#mejorar-el-rendimiento-y-reducir-el-desgaste-de-la-emmc).
 
@@ -402,6 +402,8 @@ MaxLevelSyslog=notice
 MaxLevelKMsg=notice
 MaxLevelConsole=info
 ```
+
+Para comprobar el desgaste **estimado** de la eMMC, instala el paquete `mmc-utils` y ejecuta el comando `mmc extcsd read /dev/mmcblk1 | grep -E 'LIFE|EOL'`. Puedes encontrar información sobre cómo interpretar los valores [aquí](https://docs.netgate.com/pfsense/en/latest/troubleshooting/disk-lifetime.html#interpreting-mmc-health-data).
 
 ### Home Assistant dashboard
 

@@ -79,7 +79,7 @@ Here is an example for soldering a USB-A female connector:
 
 Flash a USB drive with your favorite Linux distro.
 
-Considering the Movistar Home has only 2 GB of RAM, it is highly recommended to only use a [window manager](https://wiki.archlinux.org/title/Window_manager). If you want to use a full desktop environment, consider using a lightweight one like _Xfce_. It is not recommended to use heavy desktop environments like _GNOME_ or _KDE Plasma_, or the Android-x86.
+Considering the Movistar Home has only 2 GB of RAM, it is highly recommended to only use a [window manager](https://wiki.archlinux.org/title/Window_manager). If you want to use a full desktop environment, consider using a lightweight one like _Xfce_. It is not recommended to use _Android-x86_ system, or heavy desktop environments like _GNOME_ or _KDE Plasma_.
 
 It is also important to apply optimizations to improve performance and reduce eMMC wear, see the [Improve performance and reduce eMMC wearing](#improve-performance-and-reduce-emmc-wearing) section.
 
@@ -402,6 +402,8 @@ MaxLevelSyslog=notice
 MaxLevelKMsg=notice
 MaxLevelConsole=info
 ```
+
+To check the **estimated** wear of the eMMC, install the `mmc-utils` package and execute the command `mmc extcsd read /dev/mmcblk1 | grep -E 'LIFE|EOL'`. You can find information on how to interpret the values [here](https://docs.netgate.com/pfsense/en/latest/troubleshooting/disk-lifetime.html#interpreting-mmc-health-data).
 
 ### Home Assistant dashboard
 
