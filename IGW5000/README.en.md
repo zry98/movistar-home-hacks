@@ -79,7 +79,9 @@ Here is an example for soldering a USB-A female connector:
 
 Flash a USB drive with your favorite Linux distro.
 
-Considering the Movistar Home has only 2 GB of RAM, it is highly recommended to only use a [window manager](https://wiki.archlinux.org/title/Window_manager). If you want to use a full desktop environment, consider using a lightweight one like _Xfce_.
+Considering the Movistar Home has only 2 GB of RAM, it is highly recommended to only use a [window manager](https://wiki.archlinux.org/title/Window_manager). If you want to use a full desktop environment, consider using a lightweight one like _Xfce_. It is not recommended to use heavy desktop environments like _GNOME_ or _KDE Plasma_, or the Android-x86.
+
+It is also important to apply optimizations to improve performance and reduce eMMC wear, see the [Improve performance and reduce eMMC wearing](#improve-performance-and-reduce-emmc-wearing) section.
 
 Connect a keyboard and the drive to a USB hub and connect it to Movistar Home. Power it up while pressing the <kbd>F2</kbd> key, it will boot into the BIOS (UEFI) setup, navigate to the last tab (`Save & Exit`), select your USB drive (should be something like `UEFI: USB, Partition 1`) in the `Boot Override` menu, press <kbd>Enter</kbd> key to boot it.
 
@@ -98,11 +100,24 @@ Sway being a tiling window manager is not necessary for the use case of kiosk (d
 
 If you prefer to use a full desktop environment, please refer to the [legacy guide](./xfce.en.md) for Xfce.
 
+An experimental setup script can be found at [IGW5000/setup/setup.sh](setup/setup.sh), it has not been tested extensively, ask for help in our [Telegram group chat](https://t.me/movistar_home_hacking) if you encounter any issues. To use it, make an Arch Linux installation medium (like bootable pendrive), put the script in it too, run it with `bash` after booting into the installation command line.
+
 ### Improve Wi-Fi stability
 
 Create the file `/etc/modprobe.d/99-movistar-home-panel.conf` with the following content:
 
 ```plaintext
+# disable useless modules
+blacklist axp20x_i2c
+blacklist extcon_axp288
+blacklist intel_xhci_usb_role_switch
+blacklist extcon_intel_int3496
+blacklist hid_sensor_hub
+blacklist intel_atomisp2_pm
+blacklist ov2680
+# disable bluetooth (not working anyway)
+blacklist bluetooth
+blacklist hci_uart
 # disable RTL8822BE power-saving
 options rtw88_core disable_lps_deep=y
 options rtw88_pci disable_msi=y disable_aspm=y
@@ -135,7 +150,7 @@ Create the file `/etc/mkinitcpio.conf.d/99-movistar-home-panel.conf` with the fo
 MODULES=(i915 pwm-lpss-platform)
 ```
 
-Create the file `/etc/udev/rules.d/10-movistar-home-panel-backlight.rules` with the following content:
+Create the file `/etc/udev/rules.d/99-movistar-home-panel.rules` with the following content:
 
 ```plaintext
 ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness"
@@ -314,7 +329,7 @@ Add the kernel parameter `cpufreq.default_governor=performance` to the boot load
 - for GRUB, edit `/etc/default/grub` and add it to the end of the `GRUB_CMDLINE_LINUX_DEFAULT` line (inside quotes).
 - for other [boot loaders](https://wiki.archlinux.org/title/Arch_boot_process#Feature_comparison), refer to their documentation.
 
-Then execute `sudo mkinitcpio -P` to regenerate the initramfs, and `sudo grub-mkconfig -o /boot/grub/grub.cfg` for GRUB.
+Then execute `sudo mkinitcpio -P` to regenerate the initramfs. Also execute `sudo grub-mkconfig -o /boot/grub/grub.cfg` if using GRUB.
 
 Create the file `/etc/systemd/system/set-energy-perf-bias.service` with the following content:
 
@@ -331,6 +346,45 @@ WantedBy=multi-user.target
 ```
 
 Execute `sudo systemctl daemon-reload && sudo systemctl enable --now set-energy-perf-bias.service` to make it run at startup.
+
+#### zram
+
+Create the file `/etc/modules-load.d/99-movistar-home-panel.conf` with the following content, to load the module at boot:
+
+```plaintext
+zram
+```
+
+Edit the file `/etc/udev/rules.d/99-movistar-home-panel.rules` to append the following content, to set up zram device at boot:
+
+```plaintext
+ACTION=="add", KERNEL=="zram0", ATTR{initstate}=="0", ATTR{comp_algorithm}="zstd", ATTR{disksize}="2G", TAG+="systemd"
+```
+
+You can adjust the `ATTR{disksize}` value to your needs.
+
+Edit the file `/etc/fstab` to append the following content, to mount zram as swap at boot:
+
+```plaintext
+/dev/zram0      none    swap    defaults,discard,pri=100,x-systemd.makefs   0 0
+```
+
+Create the file `/etc/sysctl.d/99-movistar-home-panel.conf` with the following content, to optimize swap usage:
+
+```ini
+vm.swappiness = 180
+vm.watermark_boost_factor = 0
+vm.watermark_scale_factor = 125
+vm.page-cluster = 0
+```
+
+It is recommended to disable zswap from kernel when using zram. Add the kernel parameter `zswap.enabled=0` to the boot loader configuration file:
+
+- for systemd-boot, edit `/boot/loader/entries/arch.conf` and add it to the end of the `options` line.
+- for GRUB, edit `/etc/default/grub` and add it to the end of the `GRUB_CMDLINE_LINUX_DEFAULT` line (inside quotes).
+- for other [boot loaders](https://wiki.archlinux.org/title/Arch_boot_process#Feature_comparison), refer to their documentation.
+
+Then execute `sudo mkinitcpio -P` to regenerate the initramfs. Also execute `sudo grub-mkconfig -o /boot/grub/grub.cfg` if using GRUB.
 
 #### Logging
 
@@ -382,13 +436,16 @@ TimeoutStopSec=10
 CPUAccounting=yes
 BlockIOAccounting=yes
 MemoryAccounting=yes
-MemoryHigh=1.2G
-MemoryMax=1.2G
+MemoryHigh=2G
+MemoryMax=2G
 MemorySwapMax=0
 
 [Install]
 WantedBy=sway-session.target
 ```
+
+> [!TIP]
+> You should lower the `MemoryHigh`, `MemoryMax` values if you have other memory-intensive applications running alongside the browser, or you haven't [setup zram](#zram).
 
 Then execute `systemctl --user daemon-reload && systemctl --user enable --now hass-dashboard.service` to make it run at startup.
 

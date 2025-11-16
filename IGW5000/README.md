@@ -81,6 +81,8 @@ Flashea un pendrive USB con tu distribución de Linux favorita.
 
 Teniendo en cuenta que el Movistar Home solo tiene 2 GB de RAM, se recomienda encarecidamente usar solo [gestor de ventanas](https://wiki.archlinux.org/title/Window_manager_(Espa%C3%B1ol)). Si deseas usar un entorno de escritorio completo, considera uno muy ligero como _Xfce_.
 
+También es importante aplicar optimizaciones para mejorar el rendimiento y reducir el desgaste de la eMMC, consulta la sección [Mejorar el rendimiento y reducir el desgaste de la eMMC](#mejorar-el-rendimiento-y-reducir-el-desgaste-de-la-emmc).
+
 Conecta un teclado y el pendrive a un hub de USB y conéctalo al Movistar Home. Enciéndelo mientras presiona la tecla <kbd>F2</kbd>, se iniciará a la configuración del BIOS (UEFI), navega a la última pestaña (`Save & Exit`), selecciona tu pendrive (debería ser algo así como `UEFI: USB, Partition 1`) en el menú `Boot Override`, presiona la tecla <kbd>Intro</kbd> (<kbd>Enter</kbd>) para iniciarlo.
 
 ![bios](../assets/img/IGW5000-bios.jpg)
@@ -98,12 +100,25 @@ Sway, al ser un gestor de ventanas de mosaico (_tiling_), no es necesario para e
 
 Si deseas usar un entorno de escritorio completo, consulta la [guía antigua](./xfce.md) para Xfce.
 
+Puedes encontrar un script de configuración experimental en [IGW5000/setup/setup.sh](setup/setup.sh). No se ha probado exhaustivamente; si encuentras algún problema, pide ayuda en nuestro [grupo de Telegram](https://t.me/movistar_home_hacking). Para usarlo, crea un medio de instalación de Arch Linux (como un pendrive booteable), incluye el script en él y ejecútalo con `bash` tras arrancar en la línea de comandos de instalación.
+
 ### Mejorar la estabilidad del Wi-Fi
 
 Crea el fichero `/etc/modprobe.d/99-movistar-home-panel.conf` con el siguiente contenido:
 
 ```plaintext
-# desactiva el ahorro de energía del RTL8822BE
+# desactivar modulos innecesarios
+blacklist axp20x_i2c
+blacklist extcon_axp288
+blacklist intel_xhci_usb_role_switch
+blacklist extcon_intel_int3496
+blacklist hid_sensor_hub
+blacklist intel_atomisp2_pm
+blacklist ov2680
+# desactivar Bluetooth (aun no funciona)
+blacklist bluetooth
+blacklist hci_uart
+# desactivar el ahorro de energía del RTL8822BE
 options rtw88_core disable_lps_deep=y
 options rtw88_pci disable_msi=y disable_aspm=y
 options rtw_core disable_lps_deep=y
@@ -135,7 +150,7 @@ Crea el fichero `/etc/mkinitcpio.conf.d/99-movistar-home-panel.conf` con el sigu
 MODULES=(i915 pwm-lpss-platform)
 ```
 
-Crea el fichero `/etc/udev/rules.d/10-movistar-home-panel-backlight.rules` con el siguiente contenido:
+Crea el fichero `/etc/udev/rules.d/99-movistar-home-panel.rules` con el siguiente contenido:
 
 ```plaintext
 ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness"
@@ -308,13 +323,13 @@ exec alsaucm --card cht-bsw-rt5672 set _verb HiFi set _enadev Headphones
 
 #### Frecuencia de la CPU
 
-Añade el parámetro de kernel `cpufreq.default_governor=performance` al fichero de configuración del gestor de arranque:
+Añade el parámetro de kernel `cpufreq.default_governor=performance` al fichero de configuración del _bootloader_ (gestor de arranque):
 
-- Para systemd-boot, edita `/boot/loader/entries/arch.conf` y añádelo al final de la línea `options`.
-- Para GRUB, edita `/etc/default/grub` y añádelo al final de la línea `GRUB_CMDLINE_LINUX_DEFAULT` (entre comillas).
+- Para _systemd-boot_, edita `/boot/loader/entries/arch.conf` y añádelo al final de la línea `options`.
+- Para _GRUB_, edita `/etc/default/grub` y añádelo al final de la línea `GRUB_CMDLINE_LINUX_DEFAULT` (entre comillas).
 - Para otros [gestores de arranque](https://wiki.archlinux.org/title/Arch_boot_process_(Espa%C3%B1ol)#Comparaci%C3%B3n_de_caracter%C3%ADsticas), consulta su documentación.
 
-Ejecuta `sudo mkinitcpio -P` para regenerar el initramfs y `sudo grub-mkconfig -o /boot/grub/grub.cfg` para GRUB.
+Ejecuta `sudo mkinitcpio -P` para regenerar el initramfs. También ejecuta `sudo grub-mkconfig -o /boot/grub/grub.cfg` si usas GRUB.
 
 Crea el fichero `/etc/systemd/system/set-energy-perf-bias.service` con el siguiente contenido:
 
@@ -331,6 +346,45 @@ WantedBy=multi-user.target
 ```
 
 Ejecuta `sudo systemctl daemon-reload && sudo systemctl enable --now set-energy-perf-bias.service` para que se ejecute al iniciar.
+
+#### zram
+
+Crea el fichero `/etc/modules-load.d/99-movistar-home-panel.conf` con el siguiente contenido para cargar el módulo al arrancar:
+
+```plaintext
+zram
+```
+
+Edita el fichero `/etc/udev/rules.d/99-movistar-home-panel.rules` para añadir el siguiente contenido, para configurar el dispositivo zram al arrancar:
+
+```plaintext
+ACTION=="add", KERNEL=="zram0", ATTR{initstate}=="0", ATTR{comp_algorithm}="zstd", ATTR{disksize}="2G", TAG+="systemd"
+```
+
+Puedes ajustar el valor de `ATTR{disksize}` según tus necesidades.
+
+Edita el fichero `/etc/fstab` para añadir el siguiente contenido y así montar zram como _swap_ al arrancar:
+
+```plaintext
+/dev/zram0      none    swap    defaults,discard,pri=100,x-systemd.makefs   0 0
+```
+
+Crea el fichero `/etc/sysctl.d/99-movistar-home-panel.conf` con el siguiente contenido para optimizar el uso del swap:
+
+```ini
+vm.swappiness = 180
+vm.watermark_boost_factor = 0
+vm.watermark_scale_factor = 125
+vm.page-cluster = 0
+```
+
+Se recomienda deshabilitar _zswap_ desde el kernel al usar zram. Añade el parámetro de kernel `zswap.enabled=0` al fichero de configuración del bootloader:
+
+- Para systemd-boot, edita `/boot/loader/entries/arch.conf` y añádelo al final de la línea `options`.
+- Para GRUB, edita `/etc/default/grub` y añádelo al final de la línea `GRUB_CMDLINE_LINUX_DEFAULT` (entre comillas).
+- Para otros [gestores de arranque](https://wiki.archlinux.org/title/Arch_boot_process_(Espa%C3%B1ol)#Comparaci%C3%B3n_de_caracter%C3%ADsticas), consulta su documentación.
+
+Ejecuta `sudo mkinitcpio -P` para regenerar el initramfs. También ejecuta `sudo grub-mkconfig -o /boot/grub/grub.cfg` si usas GRUB.
 
 #### Logging
 
@@ -382,13 +436,16 @@ TimeoutStopSec=10
 CPUAccounting=yes
 BlockIOAccounting=yes
 MemoryAccounting=yes
-MemoryHigh=1.2G
-MemoryMax=1.2G
+MemoryHigh=2G
+MemoryMax=2G
 MemorySwapMax=0
 
 [Install]
 WantedBy=sway-session.target
 ```
+
+> [!TIP]
+> Deberías reducir los valores de `MemoryHigh` y `MemoryMax` si tienes otras aplicaciones que consumen mucha memoria ejecutándose junto con el navegador, o si no has [configurado zram](#zram).
 
 Y ejecuta `systemctl --user daemon-reload && systemctl --user enable --now hass-dashboard.service` para que se ejecute al iniciar.
 

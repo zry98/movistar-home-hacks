@@ -211,7 +211,7 @@ zram
 tls
 EOF
 
-  cat > /etc/sysctl.d/99-movistart-home-panel.conf <<\EOF
+  cat > /etc/sysctl.d/99-movistar-home-panel.conf <<\EOF
 vm.swappiness = 180
 vm.watermark_boost_factor = 0
 vm.watermark_scale_factor = 125
