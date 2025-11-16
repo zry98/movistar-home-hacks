@@ -52,6 +52,10 @@ Si tienes este modelo, por favor consulta [IGW5000/README.md](./IGW5000/README.m
 - P4blo24
 - josemoraocana
 - Alfredo [@alfredopironti](https://github.com/alfredopironti)
+- Chocomerde
+- Lucas Sánchez
+- Tony
+- Javier
 
 ## Aviso legal
 

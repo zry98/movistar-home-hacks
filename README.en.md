@@ -52,6 +52,10 @@ Special thanks to everyone who has contributed!
 - P4blo24
 - josemoraocana
 - Alfredo [@alfredopironti](https://github.com/alfredopironti)
+- Chocomerde
+- Lucas Sánchez
+- Tony
+- Javier
 
 ## Disclaimer
 
