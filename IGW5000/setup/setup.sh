@@ -55,9 +55,9 @@ EOF
   iwctl station wlan0 get-networks
 
   local SSID PASSWORD IS_HIDDEN
-  read -p "Enter Wi-Fi name: " SSID
-  read -p "Is this Wi-Fi hidden? (y/N): " IS_HIDDEN && [[ "$IS_HIDDEN" == [yY] ]] && IS_HIDDEN=1 || IS_HIDDEN=0
-  read -p "Enter Wi-Fi password: " PASSWORD
+  read -pr "Enter Wi-Fi name: " SSID
+  read -pr "Is this Wi-Fi hidden? (y/N): " IS_HIDDEN && [[ "$IS_HIDDEN" == [yY] ]] && IS_HIDDEN=1 || IS_HIDDEN=0
+  read -pr "Enter Wi-Fi password: " PASSWORD
 
   echo "Connecting, please wait for 5 seconds..."
   if [[ "$IS_HIDDEN" -eq 0 ]]; then
@@ -75,6 +75,8 @@ EOF
 function arch_install {
   set -e
 
+  loadkeys es
+
   ln -sf /usr/share/zoneinfo/${TZ:-Europe/Madrid} /etc/localtime
   for key in "${!_CONFIG_TIMESYNCD[@]}"; do
     sed -i "s/^#\? \?${key}=.*$/${key}=${_CONFIG_TIMESYNCD[$key]}/" /etc/systemd/timesyncd.conf
@@ -83,9 +85,9 @@ function arch_install {
   sleep 5  # wait for clock sync
   hwclock --systohc
 
-  umount -R /mnt || true
-  local PTUUID="$(blkid -s PTUUID -o value ${DISK_DEVICE})"
-  sfdisk ${DISK_DEVICE} <<EOF
+  ! mountpoint --quiet /mnt || umount --recursive --force --quiet /mnt
+  local PTUUID="$(blkid -s PTUUID -o value "${DISK_DEVICE}")"
+  sfdisk "${DISK_DEVICE}" <<EOF
 label: gpt
 label-id: ${PTUUID^^}
 device: ${DISK_DEVICE}
@@ -94,8 +96,8 @@ first-lba: 2048
 last-lba: 30670814
 sector-size: 512
 
-${DISK_DEVICE}p1 : start=        4096, size=      614400, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, uuid=43E90F4B-A203-411C-A0C3-960E11ED73A5
-${DISK_DEVICE}p2 : start=      618496, size=    30049589, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, uuid=9C801BE8-6085-4BF1-A291-610B51403F26, name="root"
+${DISK_DEVICE}p1 : start=4096, size=614400, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, uuid=43E90F4B-A203-411C-A0C3-960E11ED73A5
+${DISK_DEVICE}p2 : start=618496, size=30049589, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, uuid=9C801BE8-6085-4BF1-A291-610B51403F26, name="root"
 EOF
   sleep 2  # wait for disk sync
   mkfs.fat -F 32 "${DISK_DEVICE}p1"
@@ -105,7 +107,8 @@ EOF
 
   reflector --sort rate --country es --number 20 --age 6 --latest 10 --fastest 10
   pacstrap -K /mnt \
-    base linux linux-firmware \
+    base linux \
+    linux-firmware-intel linux-firmware-realtek linux-firmware-other \
     intel-ucode \
     iw iwd \
     openssh \
@@ -117,7 +120,7 @@ EOF
     curl rsync reflector \
     ca-certificates ca-certificates-mozilla \
     libgpiod \
-    alsa-utils alsa-ucm-conf \
+    alsa-utils alsa-ucm-conf alsa-firmware \
     brightnessctl \
     noto-fonts \
     seatd sway swayidle \
@@ -137,15 +140,10 @@ EOF
 function setup_chrooted {
   set -e
 
-  local ROOT_PASSWD USER_PASSWD
-  read -p "Enter root password (leave empty to not change it): " ROOT_PASSWD
-  read -p "Enter user password (leave empty to not change it): " USER_PASSWD
-
-  local HASS_DASHBOARD_URL PANEL_CONTROLLER_TOKEN
-  read -p "Enter Home Assistant dashboard URL (leave empty to skip): " HASS_DASHBOARD_URL
-  read -p "Enter panel controller token (leave empty to skip): " PANEL_CONTROLLER_TOKEN
-
   # locale
+  cat > /etc/vconsole.conf <<\EOF
+KEYMAP=es
+EOF
   cat > /etc/locale.gen <<\EOF
 en_US.UTF-8 UTF-8
 es_ES.UTF-8 UTF-8
@@ -156,6 +154,14 @@ LANG=en_US.UTF-8
 EOF
 
   # basics
+  local ROOT_PASSWD USER_PASSWD
+  read -pr "Enter root password (leave empty to not change it): " ROOT_PASSWD
+  read -pr "Enter user password (leave empty to not change it): " USER_PASSWD
+
+  local HASS_DASHBOARD_URL PANEL_CONTROLLER_TOKEN
+  read -pr "Enter Home Assistant dashboard URL (leave empty to skip the service): " HASS_DASHBOARD_URL
+  read -pr "Enter panel controller token (leave empty to skip the service): " PANEL_CONTROLLER_TOKEN
+
   if [[ ! -z "${ROOT_PASSWD}" ]]; then
     echo "${ROOT_PASSWD}" | passwd --stdin root
   fi
@@ -232,6 +238,7 @@ ACTION=="add", KERNEL=="zram0", ATTR{initstate}=="0", ATTR{comp_algorithm}="zstd
 EOF
 
   cat >> /etc/fstab <<\EOF
+
 /dev/zram0  none  swap  defaults,discard,pri=100,x-systemd.makefs 0 0
 EOF
 
@@ -266,7 +273,7 @@ EOF
   for key in "${!_CONFIG_TIMESYNCD[@]}"; do
     sed -i "s/^#\? \?${key}=.*$/${key}=${_CONFIG_TIMESYNCD[$key]}/" /etc/systemd/timesyncd.conf
   done
-  timedatectl set-ntp true
+  systemctl enable systemd-timesyncd
 
   # journald
   for key in "${!_CONFIG_JOURNALD[@]}"; do
@@ -408,6 +415,12 @@ TimeoutStopSec=10
 WantedBy=sway-session.target
 EOF
   if [[ ! -z "${PANEL_CONTROLLER_TOKEN}" ]]; then
+    pacman --sync --noconfirm base-devel gtk4 gtk4-layer-shell
+    python3 -m venv /home/panel/panel-controller
+    curl -L -o /home/panel/panel-controller/app.py https://raw.githubusercontent.com/zry98/movistar-home-hacks/main/IGW5000/panel-controller/app.py
+    curl -L -o /home/panel/panel-controller/requirements.txt https://raw.githubusercontent.com/zry98/movistar-home-hacks/main/IGW5000/panel-controller/requirements.txt
+    /home/panel/panel-controller/bin/pip install -r /home/panel/panel-controller/requirements.txt
+
     cat > /home/panel/.config/systemd/user/panel-controller.service <<EOF
 [Unit]
 Description=Panel controller
@@ -474,16 +487,18 @@ EOF
     seatd.service \
     fix-sound.service
   # enable user services
-  systemctl --user --machine=panel@ enable \
+  mkdir -p /home/panel/.config/systemd/user/{default.target.wants,sway-session.target.wants}/
+  chown -R panel:panel /home/panel
+  sudo --user=panel systemctl --user enable \
+    swayidle.service \
     ydotool.service
-  mkdir /home/panel/.config/systemd/user/sway-session.target.wants/
-  ln -sf /home/panel/.config/systemd/user/swayidle.service /home/panel/.config/systemd/user/sway-session.target.wants/swayidle.service
   if [[ ! -z "${PANEL_CONTROLLER_TOKEN}" ]]; then
-    ln -sf /home/panel/.config/systemd/user/panel-controller.service /home/panel/.config/systemd/user/sway-session.target.wants/panel-controller.service
+    sudo --user=panel systemctl --user enable panel-controller.service
   fi
   if [[ ! -z "${HASS_DASHBOARD_URL}" ]]; then
-    ln -sf /home/panel/.config/systemd/user/hass-dashboard.service /home/panel/.config/systemd/user/sway-session.target.wants/hass-dashboard.service
+    sudo --user=panel systemctl --user enable hass-dashboard.service
   fi
+
   chown -R panel:panel /home/panel # ensure file permissions
   # pacman mirrors
   reflector --sort rate --country es --number 20 --age 6 --latest 10 --fastest 10
@@ -504,8 +519,13 @@ if ! systemd-detect-virt --chroot; then
   # copy the script to chroot
   cp -f "$(realpath "$0")" /mnt/root/setup.sh
   chmod +x /mnt/root/setup.sh
-  arch-chroot /mnt /root/setup.sh
+  arch-chroot -S /mnt /root/setup.sh --post-install
 else
-  # running in chroot, run post-install setups
-  setup_chrooted
+  if [[ "$#" -eq 0 ]]; then
+    # running in chroot but no arguments given, meaning it's being re-ran inside chroot after post-install setups failed or something
+    echo "Please exit from chroot by 'Ctrl+D' or executing 'exit', then re-run the script"
+  else
+    # run post-install setups
+    setup_chrooted
+  fi
 fi
