@@ -66,7 +66,7 @@ Sin embargo, el conector JST-PH2.0 blanco hembra de 4 pines que se encuentra cer
 
 Puedes improvisar un cable sencillo utilizando un conector JST-PH2.0 macho o un [_pin header_](https://en.wikipedia.org/wiki/Pin_header) hembra de 4 pines con paso de 2,0 mm.
 
-### Modo EDL
+### Entrar al modo EDL
 
 > [!IMPORTANT]
 > Se recomienda utilizar el [modo EDL de Qualcomm](https://en.wikipedia.org/wiki/Qualcomm_EDL_mode) para realizar primero un volcado completo de la memoria flash, para que puedas restaurarlo a su estado original si algo sale mal.
@@ -75,7 +75,7 @@ Puedes hacer que el dispositivo entre en modo EDL cortocircuitando los pines `D+
 
 A continuación, puedes usar la herramienta [QPST de Qualcomm](https://qpsttool.com/) en Windows, o mejor aún, la herramienta [edl](https://github.com/bkerler/edl) de B.Kerler (multi-plataforma) para volcar y flashear la ROM.
 
-Un fichero de _Firehose Programmer_ (_bootloader_ externo) es necesario para que la herramienta EDL se comunique con el dispositivo. En este repositorio se proporciona un firehose funcional en [`RG3205W/firehose.mbn`](firehose.mbn) (SHA256:0e03a8189b7451d1bb81d6fb10efbcefd399623edcb015af45008eedf8fd1298).
+Se requiere un fichero de _Firehose Programmer_ (_bootloader_ externo), en este repositorio se proporciona uno que funciona en [`RG3205W/firehose.mbn`](firehose.mbn) (SHA256:0e03a8189b7451d1bb81d6fb10efbcefd399623edcb015af45008eedf8fd1298).
 
 También hay unos volcados de ROM original aportados por la comunidad disponibles en la sección [Recursos](#recursos) más abajo.
 
@@ -84,7 +84,7 @@ También hay unos volcados de ROM original aportados por la comunidad disponible
 >
 > Solo deberías tocar las particiones `boot`, `recovery`, `system` y `vendor`, y borrar `userdata` y `cache` después de flashear.
 >
-> **NUNCA TOQUES** las demás particiones, ya que pueden contener el *bootloader*, firmware u otros datos específicos del dispositivo, como direcciones MAC, IMEI, datos de calibración, etc.
+> **NUNCA TOQUES** las demás particiones, especialmente `persist`, `aboot*`, `sbl*`, `modem*`, etc,. Porque pueden contener el *bootloader*, firmware u otros datos específicos del dispositivo, como direcciones MAC, IMEI, datos de calibración, etc.
 
 ### Entrar al modo recovery
 

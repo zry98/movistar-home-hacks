@@ -69,7 +69,7 @@ However, the 4-pin white female JST-PH2.0 connector nearby is also connected to 
 
 You can improvise a simple custom cable using a JST-PH2.0 male plug, or a 4-pin female [pin header](https://en.wikipedia.org/wiki/Pin_header) of 2.0 mm pitch.
 
-### EDL mode
+### Entering EDL mode
 
 > [!IMPORTANT]
 > It is recommended to use the [Qualcomm EDL mode](https://en.wikipedia.org/wiki/Qualcomm_EDL_mode) to make a full flash dump first, so that you can always restore it back to stock if anything goes wrong.
@@ -78,7 +78,7 @@ You can make the device enter EDL mode by shorting the USB `D+` and `GND` pins (
 
 Then you can use [Qualcomm's QPST tool](https://qpsttool.com/) on Windows, or better yet, B.Kerler's [edl](https://github.com/bkerler/edl) tool (cross-platform) to dump and flash the ROM.
 
-An Firehose Programmer file (external bootloader) is required by EDL tool to communicate with the device. A working firehose is provided in this repository at [`RG3205W/firehose.mbn`](firehose.mbn) (SHA256:0e03a8189b7451d1bb81d6fb10efbcefd399623edcb015af45008eedf8fd1298).
+An Firehose Programmer file (external bootloader) is required, a working one is provided in this repository at [`RG3205W/firehose.mbn`](firehose.mbn) (SHA256:0e03a8189b7451d1bb81d6fb10efbcefd399623edcb015af45008eedf8fd1298).
 
 There are also several stock ROM dumps made by the community available in the [Resources](#resources) section below.
 
@@ -87,7 +87,7 @@ There are also several stock ROM dumps made by the community available in the [R
 > 
 > You should only touch the `boot`, `recovery`, `system`, `vendor` partitions, and clear `userdata` and `cache` after flashing.
 >
-> **DO NOT EVER** touch the other partitions which can contain bootloader, firmware or device-specific data like MAC addresses, IMEI, calibration data, etc.
+> **DO NOT EVER** touch the other partitions, especially `persist`, `aboot*`, `sbl*`, `modem*`, etc,. As can contain bootloader, firmware or device-specific data like MAC addresses, IMEI, calibration data, etc.
 
 ### Entering recovery mode
 
