@@ -470,9 +470,9 @@ TimeoutStopSec=10
 CPUAccounting=yes
 BlockIOAccounting=yes
 MemoryAccounting=yes
-MemoryHigh=2G
-MemoryMax=2G
-MemorySwapMax=0
+MemoryHigh=1G
+MemoryMax=1G
+MemorySwapMax=1.5G
 
 [Install]
 WantedBy=sway-session.target

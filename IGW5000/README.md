@@ -361,8 +361,6 @@ Edita el fichero `/etc/udev/rules.d/99-movistar-home-panel.rules` para añadir e
 ACTION=="add", KERNEL=="zram0", ATTR{initstate}=="0", ATTR{comp_algorithm}="zstd", ATTR{disksize}="2G", TAG+="systemd"
 ```
 
-Puedes ajustar el valor de `ATTR{disksize}` según tus necesidades.
-
 Edita el fichero `/etc/fstab` para añadir el siguiente contenido y así montar zram como _swap_ al arrancar:
 
 ```plaintext
@@ -438,9 +436,9 @@ TimeoutStopSec=10
 CPUAccounting=yes
 BlockIOAccounting=yes
 MemoryAccounting=yes
-MemoryHigh=2G
-MemoryMax=2G
-MemorySwapMax=0
+MemoryHigh=1G
+MemoryMax=1G
+MemorySwapMax=1.5G
 
 [Install]
 WantedBy=sway-session.target
