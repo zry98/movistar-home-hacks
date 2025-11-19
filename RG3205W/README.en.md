@@ -37,12 +37,12 @@ Then remove **8 screws** under the panel, and **4 screws** hidden under the blac
 
 For limited software-only hacks please refer to [rev5-softhacks/README.en.md](./rev5-softhacks/README.en.md).
 
-## Flashing a custom ROM
+## Flashing a modified ROM
 
 > [!IMPORTANT]
 > **WORK IN PROGRESS**
 
-Fortunately, the bootloader can be unlocked and boot any custom ROM. In order to do this, you may need to improvise a custom USB cable depending on the variant you have.
+Fortunately, the bootloader can be unlocked and boot any modified ROM. In order to do this, you may need to improvise a modified USB cable depending on the variant you have.
 
 Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `Rev4` and `Rev5`.
 
@@ -83,19 +83,22 @@ An Firehose Programmer file (external bootloader) is required, a working one is 
 There are also several stock ROM dumps made by the community available in the [Resources](#resources) section below.
 
 > [!CAUTION]
-> Proceed with extra caution when flashing custom ROMs, as it may brick your device.
+> Proceed with extra caution when flashing modified ROMs, as it may brick your device.
 > 
 > You should only touch the `boot`, `recovery`, `system`, `vendor` partitions, and clear `userdata` and `cache` after flashing.
 >
-> **DO NOT EVER** touch the other partitions, especially `persist`, `aboot*`, `sbl*`, `modem*`, etc,. As can contain bootloader, firmware or device-specific data like MAC addresses, IMEI, calibration data, etc.
+> **DO NOT EVER** touch the other partitions, especially `persist`, `oem`, `modemst*`, etc,. As they can contain device-specific data like MAC addresses, IMEI, calibration data, etc.
 
 ### Entering recovery mode
 
 In order to enter the recovery mode, power off the device first.
 
-Hold the volume "+" (up), volume "-" (down) and power buttons all together, until the blue screen with white Movistar logo appears and disappears to a black screen (with a little bit backlight), release all the buttons.
+Hold the volume "+" (up), volume "-" (down) at the top and power buttons (the white button next to the power jack) all together, until the blue screen with white Movistar logo appears and disappears to a black screen (with a little bit backlight), release all the buttons.
 
-Then, hold the volume "+" and power buttons together again, release after 3 seconds. The recovery menu should appear.
+Then, hold the volume "+" and power buttons together again, release them after 3 seconds. The recovery menu should appear.
+
+> [!TIP]
+> If the above method is not working for you, try disassembling the device and pressing the buttons directly without the plastic parts of the chassis, in case _you have morcilla fingers_.
 
 You can navigate in this menu using the volume buttons, and select an option using the power button.
 
@@ -103,9 +106,7 @@ You can navigate in this menu using the volume buttons, and select an option usi
 
 Install the [Android SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools) on your PC to get `adb` and `fastboot` commands.
 
-Connect the device to your PC via USB, hold the volume "-" (down) and power buttons together, until the blue screen with white Movistar logo appears and disappears to a black screen (with a little bit backlight), release the buttons. It is now booted into the "fastboot" mode.
-
-If this didn't work for you, boot the device into recovery mode first following the previous section, then select "Reboot to bootloader" option.
+Connect the device to your PC via USB, boot the device into recovery mode following the previous section, then select "Reboot to bootloader" option.
 
 Running `fastboot devices` should show your device is identified.
 
@@ -115,11 +116,11 @@ Run `fastboot flashing unlock` and then `fastboot oem unlock` to unlock the boot
 
 You can now flash modified images to the partitions using `fastboot flash <partition> <image-file>` command. For example, `fastboot flash system system.bin`.
 
-This repository provides a custom ROM based on stock ROM [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), with all the pre-installed bloatwares removed, added some useful apps, and some optimizations for better performance and prolonged eMMC lifespan. You can find it on the [Latest Release](https://github.com/zry98/movistar-home-hacks/releases/latest) page.
+This repository provides a modified ROM based on stock ROM [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), with all the pre-installed bloatwares removed, added some useful apps, and some optimizations for better performance and prolonged eMMC lifespan. You can find it on the [Latest Release](https://github.com/zry98/movistar-home-hacks/releases/latest) page.
 
-After flashing, reboot the device into the recovery mode, select the "Wipe data/factory reset" option to format the `userdata` partition; then select "Wipe cache partition" option to format the `cache` partition.
+After flashing, reboot the device into the recovery mode again, select the "Wipe data/factory reset" option to format the `userdata` partition; then select "Wipe cache partition" option to format the `cache` partition.
 
-Finally, select the "Reboot system now" option to reboot the device into the new custom ROM.
+Finally, select the "Reboot system now" option to reboot the device into the modified ROM.
 
 ## Resources
 

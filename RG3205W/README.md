@@ -34,12 +34,12 @@ Luego retira los **8 tornillos** situados bajo el panel y los **4 tornillos** oc
 
 Para información sobre modificaciones solo por software con limitaciones, por favor consulta [rev5-softhacks/README.md](./rev5-softhacks/README.md).
 
-## Flashear una ROM personalizada
+## Flashear una ROM modificada
 
 > [!IMPORTANT]
 > **TRABAJO EN PROGRESO**
 
-Afortunadamente, el *bootloader* se puede desbloquear y permite arrancar cualquier ROM personalizada. Para hacerlo, puede que necesites improvisar un cable USB, dependiendo de la variante que tengas.
+Afortunadamente, el *bootloader* se puede desbloquear y permite arrancar cualquier ROM modificada. Para hacerlo, puede que necesites improvisar un cable USB, dependiendo de la variante que tengas.
 
 Actualmente existen al menos 2 variantes (revisiones de hardware) del RG3205W: `Rev4` y `Rev5`.
 
@@ -80,29 +80,30 @@ Se requiere un fichero de _Firehose Programmer_ (_bootloader_ externo), en este 
 También hay unos volcados de ROM original aportados por la comunidad disponibles en la sección [Recursos](#recursos) más abajo.
 
 > [!CAUTION]
-> Procede con extrema precaución al flashear ROMs personalizadas, ya que podrías dejar el dispositivo inutilizable _(brickearlo)_.
+> Procede con extrema precaución al flashear ROMs modificadas, ya que podrías dejar el dispositivo inutilizable _(brickearlo)_.
 >
 > Solo deberías tocar las particiones `boot`, `recovery`, `system` y `vendor`, y borrar `userdata` y `cache` después de flashear.
 >
-> **NUNCA TOQUES** las demás particiones, especialmente `persist`, `aboot*`, `sbl*`, `modem*`, etc,. Porque pueden contener el *bootloader*, firmware u otros datos específicos del dispositivo, como direcciones MAC, IMEI, datos de calibración, etc.
+> **NUNCA TOQUES** las demás particiones, especialmente `persist`, `oem`, `modemst*`, etc,. Porque pueden contener los datos específicos del dispositivo, como direcciones MAC, IMEI, datos de calibración, etc.
 
 ### Entrar al modo recovery
 
 Para entrar al modo _recovery_, primero apaga el dispositivo.
 
-Mantén pulsados los botones de volumen "+" (subir), volumen "-" (bajar) y encendido juntos, hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego desaparezca quedándose la pantalla en negro (con un poco de retroiluminación), suelta todos los botones.
+Mantén pulsados los botones de volumen "+" (subir), volumen "-" (bajar) de la parte superior y encendido (el botón blanco al lado de la toma de corriente) todos juntos, hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego desaparezca quedándose la pantalla en negro (con un poco de retroiluminación), suelta todos los botones.
 
 Ahora, vuelve a mantener pulsados los botones de volumen "+" y encendido juntos, y suéltalos después de 3 segundos. Debería aparecer el menú de recovery.
+
+> [!TIP]
+> Si el método anterior no te funciona, intenta desmontar el dispositivo y pulsar los botones directamente sin las piezas de plástico de la carcasa, en caso de que _tengas morcillas en vez de dedos_.
 
 Puedes navegar en este menú con los botones de volumen y seleccionar una opción con el botón de encendido.
 
 ### Desbloquear el bootloader
 
-Instala en tu PC las [Android SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools) para obtener los comandos `adb` y `fastboot`.
+Instala en tu PC las [Herramientas de la plataforma del SDK de Android](https://developer.android.com/tools/releases/platform-tools?hl=es-419) para obtener los comandos `adb` y `fastboot`.
 
-Conecta el dispositivo a tu PC mediante USB, mantén pulsados los botones de volumen "-" (bajar) y encendido juntos, hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego desaparezca quedándose la pantalla en negro (con un poco de retroiluminación), suelta los botones. Ahora estará arrancado al modo "_fastboot_".
-
-Si esto no te funciona, arranca el dispositivo al modo recovery siguiendo la sección anterior y luego selecciona la opción "Reboot to bootloader".
+Conecta el dispositivo a tu PC mediante USB, arranca el dispositivo al modo recovery siguiendo la sección anterior, y selecciona la opción "Reboot to bootloader".
 
 Al ejecutar `fastboot devices` deberías ver que el dispositivo está identificado.
 
@@ -113,11 +114,11 @@ Ejecuta `fastboot flashing unlock` y luego `fastboot oem unlock` para desbloquea
 Ahora puedes flashear imágenes modificadas a las particiones usando el comando
 `fastboot flash <partición> <fichero-imágen>`. Por ejemplo, `fastboot flash system system.bin`.
 
-Este repositorio ofrece una ROM personalizada basada en la ROM original [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), con todas las aplicaciones preinstaladas innecesarias eliminadas, algunas apps útiles añadidas y unas optimizaciones para mejorar el rendimiento y alargar la vida útil del disco eMMC. Puedes encontrarla en la página de [Latest Release](https://github.com/zry98/movistar-home-hacks/releases/latest).
+Este repositorio ofrece una ROM modificada basada en la ROM original [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), con todas las aplicaciones preinstaladas innecesarias eliminadas, algunas apps útiles añadidas y unas optimizaciones para mejorar el rendimiento y alargar la vida útil del disco eMMC. Puedes encontrarla en la página de [_Latest Release_](https://github.com/zry98/movistar-home-hacks/releases/latest).
 
-Después de flashear, reinicia el dispositivo al modo recovery, selecciona la opción "Wipe data/factory reset" para formatear la partición `userdata`; luego selecciona la opción "Wipe cache partition" para formatear la partición `cache`.
+Después de flashear, reinicia el dispositivo al modo recovery otra vez, selecciona la opción "Wipe data/factory reset" para formatear la partición `userdata`; luego selecciona la opción "Wipe cache partition" para formatear la partición `cache`.
 
-Finalmente, selecciona la opción "Reboot system now" para reiniciar el dispositivo a la nueva ROM personalizada.
+Finalmente, selecciona la opción "Reboot system now" para reiniciar el dispositivo a la ROM modificada.
 
 ## Recursos
 
