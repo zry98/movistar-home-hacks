@@ -6,15 +6,19 @@ como un panel de dashboard para Home Assistant.
 
 [🇺🇸 English version](./README.en.md)
 
-> [!IMPORTANT]
-> **TRABAJO EN CURSO**, especialmente para la variante Rev5.
-
 ## Escapar del quiosco
 
 > [!CAUTION]
 > Seguir las instrucciones a continuación **anulará la garantía** de tu dispositivo y **puede violar tu contrato o acuerdo de servicio** con Movistar. Procede completamente bajo tu propio riesgo.
 
 No necesitas (y sea muy difícil) instalar Linux como con el modelo `IGW-5000A2BKMP-I v2`.
+
+### Conectar un teclado Bluetooth
+
+> [!NOTE]
+> **El servidor oficial fue cerrado por Movistar el 12 de noviembre de 2025**, por lo que este método ya no funcionará si tu dispositivo se restableció a fábrica o se conectó a una red Wi-Fi diferente. El proceso de incorporación no podrá completarse con un mensaje como _"Se ha perdido la conexión con el servidor"_.
+>
+> Consulta la guía de flashear una ROM modificada en [RG3205W/README.md](../README.md), o usa un teclado USB como se describe en la siguiente sección.
 
 Si tienes un Wi-Fi de Movistar con un contrato _Fusión_ válido, puedes acceder a la pantalla principal después de conectarte. Desliza hacia abajo el panel superior y toca "Ajustes" para abrir los ajustes, luego toca _Conectividad > Altavoz bluetooth_ para entrar al menú originalmente para conectarse a un altavoz Bluetooth. Pero por alguna razón, también se puede usar para conectar un teclado Bluetooth; si no tienes uno, puedes intentar usar una aplicación de teclado Bluetooth virtual en tu móvil (consulta la sección [Recursos](#recursos) para unas apps sugeridas). Ahora puedes saltarte la siguiente sección e ir directamente a [la parte de configuraciones](#configuraciones).
 

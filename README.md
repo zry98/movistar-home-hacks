@@ -28,6 +28,8 @@ Si tienes este modelo, por favor consulta [RG3205W/README.md](./RG3205W/README.m
 
 ![label-RG3202W](./assets/img/RG3205W-label.jpg)
 
+---
+
 ### IGW-5000A2BKMP-I v2
 
 Fabricado por _MitraStar_, probablemente desde 2018 hasta 2020.
