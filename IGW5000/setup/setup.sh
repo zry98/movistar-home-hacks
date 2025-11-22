@@ -55,9 +55,9 @@ EOF
   iwctl station wlan0 get-networks
 
   local SSID PASSWORD IS_HIDDEN
-  read -pr "Enter Wi-Fi name: " SSID
-  read -pr "Is this Wi-Fi hidden? (y/N): " IS_HIDDEN && [[ "$IS_HIDDEN" == [yY] ]] && IS_HIDDEN=1 || IS_HIDDEN=0
-  read -pr "Enter Wi-Fi password: " PASSWORD
+  read -rp "Enter Wi-Fi name: " SSID
+  read -rp "Is this Wi-Fi hidden? (y/N): " IS_HIDDEN && [[ "$IS_HIDDEN" == [yY] ]] && IS_HIDDEN=1 || IS_HIDDEN=0
+  read -rp "Enter Wi-Fi password: " PASSWORD
 
   echo "Connecting, please wait for 5 seconds..."
   if [[ "$IS_HIDDEN" -eq 0 ]]; then
@@ -155,12 +155,12 @@ EOF
 
   # basics
   local ROOT_PASSWD USER_PASSWD
-  read -pr "Enter root password (leave empty to not change it): " ROOT_PASSWD
-  read -pr "Enter user password (leave empty to not change it): " USER_PASSWD
+  read -rp "Enter root password (leave empty to not change it): " ROOT_PASSWD
+  read -rp "Enter user password (leave empty to not change it): " USER_PASSWD
 
   local HASS_DASHBOARD_URL PANEL_CONTROLLER_TOKEN
-  read -pr "Enter Home Assistant dashboard URL (leave empty to skip the service): " HASS_DASHBOARD_URL
-  read -pr "Enter panel controller token (leave empty to skip the service): " PANEL_CONTROLLER_TOKEN
+  read -rp "Enter Home Assistant dashboard URL (leave empty to skip the service): " HASS_DASHBOARD_URL
+  read -rp "Enter panel controller token (leave empty to skip the service): " PANEL_CONTROLLER_TOKEN
 
   if [[ ! -z "${ROOT_PASSWD}" ]]; then
     echo "${ROOT_PASSWD}" | passwd --stdin root
