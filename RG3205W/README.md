@@ -60,7 +60,7 @@ Si el tuyo tiene una placa `Rev4`, ¡eres muy afortunado! Ya viene con un conect
 
 Por desgracia, la variante más común en el mercado es la `Rev5`, que no viene con el conector USB Tipo-C populado.
 
-Sin embargo, el conector JST-PH2.0 blanco hembra de 4 pines que se encuentra cerca también está conectado a los 4 pines de USB 2.0, con el pinout de izquierda a derecha: `D-`, `D+`, `GND`, `+5V`, puedes usarlo para sacar la conexión USB sin necesidad de soldar un conector SMD de USB Tipo-C (lo cual es muy difícil de hacer).
+Sin embargo, el conector JST-PH2.0 blanco hembra con 4 pines que se encuentra cerca (marcado como "J4902") también está conectado a los 4 pines de USB 2.0, con el pinout de izquierda a derecha: `D-`, `D+`, `GND`, `+5V`, puedes usarlo para sacar la conexión USB sin necesidad de soldar un conector SMD de USB Tipo-C (lo cual es muy difícil de hacer).
 
 ![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
@@ -71,7 +71,9 @@ Puedes improvisar un cable sencillo utilizando un conector JST-PH2.0 macho o un 
 > [!IMPORTANT]
 > Se recomienda utilizar el [modo EDL de Qualcomm](https://en.wikipedia.org/wiki/Qualcomm_EDL_mode) para realizar primero un volcado completo de la memoria flash, para que puedas restaurarlo a su estado original si algo sale mal.
 
-Puedes hacer que el dispositivo entre en modo EDL cortocircuitando los pines `D+` y `GND` del USB (por ejemplo, usando un cuchillo metálico o unas pinzas) mientras conectas el cable de alimentación, manteniendo durante 3 segundos antes de soltar.
+Puedes hacer que el dispositivo entre en modo EDL cortocircuitando los pines `D+` y `GND` del USB (por ejemplo, usando una cuchilla o unas pinzas metálicas) mientras conectas el cable de alimentación, manteniendo el cortocircuito durante 3 segundos antes de soltarlo.
+
+Para la variante rev4, puedes cortocircuitar los pines 3 y 6 del conector _pin-header_ con 5 pines marcado como "J4902".
 
 A continuación, puedes usar la herramienta [QPST de Qualcomm](https://qpsttool.com/) en Windows, o mejor aún, la herramienta [edl](https://github.com/bkerler/edl) de B.Kerler (multi-plataforma) para volcar y flashear la ROM.
 

@@ -63,7 +63,7 @@ If yours has a `Rev4` PCB, then you are very lucky that it comes with a female U
 
 But unfortunately, the more common variant on the market is `Rev5`, which comes without the USB Type-C connector populated.
 
-However, the 4-pin white female JST-PH2.0 connector nearby is also connected to the 4 USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder an SMD USB Type-C connector (which is very difficult to do).
+However, the 4-pin white female JST-PH2.0 connector nearby (marked as "J4902") is also connected to the 4 USB 2.0 pins, with the pinout from left to right: `D-`, `D+`, `GND`, `+5V`, you can use it to lead out the USB connection without needing to solder an SMD USB Type-C connector (which is very difficult to do).
 
 ![rev5-usb-jst-port-connection](../assets/img/RG3205W-rev5-usb-jst-port-connection.jpg)
 
@@ -74,7 +74,9 @@ You can improvise a simple custom cable using a JST-PH2.0 male plug, or a 4-pin 
 > [!IMPORTANT]
 > It is recommended to use the [Qualcomm EDL mode](https://en.wikipedia.org/wiki/Qualcomm_EDL_mode) to make a full flash dump first, so that you can always restore it back to stock if anything goes wrong.
 
-You can make the device enter EDL mode by shorting the USB `D+` and `GND` pins (for example, using metal knife or tweezers) while plugging in the power cable, and holding for 3 seconds before releasing.
+You can make the device enter EDL mode by short-circuiting the USB `D+` and `GND` pins (for example, using metal knife or tweezers) while plugging in the power cable, keep the short-circuit for 3 seconds before releasing it.
+
+For the rev4 variant, you can short-circuit the pins 3 and 6 of the 6-pin pin-header connector marked "J4902".
 
 Then you can use [Qualcomm's QPST tool](https://qpsttool.com/) on Windows, or better yet, B.Kerler's [edl](https://github.com/bkerler/edl) tool (cross-platform) to dump and flash the ROM.
 
