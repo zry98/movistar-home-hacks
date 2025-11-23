@@ -73,9 +73,13 @@ Locate the unpopulated micro USB port on the left edge of the motherboard:
 
 Solder a micro USB female connector and connect an OTG adapter cable; or just solder a cable with a standard USB-A female connector to it, then short the fourth pin (or the `ID` pad nearby) to the fifth pin GND (or any ground pad on the motherboard), making the port function as OTG host.
 
-Here is an example for soldering a USB-A female connector:
+Here is an example wiring for soldering a USB-A female connector:
 
 ![usb-port-connection](../assets/img/IGW5000-usb-port-connection.jpg)
+
+And two examples of soldered wires (courtesies of Carlos Chipe and Ángel from our Telegram group):
+
+![usb-wires-soldered](../assets/img/IGW5000-usb-connection-examples.jpg)
 
 Flash a USB drive with your favorite Linux distro.
 

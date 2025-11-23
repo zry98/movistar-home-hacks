@@ -69,13 +69,17 @@ Luego retira los **8 tornillos** situados bajo el panel y los **4 tornillos** oc
 
 Localiza el puerto micro USB desocupado en el borde izquierdo de la placa base:
 
-![usb-port-location](../assets/img/IGW5000-usb-port-location.jpg)
+![ubicación-puerto-usb](../assets/img/IGW5000-usb-port-location.jpg)
 
 Suelda un conector hembra de micro USB y conecta un cable adaptador OTG; o simplemente suelda un cable con un conector hembra de USB-A estándar, luego cortocircuita el cuarto pin (o el pad `ID` cercano) a el quinto pin GND (o cualquier pad de tierra en la placa), haciendo que el puerto funcione como un _OTG host_.
 
-Aquí es un ejemplo para soldar un conector USB-A hembra:
+Aquí es un ejemplo de cableado para soldar un conector USB-A hembra:
 
-![usb-port-connection](../assets/img/IGW5000-usb-port-connection.jpg)
+![conexión-puerto-usb](../assets/img/IGW5000-usb-port-connection.jpg)
+
+Y dos ejemplos de cables soldados (cortesías de Carlos Chipe y Ángel de nuestro grupo de Telegram):
+
+![cables-soldados-usb](../assets/img/IGW5000-usb-connection-examples.jpg)
 
 Flashea un pendrive USB con tu distribución de Linux favorita.
 
