@@ -313,7 +313,15 @@ The GPIO 7 on gpiochip1 controls the amp's pin 7 (`MUTE`), by setting it to HIGH
 
 </details>
 
-Execute `sudo pacman -S alsa-utils alsa-ucm-conf libgpiod` to install the necessary stuff, then create the file `/etc/systemd/system/fix-sound.service` with the following content:
+Execute the following command to install the necessary packages:
+
+```bash
+sudo pacman -S libgpiod \
+  alsa-utils alsa-ucm-conf alsa-firmware \
+  pipewire pipewire-audio pipewire-pulse pipewire-session-manager pipewire-alsa
+```
+
+Create the file `/etc/systemd/system/fix-sound.service` with the following content:
 
 ```systemd
 [Unit]
@@ -327,7 +335,7 @@ ExecStart=gpioset -c 1 5=1 7=1
 WantedBy=multi-user.target
 ```
 
-Execute `sudo systemctl daemon-reload && sudo systemctl enable --now fix-sound.service` to make it run at startup.
+Then execute `sudo systemctl daemon-reload && sudo systemctl enable --now fix-sound.service` to make it run at startup.
 
 Edit the Sway config file and add the following content:
 

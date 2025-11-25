@@ -121,6 +121,7 @@ EOF
     ca-certificates ca-certificates-mozilla \
     libgpiod \
     alsa-utils alsa-ucm-conf alsa-firmware \
+    pipewire pipewire-audio pipewire-pulse pipewire-session-manager pipewire-alsa \
     brightnessctl \
     noto-fonts \
     seatd sway swayidle \
