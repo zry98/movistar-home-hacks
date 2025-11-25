@@ -258,6 +258,21 @@ Instálalo con `sudo pacman -S ydotool`, y ejecuta `systemctl --user daemon-relo
 
 Consulta su documentación en GitHub para ver [cómo se usa](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#usage) y [ejemplos](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#examples).
 
+Por ejemplo, para escribir "foo$bar 123" seguido de la tecla <kbd>Intro</kbd> (<kbd>Enter</kbd>), ejecuta en SSH:
+
+```bash
+ls $XDG_RUNTIME_DIR/wayland-*
+```
+
+Deberías ver un resultado como `/run/user/1000/wayland-1`, entonces ejecuta:
+
+```bash
+export WAYLAND_DISPLAY=/run/user/1000/wayland-1
+ydotool type 'foo$bar 123' && ydotool key 28:0 28:1
+```
+
+_Sugerencia: puedes encontrar los códigos de teclas en `/usr/include/linux/input-event-codes.h`._
+
 ### Ocultar cursor del ratón
 
 Edita el fichero de configuración de Sway y añade lo siguiente:

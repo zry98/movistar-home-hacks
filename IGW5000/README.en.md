@@ -258,6 +258,21 @@ Install it with `sudo pacman -S ydotool`, then execute `systemctl --user daemon-
 
 Check its readme on GitHub for [usage](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#usage) and [examples](https://github.com/ReimuNotMoe/ydotool?tab=readme-ov-file#examples).
 
+For example, to type "foo$bar 123" followed by <kbd>Enter</kbd> key, execute in SSH:
+
+```bash
+ls $XDG_RUNTIME_DIR/wayland-*
+```
+
+You should see a result like `/run/user/1000/wayland-1`, then execute:
+
+```bash
+export WAYLAND_DISPLAY=/run/user/1000/wayland-1
+ydotool type 'foo$bar 123' && ydotool key 28:0 28:1
+```
+
+_Hint: you can find the key codes in `/usr/include/linux/input-event-codes.h`._
+
 ### Hide mouse cursor
 
 Edit the Sway config file and add the following content:
