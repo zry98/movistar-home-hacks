@@ -87,7 +87,7 @@
   tasks:
     # Preparation
     - name: Update CA certificates package
-      ansible.builtin.deb:
+      ansible.builtin.apt:
         deb: '{{ ca_certificates_url }}'
         state: present
 
