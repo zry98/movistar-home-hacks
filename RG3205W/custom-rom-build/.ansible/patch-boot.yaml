@@ -17,12 +17,12 @@
 
   tasks:
     # Preparation
-    - name: Install dependencies
-      ansible.builtin.package:
+    - name: Install dependency packages
+      ansible.builtin.deb:
         name:
           - unzip
           - default-jre
-        state: present
+        state: latest
 
     - name: Download Android boot image editor
       ansible.builtin.get_url:

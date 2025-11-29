@@ -62,6 +62,7 @@
       - source: 'app/Chrome/'
         target: 'app/Chrome/'
         selinux_context: 'u:object_r:system_file:s0'
+    ca_certificates_url: 'https://archive.ubuntu.com/ubuntu/pool/main/c/ca-certificates/ca-certificates_20250419_all.deb'
     ca_certificates_source: '/etc/ssl/certs/*.0'
     replacements_in_files:
       - file: 'etc/prop.default'
@@ -85,10 +86,11 @@
 
   tasks:
     # Preparation
-    - name: Update CA certificates source
-      ansible.builtin.package:
-        name: 'ca-certificates'
-        state: latest
+    - name: Update CA certificates package
+      ansible.builtin.deb:
+        deb: '{{ ca_certificates_url }}'
+        state: present
+
     - name: Make new app directories
       loop: '{{ apks_to_add | map(attribute="name") | list }}'
       ansible.builtin.file:

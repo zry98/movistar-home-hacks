@@ -117,7 +117,7 @@ jobs:
         run: |
           {
             echo 'apks-to-add<<EOF'
-            yq -r '.[] | select(.name == "Patch system image") | .vars.apks_to_add[].description' patch-system.yaml | sed 's/^/- /'
+            yq -r '.[] | select(.name == "Patch system image") | .vars.apks_to_add[] | "- [" + .description + "](" + .url + ")"' patch-system.yaml
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
@@ -213,9 +213,14 @@ jobs:
             ### Pre-installed APPs / APPs Pre-instaladas
 
             ${{ needs.patch.outputs.apks-to-add }}
-            - Debian `ca-certificates` ${{ needs.patch.outputs.ca-certs-version }}
+            - Ubuntu `ca-certificates` ${{ needs.patch.outputs.ca-certs-version }}
 
-            ### SHA256 checksums
+            ### SHA-256 checksums
             ```
             ${{ steps.verify-checksums.outputs.sha256sums }}
             ```
+
+            > [!IMPORTANT]
+            > Remember to verify the SHA-256 checksums of the decompressed images!
+            > 
+            > ¡Recuerda verificar las sumas SHA-256 de las imágenes descomprimidas!
