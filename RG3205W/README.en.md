@@ -39,9 +39,6 @@ For limited software-only hacks please refer to [rev5-softhacks/README.en.md](./
 
 ## Flashing a modified ROM
 
-> [!IMPORTANT]
-> **WORK IN PROGRESS**
-
 Fortunately, the bootloader can be unlocked and boot any modified ROM. In order to do this, you may need to improvise a modified USB cable depending on the variant you have.
 
 Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `Rev4` and `Rev5`.
@@ -72,7 +69,7 @@ You can improvise a simple custom cable using a JST-PH2.0 male plug, or a 4-pin 
 ### Entering EDL mode
 
 > [!IMPORTANT]
-> It is recommended to use the [Qualcomm EDL mode](https://en.wikipedia.org/wiki/Qualcomm_EDL_mode) to make a full flash dump first, so that you can always restore it back to stock if anything goes wrong.
+> It is recommended to use the [Qualcomm EDL mode](https://en.wikipedia.org/wiki/Qualcomm_EDL_mode) to make a full flash dump first, so that you can always restore it back to stock if anything goes wrong. You can use the command `edl rl dumps --skip=userdata --genxml`.
 
 You can make the device enter EDL mode by short-circuiting the USB `D+` and `GND` pins (for example, using metal knife or tweezers) while plugging in the power cable, keep the short-circuit for 3 seconds before releasing it.
 
@@ -119,6 +116,9 @@ Run `fastboot flashing unlock` and then `fastboot oem unlock` to unlock the boot
 You can now flash modified images to the partitions using `fastboot flash <partition> <image-file>` command. For example, `fastboot flash system system.bin`.
 
 This repository provides a modified ROM based on stock ROM [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), with all the pre-installed bloatwares removed, added some useful apps, and some optimizations for better performance and prolonged eMMC lifespan. You can find it on the [Latest Release](https://github.com/zry98/movistar-home-hacks/releases/latest) page.
+
+> [!NOTE]
+> The modified ROM provided here is based on a very old stock ROM (September 2022), if you have a Rev5 with a newer update installed and would like to help the others, please dump the stock ROM in EDL mode and share it in our [Telegram group](https://t.me/movistar_home_hacking) or contact the repository owner [@zry98](https://github.com/zry98).
 
 After flashing, reboot the device into the recovery mode again, select the "Wipe data/factory reset" option to format the `userdata` partition; then select "Wipe cache partition" option to format the `cache` partition.
 

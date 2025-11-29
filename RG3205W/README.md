@@ -36,9 +36,6 @@ Para información sobre modificaciones solo por software con limitaciones, por f
 
 ## Flashear una ROM modificada
 
-> [!IMPORTANT]
-> **TRABAJO EN PROGRESO**
-
 Afortunadamente, el *bootloader* se puede desbloquear y permite arrancar cualquier ROM modificada. Para hacerlo, puede que necesites improvisar un cable USB, dependiendo de la variante que tengas.
 
 Actualmente existen al menos 2 variantes (revisiones de hardware) del RG3205W: `Rev4` y `Rev5`.
@@ -117,6 +114,9 @@ Ahora puedes flashear imágenes modificadas a las particiones usando el comando
 `fastboot flash <partición> <fichero-imágen>`. Por ejemplo, `fastboot flash system system.bin`.
 
 Este repositorio ofrece una ROM modificada basada en la ROM original [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), con todas las aplicaciones preinstaladas innecesarias eliminadas, algunas apps útiles añadidas y unas optimizaciones para mejorar el rendimiento y alargar la vida útil del disco eMMC. Puedes encontrarla en la página de [_Latest Release_](https://github.com/zry98/movistar-home-hacks/releases/latest).
+
+> [!NOTE]
+> La ROM modificada que se ofrece aquí está basada en una ROM original muy antigua (septiembre de 2022). Si tienes una Rev5 con una actualización más reciente instalada y quieres ayudar a los demás, por favor extrae (dump) la ROM original en modo EDL y compártela en nuestro [grupo de Telegram](https://t.me/movistar_home_hacking) o contacta con el propietario del repositorio [@zry98](https://github.com/zry98).
 
 Después de flashear, reinicia el dispositivo al modo recovery otra vez, selecciona la opción "Wipe data/factory reset" para formatear la partición `userdata`; luego selecciona la opción "Wipe cache partition" para formatear la partición `cache`.
 
