@@ -27,6 +27,10 @@ declare -A _CONFIG_LOGIND=(
   [HandlePowerKeyLongPress]="poweroff"
 )
 
+# script utils
+GREEN=$'\e[32m'
+RESET=$'\e[0m'
+
 ####################
 ### connect WLAN ###
 ####################
@@ -45,27 +49,27 @@ Country=ES
 EOF
   systemctl restart iwd
 
-  rfkill unblock wlan bluetooth
+  rfkill unblock wlan
   iwctl device wlan0 show  # check if WLAN driver is working
   iwctl device wlan0 set-property Powered on
   iwctl adapter phy0 set-property Powered on
   iwctl station wlan0 scan
-  echo "Scanning for Wi-Fi, please wait for 10 seconds..."
+  echo "${GREEN}Scanning for Wi-Fi, please wait for 10 seconds...${RESET}"
   sleep 10
   iwctl station wlan0 get-networks
 
   local SSID PASSWORD IS_HIDDEN
-  read -rp "Enter Wi-Fi name: " SSID
-  read -rp "Is this Wi-Fi hidden? (y/N): " IS_HIDDEN && [[ "$IS_HIDDEN" == [yY] ]] && IS_HIDDEN=1 || IS_HIDDEN=0
-  read -rp "Enter Wi-Fi password: " PASSWORD
+  read -rp $'\n\n'"${GREEN}Enter Wi-Fi name: ${RESET}"$'\n' SSID
+  read -rp $'\n\n'"${GREEN}Is this Wi-Fi hidden? (y/N): ${RESET}"$'\n' IS_HIDDEN
+  read -rp $'\n\n'"${GREEN}Enter Wi-Fi password: ${RESET}"$'\n' PASSWORD
 
-  echo "Connecting, please wait for 5 seconds..."
-  if [[ "$IS_HIDDEN" -eq 0 ]]; then
+  echo "${GREEN}Connecting, please wait for 10 seconds...${RESET}"
+  if [[ "$IS_HIDDEN" == [yY] ]]; then
     iwctl --passphrase "${PASSWORD}" station wlan0 connect "${SSID}"
   else
     iwctl --passphrase "${PASSWORD}" station wlan0 connect-hidden "${SSID}"
   fi
-  sleep 5  # FIXME: wait for connection
+  sleep 10  # FIXME: wait for connection
   iwctl known-networks "${SSID}" set-property AutoConnect yes
 }
 
@@ -85,7 +89,7 @@ function arch_install {
   sleep 5  # wait for clock sync
   hwclock --systohc
 
-  ! mountpoint --quiet /mnt || umount --recursive --force --quiet /mnt
+  ! mountpoint --quiet /mnt/emmc || umount --recursive --force --quiet /mnt/emmc
   local PTUUID="$(blkid -s PTUUID -o value "${DISK_DEVICE}")"
   sfdisk "${DISK_DEVICE}" <<EOF
 label: gpt
@@ -102,11 +106,32 @@ EOF
   sleep 2  # wait for disk sync
   mkfs.fat -F 32 "${DISK_DEVICE}p1"
   mkfs.f2fs -f -i -O extra_attr,inode_checksum,sb_checksum "${DISK_DEVICE}p2"
-  mount "${DISK_DEVICE}p2" /mnt
-  mount --mkdir "${DISK_DEVICE}p1" /mnt/boot
+  mount "${DISK_DEVICE}p2" /mnt/emmc
+  mount --mkdir "${DISK_DEVICE}p1" /mnt/emmc/boot
+
+  # bootloader
+  bootctl install --esp-path=/mnt/emmc/boot
+  cat > /mnt/emmc/boot/loader/loader.conf <<\EOF
+timeout 0
+console-mode max
+default arch.conf
+EOF
+  local ROOT_UUID="$(blkid -s UUID -o value "${DISK_DEVICE}p2")"
+  cat > /mnt/emmc/boot/loader/entries/arch.conf <<EOF
+title Arch Linux
+linux /vmlinuz-linux
+initrd /initramfs-linux.img
+options root=UUID=${ROOT_UUID} rw ${KERNEL_OPTIONS}
+EOF
+  cat > /mnt/emmc/boot/loader/entries/arch-fallback.conf <<EOF
+title Arch Linux fallback
+linux /vmlinuz-linux
+initrd /initramfs-linux-fallback.img
+options root=UUID=${ROOT_UUID} rw ${KERNEL_OPTIONS}
+EOF
 
   reflector --sort rate --country es --number 20 --age 6 --latest 10 --fastest 10
-  pacstrap -K /mnt \
+  pacstrap -K /mnt/emmc \
     base linux \
     linux-firmware-intel linux-firmware-realtek linux-firmware-other \
     intel-ucode \
@@ -128,11 +153,11 @@ EOF
     chromium \
     ydotool
 
-  genfstab -U /mnt >> /mnt/etc/fstab
+  genfstab -U /mnt/emmc >> /mnt/emmc/etc/fstab
 
   # copy WLAN connection configs
-  mkdir -p /mnt/var/lib/iwd
-  cp -af /var/lib/iwd/ /mnt/var/lib/
+  mkdir -p /mnt/emmc/var/lib/iwd
+  cp -af /var/lib/iwd/ /mnt/emmc/var/lib/
 }
 
 ####################
@@ -156,42 +181,22 @@ EOF
 
   # basics
   local ROOT_PASSWD USER_PASSWD
-  read -rp "Enter root password (leave empty to not change it): " ROOT_PASSWD
-  read -rp "Enter user password (leave empty to not change it): " USER_PASSWD
-
-  local HASS_DASHBOARD_URL PANEL_CONTROLLER_TOKEN
-  read -rp "Enter Home Assistant dashboard URL (leave empty to skip the service): " HASS_DASHBOARD_URL
-  read -rp "Enter panel controller token (leave empty to skip the service): " PANEL_CONTROLLER_TOKEN
-
-  if [[ ! -z "${ROOT_PASSWD}" ]]; then
-    echo "${ROOT_PASSWD}" | passwd --stdin root
+  read -rp $'\n\n'"${GREEN}Enter root user's password (leave empty to use 'root'): ${RESET}"$'\n' ROOT_PASSWD
+  if [[ -z "${ROOT_PASSWD}" ]]; then
+    ROOT_PASSWD="root"
   fi
+  echo "${ROOT_PASSWD}" | passwd --stdin root
+  read -rp $'\n\n'"${GREEN}Enter 'panel' user's password (leave empty to use 'panel'): ${RESET}"$'\n' USER_PASSWD
+
+  local KIOSK_URL PANEL_CONTROLLER_TOKEN
+  read -rp $'\n\n'"${GREEN}Enter Chromium kiosk URL (leave empty to skip the service, but there won't be anything usable on screen): ${RESET}"$'\n' KIOSK_URL
+  read -rp $'\n\n'"${GREEN}Enter panel controller token (leave empty to skip the service): ${RESET}"$'\n' PANEL_CONTROLLER_TOKEN
+
   cat > /etc/ssh/sshd_config.d/99-movistar-home-panel.conf <<\EOF
 PasswordAuthentication yes
 PubkeyAuthentication yes
 EOF
   rm -f /root/.ssh/id_ed25519 && ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -N ''
-
-  # bootloader
-  bootctl install
-  cat > /boot/loader/loader.conf <<\EOF
-timeout 0
-console-mode max
-default arch.conf
-EOF
-  local ROOT_UUID="$(blkid -s UUID -o value "${DISK_DEVICE}p2")"
-  cat > /boot/loader/entries/arch.conf <<EOF
-title Arch Linux
-linux /vmlinuz-linux
-initrd /initramfs-linux.img
-options root=UUID=${ROOT_UUID} rw ${KERNEL_OPTIONS}
-EOF
-  cat > /boot/loader/entries/arch-fallback.conf <<EOF
-title Arch Linux fallback
-linux /vmlinuz-linux
-initrd /initramfs-linux-fallback.img
-options root=UUID=${ROOT_UUID} rw ${KERNEL_OPTIONS}
-EOF
 
   # modules
   cat > /etc/modprobe.d/99-movistar-home-panel.conf <<\EOF
@@ -291,9 +296,10 @@ EOF
   cat > /etc/sudoers.d/99-movistar-home-panel <<\EOF
 %wheel ALL=(ALL:ALL) ALL
 EOF
-  if [[ ! -z "${USER_PASSWD}" ]]; then
-    echo "${USER_PASSWD}" | passwd --stdin panel
+  if [[ -z "${USER_PASSWD}" ]]; then
+    USER_PASSWD="panel"
   fi
+  echo "${USER_PASSWD}" | passwd --stdin panel
   # regenerate SSH key if not exists
   if [[ ! -f "/home/panel/.ssh/id_ed25519" ]]; then
     sudo --user=panel ssh-keygen -t ed25519 -f /home/panel/.ssh/id_ed25519 -N ''
@@ -441,15 +447,15 @@ WantedBy=sway-session.target
 EOF
   fi
 
-  if [[ ! -z "${HASS_DASHBOARD_URL}" ]]; then
-    cat > /home/panel/.config/systemd/user/hass-dashboard.service <<EOF
+  if [[ ! -z "${KIOSK_URL}" ]]; then
+    cat > /home/panel/.config/systemd/user/chromium-kiosk.service <<EOF
 [Unit]
-Description=HASS dashboard
+Description=Chromium Kiosk
 BindsTo=sway-session.target
 After=sway-session.target
 
 [Service]
-Environment=HASS_DASHBOARD_URL=${HASS_DASHBOARD_URL}
+Environment=KIOSK_URL=${KIOSK_URL}
 Type=simple
 ExecStart=chromium \
             --ozone-platform=wayland \
@@ -464,7 +470,7 @@ ExecStart=chromium \
             --kiosk \
             --hide-scrollbars \
             --autoplay-policy=no-user-gesture-required \
-            "\${HASS_DASHBOARD_URL}"
+            "\${KIOSK_URL}"
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=10
@@ -493,16 +499,19 @@ EOF
   sudo --user=panel systemctl --user enable \
     swayidle.service \
     ydotool.service
+  if [[ ! -z "${KIOSK_URL}" ]]; then
+    sudo --user=panel systemctl --user enable chromium-kiosk.service
+  fi
   if [[ ! -z "${PANEL_CONTROLLER_TOKEN}" ]]; then
     sudo --user=panel systemctl --user enable panel-controller.service
-  fi
-  if [[ ! -z "${HASS_DASHBOARD_URL}" ]]; then
-    sudo --user=panel systemctl --user enable hass-dashboard.service
   fi
 
   chown -R panel:panel /home/panel # ensure file permissions
   # pacman mirrors
   reflector --sort rate --country es --number 20 --age 6 --latest 10 --fastest 10
+
+  read -rp $'\n\n'"${GREEN}Successful! Please remove the USB drive and press Enter key to reboot now; or Ctrl+C if you want to do anything else...${RESET}"
+  [[ $? -eq 0 ]] && reboot now
 }
 
 ############
@@ -518,13 +527,13 @@ if ! systemd-detect-virt --chroot; then
   # install Arch Linux
   arch_install
   # copy the script to chroot
-  cp -f "$(realpath "$0")" /mnt/root/setup.sh
-  chmod +x /mnt/root/setup.sh
-  arch-chroot -S /mnt /root/setup.sh --post-install
+  cp -f "$(realpath "$0")" /mnt/emmc/root/setup.sh
+  chmod +x /mnt/emmc/root/setup.sh
+  arch-chroot -S /mnt/emmc /root/setup.sh --post-install
 else
   if [[ "$#" -eq 0 ]]; then
     # running in chroot but no arguments given, meaning it's being re-ran inside chroot after post-install setups failed or something
-    echo "Please exit from chroot by 'Ctrl+D' or executing 'exit', then re-run the script"
+    echo "${GREEN}Please exit from chroot by 'Ctrl+D' or executing 'exit', then re-run the script${RESET}"
   else
     # run post-install setups
     setup_chrooted
