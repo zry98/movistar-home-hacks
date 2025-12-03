@@ -116,7 +116,7 @@ Ahora puedes flashear imágenes modificadas a las particiones usando el comando
 Este repositorio ofrece una ROM modificada basada en la ROM original [`ES_g1.0_RG3205W3.7.0_202209282206`](https://github.com/zry98/movistar-home-hacks/tree/main/RG3205W/stock-rom-dumps/ES_g1.0_RG3205W3.7.0_202209282206), con todas las aplicaciones preinstaladas innecesarias eliminadas, algunas apps útiles añadidas y unas optimizaciones para mejorar el rendimiento y alargar la vida útil del disco eMMC. Puedes encontrarla en la página de [_Latest Release_](https://github.com/zry98/movistar-home-hacks/releases/latest).
 
 > [!NOTE]
-> La ROM modificada que se ofrece aquí está basada en una ROM original muy antigua (septiembre de 2022). Si tienes una Rev5 con una actualización más reciente instalada y quieres ayudar a los demás, por favor extrae (dump) la ROM original en modo EDL y compártela en nuestro [grupo de Telegram](https://t.me/movistar_home_hacking) o contacta con el propietario del repositorio [@zry98](https://github.com/zry98).
+> La ROM modificada que se ofrece aquí está basada en una ROM original muy antigua (septiembre de 2022). Si tienes una Rev5 con una actualización más reciente instalada y quieres ayudar a los demás, por favor volcar la ROM original (será suficiente con solo las 3 particiones `boot`, `system` y `vendor`) por modo EDL y compártela en nuestro [grupo de Telegram](https://t.me/movistar_home_hacking) o contacta con el propietario del repositorio [@zry98](https://github.com/zry98).
 
 Después de flashear, reinicia el dispositivo al modo recovery otra vez, selecciona la opción "Wipe data/factory reset" para formatear la partición `userdata`; luego selecciona la opción "Wipe cache partition" para formatear la partición `cache`.
 
