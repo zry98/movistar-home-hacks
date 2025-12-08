@@ -101,12 +101,6 @@ jobs:
         run: |
           sha256sum --check --ignore-missing SHA256SUMS.txt
 
-      - name: Fetch APKs from LFS
-        if: matrix.image-type == 'system'
-        working-directory: RG3205W/custom-rom-build/
-        run: |
-          git lfs pull --include 'system/app/*/*.apk'
-
       - name: Set up Ansible
         uses: alex-oleshkevich/setup-ansible@v1.0.1
         with:
