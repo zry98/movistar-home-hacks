@@ -124,13 +124,15 @@
 
     - name: Try unmounting system image
       ansible.builtin.command:
-        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+        cmd: |
+          umount --force --detach-loop --quiet '{{ mount_point }}'
       failed_when: false
       changed_when: false
 
     - name: Mount system image
       ansible.builtin.command:
-        cmd: 'mount -o loop {{ image_path }} {{ mount_point }}'
+        cmd: |
+          mount -o loop '{{ image_path }}' '{{ mount_point }}'
 
     # Patching
     - name: Remove unwanted stuff
@@ -143,7 +145,7 @@
       loop: '{{ files_to_remove_by_glob }}'
       ansible.builtin.shell: # ansible.builtin.fileglob doesn't work for directories
         cmd: |
-          rm -rf {{ mount_point }}/{{ item }} || true
+          rm -rf '{{ mount_point }}/{{ item }}'
       failed_when: false
 
     - name: Add new stuff
@@ -160,13 +162,14 @@
     - name: Set SELinux context on added stuff
       loop: '{{ files_to_add }}'
       ansible.builtin.command:
-        cmd: 'chcon --recursive "{{ item.selinux_context }}" "{{ [ mount_point, item.target ] | path_join }}"'
+        cmd: |
+          chcon --recursive '{{ item.selinux_context }}' '{{ [ mount_point, item.target ] | path_join }}'
 
     - name: Update CA certificates
       ansible.builtin.shell:
         cmd: |
           set -e
-          cp --remove-destination --dereference --force {{ ca_certificates_source }} {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/
+          cp --remove-destination --dereference --force {{ ca_certificates_source }} '{{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/'
           chown root:root {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*.0
           chcon 'u:object_r:system_file:s0' {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*.0
 
@@ -178,8 +181,14 @@
         replace: '{{ item.replace }}'
         backup: false
 
+    - name: Rename su
+      ansible.builtin.command:
+        cmd: |
+          mv '{{ mount_point }}/xbin/su' '{{ mount_point }}/xbin/su_'
+
     # Finalization
     - name: Unmount system image
       when: (lookup('env', 'CI') | default('')) | lower == 'true'
       ansible.builtin.command:
-        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+        cmd: |
+          umount --force --detach-loop --quiet '{{ mount_point }}'

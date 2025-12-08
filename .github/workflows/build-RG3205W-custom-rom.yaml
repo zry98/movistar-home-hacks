@@ -65,6 +65,10 @@ jobs:
           - system
           - vendor
           - boot
+        include:
+          - image-type: boot
+            extra-vars: 'install_magisk=true'
+            output-name: boot-magisked
     runs-on: ubuntu-latest
 
     steps:
@@ -93,30 +97,30 @@ jobs:
       - name: Run Ansible playbooks
         working-directory: RG3205W/custom-rom-build/
         run: |
-          ansible-playbook .ansible/patch-${{ matrix.image-type }}.yaml -l localhost -c local --extra-vars 'image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin'
+          ansible-playbook .ansible/patch-${{ matrix.image-type }}.yaml -l localhost -c local --extra-vars 'image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin output_name=${{ matrix.output-name || matrix.image-type }}.bin ${{ matrix.extra-vars }}'
 
       - name: Calculate patched image checksum
         id: checksum
         working-directory: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/
         run: |
-          echo "sha256sum-${{ matrix.image-type }}=$(sha256sum ${{ matrix.image-type }}.bin)" >> "$GITHUB_OUTPUT"
+          echo "sha256sum-${{ matrix.output-name || matrix.image-type }}=$(sha256sum ${{ matrix.output-name || matrix.image-type }}.bin)" >> "$GITHUB_OUTPUT"
 
       - name: Upload patched images
         uses: actions/upload-artifact@v5
         with:
-          name: patched-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
-          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
+          name: patched-image-${{ inputs.stock-dump }}-${{ matrix.output-name || matrix.image-type }}
+          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.output-name || matrix.image-type }}.bin
           if-no-files-found: error
           compression-level: 6
           overwrite: true
 
-      - name: List APKs to add
-        id: list-apks-to-add
+      - name: List added APKs
+        id: list-added-apks
         if: matrix.image-type == 'system'
         working-directory: RG3205W/custom-rom-build/.ansible/
         run: |
           {
-            echo 'apks-to-add<<EOF'
+            echo 'added-apks<<EOF'
             yq -r '.[] | select(.name == "Patch system image") | .vars.apks_to_add[] | "- [" + .description + "](" + .url + ")"' patch-system.yaml
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
@@ -131,7 +135,8 @@ jobs:
       sha256sum-system: ${{ steps.checksum.outputs.sha256sum-system }}
       sha256sum-vendor: ${{ steps.checksum.outputs.sha256sum-vendor }}
       sha256sum-boot: ${{ steps.checksum.outputs.sha256sum-boot }}
-      apks-to-add: ${{ steps.list-apks-to-add.outputs.apks-to-add }}
+      sha256sum-boot-magisked: ${{ steps.checksum.outputs.sha256sum-boot-magisked }}
+      added-apks: ${{ steps.list-added-apks.outputs.added-apks }}
       ca-certs-version: ${{ steps.get-ca-certs-version.outputs.version }}
 
   release:
@@ -171,6 +176,7 @@ jobs:
         run: |
           {
             echo '${{ needs.patch.outputs.sha256sum-boot }}'
+            echo '${{ needs.patch.outputs.sha256sum-boot-magisked }}'
             echo '${{ needs.patch.outputs.sha256sum-system }}'
             echo '${{ needs.patch.outputs.sha256sum-vendor }}'
           } > ../SHA256SUMS.txt
@@ -212,7 +218,7 @@ jobs:
 
             ### Pre-installed APPs / APPs Pre-instaladas
 
-            ${{ needs.patch.outputs.apks-to-add }}
+            ${{ needs.patch.outputs.added-apks }}
             - Ubuntu `ca-certificates` ${{ needs.patch.outputs.ca-certs-version }}
 
             ### SHA-256 checksums

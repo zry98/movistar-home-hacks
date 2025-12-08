@@ -36,13 +36,15 @@
 
     - name: Try unmounting vendor image
       ansible.builtin.command:
-        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+        cmd: |
+          umount --force --detach-loop --quiet '{{ mount_point }}'
       failed_when: false
       changed_when: false
 
     - name: Mount vendor image
       ansible.builtin.command:
-        cmd: 'mount -o loop {{ image_path }} {{ mount_point }}'
+        cmd: |
+          mount -o loop '{{ image_path }}' '{{ mount_point }}'
 
     # Patching
     - name: Remove unwanted stuff
@@ -63,4 +65,5 @@
     - name: Unmount vendor image
       when: (lookup('env', 'CI') | default('')) | lower == 'true'
       ansible.builtin.command:
-        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+        cmd: |
+          umount --force --detach-loop --quiet '{{ mount_point }}'
