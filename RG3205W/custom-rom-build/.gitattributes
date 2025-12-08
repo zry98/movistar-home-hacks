@@ -1,0 +1,4 @@
+system/app/AuroraStore/AuroraStore.apk filter=lfs diff=lfs merge=lfs -text
+system/app/Chrome/Chrome.apk filter=lfs diff=lfs merge=lfs -text
+system/app/Trebuchet/Trebuchet.apk filter=lfs diff=lfs merge=lfs -text
+system/app/WebView/WebView.apk filter=lfs diff=lfs merge=lfs -text
