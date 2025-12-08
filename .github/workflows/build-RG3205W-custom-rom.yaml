@@ -61,27 +61,36 @@ jobs:
       - prepare
     strategy:
       matrix:
-        image-type:
-          - system
-          - vendor
-          - boot
-        include:
+        jobs:
+          - image-type: system
+          - image-type: vendor
+          - image-type: boot
+            extra-vars: 'install_magisk=false'
           - image-type: boot
             extra-vars: 'install_magisk=true'
             output-name: boot-magisked
     runs-on: ubuntu-latest
+    name: 'patch (${{ matrix.jobs.output-name || matrix.jobs.image-type }})'
 
     steps:
       - name: Checkout
+        id: checkout
         uses: actions/checkout@v5
         with:
           lfs: false
 
+      - name: Make short commit SHA
+        id: short-commit-sha
+        env:
+          COMMIT_SHA: ${{ steps.checkout.outputs.commit }}
+        run: |
+          echo "sha=${COMMIT_SHA::7}" >> "$GITHUB_OUTPUT"
+
       - name: Restore cached images
         uses: actions/cache/restore@v4
         with:
-          key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
-          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
+          key: stock-image-${{ inputs.stock-dump }}-${{ matrix.jobs.image-type }}
+          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.jobs.image-type }}.bin
           fail-on-cache-miss: true
 
       - name: Verify checksum
@@ -97,26 +106,26 @@ jobs:
       - name: Run Ansible playbooks
         working-directory: RG3205W/custom-rom-build/
         run: |
-          ansible-playbook .ansible/patch-${{ matrix.image-type }}.yaml -l localhost -c local --extra-vars 'image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin output_name=${{ matrix.output-name || matrix.image-type }}.bin ${{ matrix.extra-vars }}'
+          ansible-playbook .ansible/patch-${{ matrix.jobs.image-type }}.yaml -l localhost -c local --extra-vars 'image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.jobs.image-type }}.bin output_name=${{ matrix.jobs.output-name || matrix.jobs.image-type }}.bin ${{ matrix.jobs.extra-vars }}'
 
       - name: Calculate patched image checksum
         id: checksum
         working-directory: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/
         run: |
-          echo "sha256sum-${{ matrix.output-name || matrix.image-type }}=$(sha256sum ${{ matrix.output-name || matrix.image-type }}.bin)" >> "$GITHUB_OUTPUT"
+          echo "sha256sum-${{ matrix.jobs.output-name || matrix.jobs.image-type }}=$(sha256sum ${{ matrix.jobs.output-name || matrix.jobs.image-type }}.bin)" >> "$GITHUB_OUTPUT"
 
       - name: Upload patched images
         uses: actions/upload-artifact@v5
         with:
-          name: patched-image-${{ inputs.stock-dump }}-${{ matrix.output-name || matrix.image-type }}
-          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.output-name || matrix.image-type }}.bin
+          name: patched-image-${{ inputs.stock-dump }}-${{ steps.short-commit-sha.outputs.sha }}-${{ matrix.jobs.output-name || matrix.jobs.image-type }}
+          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.jobs.output-name || matrix.jobs.image-type }}.bin
           if-no-files-found: error
           compression-level: 6
           overwrite: true
 
       - name: List added APKs
         id: list-added-apks
-        if: matrix.image-type == 'system'
+        if: matrix.jobs.image-type == 'system'
         working-directory: RG3205W/custom-rom-build/.ansible/
         run: |
           {
@@ -127,7 +136,7 @@ jobs:
 
       - name: Get ca-certificates version
         id: get-ca-certs-version
-        if: matrix.image-type == 'system'
+        if: matrix.jobs.image-type == 'system'
         run: |
           echo "version=$(apt show ca-certificates | grep Version: | awk -F ': ' '{print $2}')" >> "$GITHUB_OUTPUT"
 
@@ -141,7 +150,6 @@ jobs:
 
   release:
     needs:
-      - prepare
       - patch
     runs-on: ubuntu-latest
 
@@ -165,7 +173,7 @@ jobs:
       - name: Download patched images
         uses: actions/download-artifact@v5
         with:
-          pattern: patched-image-${{ inputs.stock-dump }}-*
+          pattern: patched-image-${{ inputs.stock-dump }}-${{ steps.short-commit-sha.outputs.sha }}-*
           path: .build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}/
           merge-multiple: true
 
