@@ -18,11 +18,11 @@ jobs:
           - system
           - vendor
           - boot
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - name: Check for cached images
-        id: check-cached-images
+      - name: Check for cached image
+        id: check-cached-image
         uses: actions/cache/restore@v4
         with:
           key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
@@ -31,26 +31,26 @@ jobs:
           lookup-only: true
 
       - name: Checkout
-        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        if: steps.check-cached-image.outputs.cache-hit != 'true'
         uses: actions/checkout@v5
         with:
           lfs: false
 
       - name: Fetch LFS
-        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        if: steps.check-cached-image.outputs.cache-hit != 'true'
         working-directory: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/
         run: |
           git lfs pull --include '${{ inputs.stock-dump }}.7z'
 
       - name: Unpack archive
-        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        if: steps.check-cached-image.outputs.cache-hit != 'true'
         working-directory: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/
         run: |
           7z e -y '${{ inputs.stock-dump }}.7z' '${{ matrix.image-type }}.bin'
           sha256sum --check --ignore-missing SHA256SUMS.txt
 
       - name: Cache image
-        if: steps.check-cached-images.outputs.cache-hit != 'true'
+        if: steps.check-cached-image.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
@@ -61,23 +61,39 @@ jobs:
       - prepare
     strategy:
       matrix:
-        image-type:
-          - system
-          - vendor
-          - boot
-    runs-on: ubuntu-latest
+        jobs:
+          - image-type: system
+          - image-type: vendor
+          - image-type: boot
+            extra-vars: 'install_magisk=false'
+          - image-type: boot
+            extra-vars: 'install_magisk=true'
+            output-name: boot-magisked
+    runs-on: ubuntu-24.04
+    name: 'patch (${{ matrix.jobs.output-name || matrix.jobs.image-type }})'
+
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
+        id: checkout
         uses: actions/checkout@v5
         with:
           lfs: false
 
-      - name: Restore cached images
+      - name: Make short commit SHA
+        id: short-commit-sha
+        env:
+          COMMIT_SHA: ${{ steps.checkout.outputs.commit }}
+        run: |
+          echo "sha=${COMMIT_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore cached image
         uses: actions/cache/restore@v4
         with:
-          key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
-          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
+          key: stock-image-${{ inputs.stock-dump }}-${{ matrix.jobs.image-type }}
+          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.jobs.image-type }}.bin
           fail-on-cache-miss: true
 
       - name: Verify checksum
@@ -90,40 +106,40 @@ jobs:
         with:
           version: '12.2.0'
 
-      - name: Run Ansible playbooks
+      - name: Run Ansible playbook
         working-directory: RG3205W/custom-rom-build/
         run: |
-          ansible-playbook .ansible/patch-${{ matrix.image-type }}.yaml -l localhost -c local --extra-vars 'image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin'
+          ansible-playbook .ansible/patch-${{ matrix.jobs.image-type }}.yaml -l localhost -c local --extra-vars 'image_path=${{ github.workspace }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.jobs.image-type }}.bin output_name=${{ matrix.jobs.output-name || matrix.jobs.image-type }}.bin ${{ matrix.jobs.extra-vars }}'
 
       - name: Calculate patched image checksum
         id: checksum
         working-directory: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/
         run: |
-          echo "sha256sum-${{ matrix.image-type }}=$(sha256sum ${{ matrix.image-type }}.bin)" >> "$GITHUB_OUTPUT"
+          echo "sha256sum-${{ matrix.jobs.output-name || matrix.jobs.image-type }}=$(sha256sum ${{ matrix.jobs.output-name || matrix.jobs.image-type }}.bin)" >> "$GITHUB_OUTPUT"
 
-      - name: Upload patched images
+      - name: Upload patched image
         uses: actions/upload-artifact@v5
         with:
-          name: patched-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
-          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
+          name: patched-image-${{ inputs.stock-dump }}-${{ steps.short-commit-sha.outputs.sha }}-${{ matrix.jobs.output-name || matrix.jobs.image-type }}
+          path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.jobs.output-name || matrix.jobs.image-type }}.bin
           if-no-files-found: error
           compression-level: 6
           overwrite: true
 
-      - name: List APKs to add
-        id: list-apks-to-add
-        if: matrix.image-type == 'system'
+      - name: List added APKs
+        id: list-added-apks
+        if: matrix.jobs.image-type == 'system'
         working-directory: RG3205W/custom-rom-build/.ansible/
         run: |
           {
-            echo 'apks-to-add<<EOF'
+            echo 'added-apks<<EOF'
             yq -r '.[] | select(.name == "Patch system image") | .vars.apks_to_add[] | "- [" + .description + "](" + .url + ")"' patch-system.yaml
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
       - name: Get ca-certificates version
         id: get-ca-certs-version
-        if: matrix.image-type == 'system'
+        if: matrix.jobs.image-type == 'system'
         run: |
           echo "version=$(apt show ca-certificates | grep Version: | awk -F ': ' '{print $2}')" >> "$GITHUB_OUTPUT"
 
@@ -131,17 +147,19 @@ jobs:
       sha256sum-system: ${{ steps.checksum.outputs.sha256sum-system }}
       sha256sum-vendor: ${{ steps.checksum.outputs.sha256sum-vendor }}
       sha256sum-boot: ${{ steps.checksum.outputs.sha256sum-boot }}
-      apks-to-add: ${{ steps.list-apks-to-add.outputs.apks-to-add }}
+      sha256sum-boot-magisked: ${{ steps.checksum.outputs.sha256sum-boot-magisked }}
+      added-apks: ${{ steps.list-added-apks.outputs.added-apks }}
       ca-certs-version: ${{ steps.get-ca-certs-version.outputs.version }}
 
   release:
     needs:
-      - prepare
       - patch
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: write
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
@@ -160,17 +178,18 @@ jobs:
       - name: Download patched images
         uses: actions/download-artifact@v5
         with:
-          pattern: patched-image-${{ inputs.stock-dump }}-*
+          pattern: patched-image-${{ inputs.stock-dump }}-${{ steps.short-commit-sha.outputs.sha }}-*
           path: .build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}/
           merge-multiple: true
 
-      - name: Verify patched images checksums
+      - name: Verify patched image checksums
         id: verify-checksums
         working-directory: .build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}/
         shell: bash
         run: |
           {
             echo '${{ needs.patch.outputs.sha256sum-boot }}'
+            echo '${{ needs.patch.outputs.sha256sum-boot-magisked }}'
             echo '${{ needs.patch.outputs.sha256sum-system }}'
             echo '${{ needs.patch.outputs.sha256sum-vendor }}'
           } > ../SHA256SUMS.txt
@@ -182,13 +201,25 @@ jobs:
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
+      - name: Generate artifact attestation
+        id: generate-attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-checksums: .build/SHA256SUMS.txt
+          show-summary: true
+
+      - name: Bundle artificate attestation
+        working-directory: .build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}/
+        run: |
+          cp -a ${{ steps.generate-attestation.outputs.bundle-path }} ./
+
       - name: Pack images
         working-directory: .build/
         run: |
           zip -r -9 'RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}.zip' 'RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}/'
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.4.2
         with:
           name: 'RG3205W custom ROM based on ${{ inputs.stock-dump }}'
           tag_name: 'RG3205W-custom-rom-${{ inputs.stock-dump }}-${{ steps.short-commit-sha.outputs.sha }}'
@@ -196,7 +227,9 @@ jobs:
             .build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}.zip
             .build/SHA256SUMS.txt
           fail_on_unmatched_files: true
+          prerelease: ${{ github.ref != 'refs/heads/main' }}
           make_latest: ${{ github.ref == 'refs/heads/main' }}
+          generate_release_notes: false
           body: |
             ## RG3205W Custom ROM
 
@@ -204,15 +237,19 @@ jobs:
 
             Fue generada al commit [`${{ steps.short-commit-sha.outputs.sha }}`](https://github.com/zry98/movistar-home-hacks/tree/${{ steps.checkout.outputs.commit }}/RG3205W) por la ejecución de GitHub Actions workflow [`${{ github.run_id }}`](https://github.com/zry98/movistar-home-hacks/actions/runs/${{ github.run_id }}).
 
+            Certificados de origen de la generación: [${{ steps.generate-attestation.outputs.attestation-url }}](${{ steps.generate-attestation.outputs.attestation-url }}).
+
             ---
 
             Based on the stock ROM dump [`${{ inputs.stock-dump }}`](https://github.com/zry98/movistar-home-hacks/tree/${{ steps.checkout.outputs.commit }}/RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}).
 
             Built at commit [`${{ steps.short-commit-sha.outputs.sha }}`](https://github.com/zry98/movistar-home-hacks/tree/${{ steps.checkout.outputs.commit }}/RG3205W) by GitHub Actions workflow run [`${{ github.run_id }}`](https://github.com/zry98/movistar-home-hacks/actions/runs/${{ github.run_id }}).
 
+            Build provenance attestations: [${{ steps.generate-attestation.outputs.attestation-url }}](${{ steps.generate-attestation.outputs.attestation-url }}).
+
             ### Pre-installed APPs / APPs Pre-instaladas
 
-            ${{ needs.patch.outputs.apks-to-add }}
+            ${{ needs.patch.outputs.added-apks }}
             - Ubuntu `ca-certificates` ${{ needs.patch.outputs.ca-certs-version }}
 
             ### SHA-256 checksums

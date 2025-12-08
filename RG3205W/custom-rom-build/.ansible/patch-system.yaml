@@ -13,7 +13,6 @@
     files_to_remove:
       - 'priv-app/BlockedNumberProvider/'
       - 'priv-app/CellBroadcastReceiver/'
-      - 'priv-app/SocketService/'
       - 'priv-app/Mms/'
       - 'app/access-qcom-logkit/'
       - 'app/AntHalService/'
@@ -36,15 +35,19 @@
       - name: 'WebView.apk'
         description: 'Android System WebView 138.0.7204.63'
         url: 'https://www.apkmirror.com/apk/lineageos/android-system-webview-2/android-system-webview-138-0-7204-63-2-release/android-system-webview-138-0-7204-63-9-android-apk-download/'
+        sha256sum: 'b808109eb18c454e696ac5500f1c160223850178a3413ab08dc3493484658b40'
       - name: 'Chrome.apk'
         description: 'Google Chrome 138.0.7204.63'
         url: 'https://www.apkmirror.com/apk/google-inc/chrome/google-chrome-138-0-7204-63-release/google-chrome-138-0-7204-63-8-android-apk-download/'
+        sha256sum: '473fcdbdf6f59cd1b56190c1165dc473defb420ff1cfeeb74ffc55882390cebd'
       - name: 'Trebuchet.apk'
         description: 'LineageOS Trebuchet 8.1.0'
         url: 'https://www.apkmirror.com/apk/lineageos/lineageos-trebuchet/trebuchet-4-8-1-0-release/trebuchet-8-1-0-android-apk-download/'
+        sha256sum: '892bcd34078f8612b9414ac3f634a2b50fcd532fa1e26a741e76f642e17c11c8'
       - name: 'AuroraStore.apk'
         description: 'Aurora Store 4.7.5'
         url: 'https://gitlab.com/-/project/6922885/uploads/8196131660789dd6ad2618a76bcf1e37/AuroraStore-preload-4.7.5.apk'
+        sha256sum: 'c9b2c814c38cf484dad749643a11c1928db18eb3c96ec8cacda16ff6370cdd85'
     files_to_add:
       - source: 'bin/install-recovery.sh'
         target: 'bin/install-recovery.sh'
@@ -62,7 +65,6 @@
       - source: 'app/Chrome/'
         target: 'app/Chrome/'
         selinux_context: 'u:object_r:system_file:s0'
-    ca_certificates_url: 'https://archive.ubuntu.com/ubuntu/pool/main/c/ca-certificates/ca-certificates_20250419_all.deb'
     ca_certificates_source: '/etc/ssl/certs/*.0'
     replacements_in_files:
       - file: 'etc/prop.default'
@@ -86,10 +88,29 @@
 
   tasks:
     # Preparation
-    - name: Update CA certificates package
+    - name: Add Ubuntu questing APT sources
+      ansible.builtin.copy:
+        src: '{{ [ playbook_dir, "misc", "ubuntu-questing.sources" ] | path_join | realpath }}'
+        dest: '/etc/apt/sources.list.d/ubuntu-questing.sources'
+        mode: '0644'
+        owner: 'root'
+        group: 'root'
+        backup: false
+        remote_src: true
+
+    - name: Update APT cache
       ansible.builtin.apt:
-        deb: '{{ ca_certificates_url }}'
-        state: present
+        update_cache: true
+
+    - name: Upgrade CA certificates package
+      ansible.builtin.apt:
+        name:
+          - 'ca-certificates'
+        state: latest
+        default_release: 'questing-updates'
+        update_cache: true
+        allow_change_held_packages: true
+        force: true
 
     - name: Make new app directories
       loop: '{{ apks_to_add | map(attribute="name") | list }}'
@@ -116,6 +137,26 @@
         dest: '{{ [ src_dir, "app", item.name | splitext | first, item.name ] | path_join }}'
         user_agent: '{{ http_user_agent }}'
 
+    - name: Calculate SHA-256 checksum of all APKs
+      loop: '{{ apks_to_add }}'
+      ansible.builtin.stat:
+        path: '{{ (src_dir, "app", item.name | splitext | first, item.name) | path_join }}'
+        checksum_algorithm: sha256
+      register: apk_stats
+
+    - name: Verify SHA-256 checksum of all APKs
+      loop: '{{ apks_to_add }}'
+      loop_control:
+        extended: true
+      ansible.builtin.assert:
+        that:
+          - apk_stats.results[ansible_loop.index0].stat.exists
+          - apk_stats.results[ansible_loop.index0].stat.checksum == item.sha256sum
+        fail_msg: >-
+          SHA-256 checksum verification FAILED for {{ item.name }}: '{{ item.sha256sum }}' != '{{ apk_stats.results[ansible_loop.index0].stat.checksum | default("N/A") }}'.
+        success_msg: >-
+          SHA-256 checksum OK for {{ item.name }}.
+
     - name: Make mounting point
       ansible.builtin.file:
         path: '{{ mount_point }}'
@@ -124,13 +165,15 @@
 
     - name: Try unmounting system image
       ansible.builtin.command:
-        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+        cmd: |
+          umount --force --detach-loop --quiet '{{ mount_point }}'
       failed_when: false
       changed_when: false
 
     - name: Mount system image
       ansible.builtin.command:
-        cmd: 'mount -o loop {{ image_path }} {{ mount_point }}'
+        cmd: |
+          mount -o loop '{{ image_path }}' '{{ mount_point }}'
 
     # Patching
     - name: Remove unwanted stuff
@@ -143,7 +186,7 @@
       loop: '{{ files_to_remove_by_glob }}'
       ansible.builtin.shell: # ansible.builtin.fileglob doesn't work for directories
         cmd: |
-          rm -rf {{ mount_point }}/{{ item }} || true
+          rm -rf '{{ mount_point }}/{{ item }}'
       failed_when: false
 
     - name: Add new stuff
@@ -160,13 +203,14 @@
     - name: Set SELinux context on added stuff
       loop: '{{ files_to_add }}'
       ansible.builtin.command:
-        cmd: 'chcon --recursive "{{ item.selinux_context }}" "{{ [ mount_point, item.target ] | path_join }}"'
+        cmd: |
+          chcon --recursive '{{ item.selinux_context }}' '{{ [ mount_point, item.target ] | path_join }}'
 
     - name: Update CA certificates
       ansible.builtin.shell:
         cmd: |
           set -e
-          cp --remove-destination --dereference --force {{ ca_certificates_source }} {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/
+          cp --remove-destination --dereference --force {{ ca_certificates_source }} '{{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/'
           chown root:root {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*.0
           chcon 'u:object_r:system_file:s0' {{ [ mount_point, 'etc/security/cacerts' ] | path_join }}/*.0
 
@@ -178,8 +222,14 @@
         replace: '{{ item.replace }}'
         backup: false
 
+    - name: Rename su
+      ansible.builtin.command:
+        cmd: |
+          mv '{{ mount_point }}/xbin/su' '{{ mount_point }}/xbin/su_'
+
     # Finalization
     - name: Unmount system image
       when: (lookup('env', 'CI') | default('')) | lower == 'true'
       ansible.builtin.command:
-        cmd: 'umount --force --detach-loop --quiet {{ mount_point }}'
+        cmd: |
+          umount --force --detach-loop --quiet '{{ mount_point }}'

@@ -6,10 +6,10 @@
 
   vars:
     cwd: '{{ [ playbook_dir, ".." ] | path_join | realpath }}'
-    src_dir: '{{ [ cwd, "boot" ] | path_join | realpath }}'
     image_path: '/images/boot.img'
-    mount_point: '/mnt/boot'
-    android_boot_image_editor_release_url: 'https://github.com/cfig/Android_boot_image_editor/releases/download/v15_r1/boot_editor_v15_r1.zip'
+    output_name: 'boot.bin'
+    magisk_release_url: 'https://github.com/topjohnwu/Magisk/releases/download/v30.5/Magisk-v30.5.apk'
+    install_magisk: false
     replacements_in_files:
       - file: 'init.rc'
         pattern: '^\s*#?start askey_.+logd$'
@@ -18,84 +18,138 @@
   tasks:
     # Preparation
     - name: Install dependency packages
-      ansible.builtin.deb:
+      ansible.builtin.apt:
         name:
-          - unzip
-          - default-jre
+          - 'unzip'
+          - 'cpio'
         state: latest
 
-    - name: Download Android boot image editor
+    - name: Download Magisk apk
       ansible.builtin.get_url:
-        url: '{{ android_boot_image_editor_release_url }}'
-        dest: '{{ [ cwd, android_boot_image_editor_release_url | basename ] | path_join }}'
+        url: '{{ magisk_release_url }}'
+        dest: '{{ [ cwd, magisk_release_url | basename ] | path_join }}'
 
-    - name: Unzip Android boot image editor
+    - name: Unzip Magisk apk
       ansible.builtin.unarchive:
-        src: '{{ [ cwd, android_boot_image_editor_release_url | basename ] | path_join }}'
+        src: '{{ [ cwd, magisk_release_url | basename ] | path_join }}'
         dest: '{{ cwd }}'
         remote_src: true
 
-    - name: Set Android boot image editor dir path
+    - name: Set dir paths
       ansible.builtin.set_fact:
-        android_boot_image_editor_dir: '{{ [ cwd, android_boot_image_editor_release_url | basename | splitext | first ] | path_join }}'
+        work_dir: '{{ [ cwd, "assets" ] | path_join | realpath }}'
+        ramdisk_dir: '{{ [ cwd, "assets", "_ramdisk" ] | path_join | realpath }}'
 
-    - name: Clear Android boot image editor workspace
-      ansible.builtin.command:
-        chdir: '{{ android_boot_image_editor_dir }}'
-        cmd: './gradlew clear'
-      failed_when: false
-      changed_when: false
+    - name: Cleanup work dir
+      ansible.builtin.shell:
+        executable: /bin/bash
+        cmd: |
+          targets=(
+            "kernel"
+            "kernel_dtb"
+            "new-boot.img"
+            "patched-boot.img"
+            "stock_boot.img"
+            "ramdisk.cpio"
+            "_ramdisk"
+            "build.prop"
+          )
+          for i in "${targets[@]}"; do
+            rm -rf "{{ work_dir }}/$i"
+          done
+
+    - name: Prepare Magisk tools
+      ansible.builtin.shell:
+        executable: /bin/bash
+        chdir: '{{ [ cwd, "lib" ] | path_join }}'
+        cmd: |
+          set -e
+
+          tools=(
+            "x86_64/libmagiskboot.so:magiskboot"
+            "armeabi-v7a/libbusybox.so:busybox"
+            "armeabi-v7a/libinit-ld.so:init-ld"
+            "armeabi-v7a/libmagisk.so:magisk"
+            "armeabi-v7a/libmagiskinit.so:magiskinit"
+            "armeabi-v7a/libmagiskpolicy.so:magiskpolicy"
+          )
+          for i in "${tools[@]}"; do
+            dest="{{ work_dir }}/${i##*:}"
+            mv "${i%%:*}" "$dest"
+            chmod 0755 "$dest"
+          done
 
     - name: Get boot image size
       ansible.builtin.stat:
         path: '{{ image_path }}'
       register: boot_image_stat
 
-    - name: Copy boot image
-      ansible.builtin.copy:
-        src: '{{ image_path }}'
-        dest: '{{ [ android_boot_image_editor_dir, "boot.img" ] | path_join }}'
-        remote_src: true
-
     - name: Unpack boot image
       ansible.builtin.command:
-        chdir: '{{ android_boot_image_editor_dir }}'
-        cmd: './gradlew unpack'
+        chdir: '{{ work_dir }}'
+        cmd: |
+          ./magiskboot unpack '{{ image_path }}'
 
-    - name: Set ramdisk root path
-      ansible.builtin.set_fact:
-        ramdisk_root: '{{ [ android_boot_image_editor_dir, "build/unzip_boot/root" ] | path_join }}'
+    - name: Prepare ramdisk dir
+      ansible.builtin.file:
+        path: '{{ ramdisk_dir }}'
+        state: directory
+
+    - name: Unpack ramdisk
+      ansible.builtin.command:
+        chdir: '{{ ramdisk_dir }}'
+        cmd: |
+          cpio -idm -H newc -F '{{ work_dir }}/ramdisk.cpio'
 
     # Patching
     - name: Replace in files
       loop: '{{ replacements_in_files }}'
       ansible.builtin.replace:
-        path: '{{ [ ramdisk_root, item.file ] | path_join }}'
+        path: '{{ [ ramdisk_dir, item.file ] | path_join }}'
         regexp: '{{ item.pattern }}'
         replace: '{{ item.replace }}'
         backup: false
 
-    - name: Remove Askey log services from init.rc
+    - name: Remove Askey logging services from init.rc
       ansible.builtin.blockinfile:
-        path: '{{ [ ramdisk_root, "init.rc" ] | path_join }}'
+        path: '{{ [ ramdisk_dir, "init.rc" ] | path_join }}'
         marker: '#{mark}'
         marker_begin: 'Askey.Anderson add for logs'
         marker_end: 'Askey.Anderson add end'
         state: absent
 
-    # Finalization
+    # Repacking
+    - name: Repack ramdisk
+      ansible.builtin.shell:
+        chdir: '{{ ramdisk_dir }}'
+        cmd: |
+          find . | cpio -o -H newc -F '{{ work_dir }}/ramdisk.cpio'
+
     - name: Repack boot image
       ansible.builtin.command:
-        chdir: '{{ android_boot_image_editor_dir }}'
-        cmd: './gradlew pack'
+        chdir: '{{ work_dir }}'
+        cmd: |
+          ./magiskboot repack '{{ image_path }}' new-boot.img
 
+    # Installing Magisk
+    - name: Install Magisk
+      when: install_magisk | bool
+      ansible.builtin.shell:
+        chdir: '{{ work_dir }}'
+        cmd: |
+          export BOOTMODE=true KEEPVERITY=1 KEEPFORCEENCRYPT=1
+          mv new-boot.img patched-boot.img
+          bash boot_patch.sh patched-boot.img
+
+    # Finalization
     - name: Pad boot image to original size
       ansible.builtin.command:
-        chdir: '{{ android_boot_image_editor_dir }}'
-        cmd: 'truncate -c -s {{ boot_image_stat.stat.size }} boot.img.signed'
+        chdir: '{{ work_dir }}'
+        cmd: |
+          truncate -c -s {{ boot_image_stat.stat.size }} new-boot.img
 
     - name: Copy patched boot image
       ansible.builtin.copy:
-        src: '{{ [ android_boot_image_editor_dir, "boot.img.signed" ] | path_join }}'
-        dest: '{{ image_path }}'
+        src: '{{ [ work_dir, "new-boot.img" ] | path_join }}'
+        dest: '{{ [ image_path | dirname, output_name ] | path_join }}'
         remote_src: true
