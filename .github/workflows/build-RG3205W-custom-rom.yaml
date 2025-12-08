@@ -72,6 +72,9 @@ jobs:
     runs-on: ubuntu-latest
     name: 'patch (${{ matrix.jobs.output-name || matrix.jobs.image-type }})'
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout
         id: checkout
@@ -155,6 +158,8 @@ jobs:
 
     permissions:
       contents: write
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
@@ -196,13 +201,25 @@ jobs:
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
+      - name: Generate artifact attestation
+        id: generate-attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-checksums: .build/SHA256SUMS.txt
+          show-summary: true
+
+      - name: Bundle artificate attestation
+        working-directory: .build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}/
+        run: |
+          cp -a ${{ steps.generate-attestation.outputs.bundle-path }} ./
+
       - name: Pack images
         working-directory: .build/
         run: |
           zip -r -9 'RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}.zip' 'RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}/'
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.4.2
         with:
           name: 'RG3205W custom ROM based on ${{ inputs.stock-dump }}'
           tag_name: 'RG3205W-custom-rom-${{ inputs.stock-dump }}-${{ steps.short-commit-sha.outputs.sha }}'
