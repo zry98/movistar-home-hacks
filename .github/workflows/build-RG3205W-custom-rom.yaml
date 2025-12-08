@@ -210,7 +210,9 @@ jobs:
             .build/RG3205W-${{ inputs.stock-dump }}-custom-${{ steps.short-commit-sha.outputs.sha }}.zip
             .build/SHA256SUMS.txt
           fail_on_unmatched_files: true
+          prerelease: ${{ github.ref != 'refs/heads/main' }}
           make_latest: ${{ github.ref == 'refs/heads/main' }}
+          generate_release_notes: false
           body: |
             ## RG3205W Custom ROM
 
