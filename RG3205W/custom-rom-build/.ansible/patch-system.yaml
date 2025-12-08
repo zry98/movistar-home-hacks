@@ -13,7 +13,6 @@
     files_to_remove:
       - 'priv-app/BlockedNumberProvider/'
       - 'priv-app/CellBroadcastReceiver/'
-      - 'priv-app/SocketService/'
       - 'priv-app/Mms/'
       - 'app/access-qcom-logkit/'
       - 'app/AntHalService/'
@@ -66,7 +65,6 @@
       - source: 'app/Chrome/'
         target: 'app/Chrome/'
         selinux_context: 'u:object_r:system_file:s0'
-    ca_certificates_url: 'https://archive.ubuntu.com/ubuntu/pool/main/c/ca-certificates/ca-certificates_20250419_all.deb'
     ca_certificates_source: '/etc/ssl/certs/*.0'
     replacements_in_files:
       - file: 'etc/prop.default'
@@ -90,10 +88,29 @@
 
   tasks:
     # Preparation
-    - name: Update CA certificates package
+    - name: Add Ubuntu questing APT sources
+      ansible.builtin.copy:
+        src: '{{ [ playbook_dir, "misc", "ubuntu-questing.sources" ] | path_join | realpath }}'
+        dest: '/etc/apt/sources.list.d/ubuntu-questing.sources'
+        mode: '0644'
+        owner: 'root'
+        group: 'root'
+        backup: false
+        remote_src: true
+
+    - name: Update APT cache
       ansible.builtin.apt:
-        deb: '{{ ca_certificates_url }}'
-        state: present
+        update_cache: true
+
+    - name: Upgrade CA certificates package
+      ansible.builtin.apt:
+        name:
+          - 'ca-certificates'
+        state: latest
+        default_release: 'questing-updates'
+        update_cache: true
+        allow_change_held_packages: true
+        force: true
 
     - name: Make new app directories
       loop: '{{ apks_to_add | map(attribute="name") | list }}'

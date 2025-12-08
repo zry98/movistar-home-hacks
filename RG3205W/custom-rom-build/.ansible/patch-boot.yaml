@@ -20,8 +20,8 @@
     - name: Install dependency packages
       ansible.builtin.apt:
         name:
-          - unzip
-          - cpio
+          - 'unzip'
+          - 'cpio'
         state: latest
 
     - name: Download Magisk apk
@@ -48,6 +48,7 @@
             "kernel"
             "kernel_dtb"
             "new-boot.img"
+            "patched-boot.img"
             "stock_boot.img"
             "ramdisk.cpio"
             "_ramdisk"
@@ -137,7 +138,8 @@
         chdir: '{{ work_dir }}'
         cmd: |
           export BOOTMODE=true KEEPVERITY=1 KEEPFORCEENCRYPT=1
-          bash boot_patch.sh new-boot.img
+          mv new-boot.img patched-boot.img
+          bash boot_patch.sh patched-boot.img
 
     # Finalization
     - name: Pad boot image to original size
