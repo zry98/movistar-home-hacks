@@ -28,6 +28,7 @@ jobs:
           key: stock-image-${{ inputs.stock-dump }}-${{ matrix.image-type }}
           path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.image-type }}.bin
           fail-on-cache-miss: false
+          enableCrossOsArchive: true
           lookup-only: true
 
       - name: Checkout
@@ -95,6 +96,7 @@ jobs:
           key: stock-image-${{ inputs.stock-dump }}-${{ matrix.jobs.image-type }}
           path: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/${{ matrix.jobs.image-type }}.bin
           fail-on-cache-miss: true
+          enableCrossOsArchive: true
 
       - name: Verify checksum
         working-directory: RG3205W/stock-rom-dumps/${{ inputs.stock-dump }}/
@@ -105,6 +107,16 @@ jobs:
         uses: alex-oleshkevich/setup-ansible@v1.0.1
         with:
           version: '12.2.0'
+
+      - name: Restore cached APKs to add
+        id: restore-cached-apks-to-add
+        if: matrix.jobs.image-type == 'system'
+        uses: actions/cache/restore@v4
+        with:
+          key: apks-to-add
+          path: RG3205W/custom-rom-build/system/app
+          fail-on-cache-miss: false
+          enableCrossOsArchive: true
 
       - name: Run Ansible playbook
         working-directory: RG3205W/custom-rom-build/
@@ -142,6 +154,13 @@ jobs:
         if: matrix.jobs.image-type == 'system'
         run: |
           echo "version=$(apt show ca-certificates | grep Version: | awk -F ': ' '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache APKs to add
+        if: matrix.jobs.image-type == 'system' && steps.restore-cached-apks-to-add.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: apks-to-add
+          path: RG3205W/custom-rom-build/system/app
 
     outputs:
       sha256sum-system: ${{ steps.checksum.outputs.sha256sum-system }}

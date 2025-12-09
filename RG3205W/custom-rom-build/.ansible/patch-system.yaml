@@ -186,7 +186,7 @@
       loop: '{{ files_to_remove_by_glob }}'
       ansible.builtin.shell: # ansible.builtin.fileglob doesn't work for directories
         cmd: |
-          rm -rf '{{ mount_point }}/{{ item }}'
+          rm -rf {{ mount_point }}/{{ item }}
       failed_when: false
 
     - name: Add new stuff
