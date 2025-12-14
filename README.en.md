@@ -58,6 +58,7 @@ Special thanks to everyone who has contributed!
 - Lucas Sánchez
 - Tony
 - Javier
+- Ángel Luis
 
 ## Disclaimer
 

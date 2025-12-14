@@ -89,9 +89,9 @@ También hay unos volcados de ROM original aportados por la comunidad disponible
 
 Para entrar al modo _recovery_, primero apaga el dispositivo.
 
-Mantén pulsados los botones de volumen "+" (subir), volumen "-" (bajar) de la parte superior y encendido (el botón blanco al lado de la toma de corriente) todos juntos, hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego desaparezca quedándose la pantalla en negro (con un poco de retroiluminación), suelta todos los botones.
+Mantén pulsados los botones de volumen "+" (subir), volumen "-" (bajar) de la parte superior, y el botón de encendido de la parte trasera (el botón blanco al lado de la toma de corriente) todos juntos, hasta que aparezca la pantalla azul con el logo blanco de Movistar y luego desaparezca quedándose la pantalla en negro (con un poco de retroiluminación), suelta todos los botones inmediatamente.
 
-Ahora, vuelve a mantener pulsados los botones de volumen "+" y encendido juntos, y suéltalos después de 3 segundos. Debería aparecer el menú de recovery.
+Ahora, vuelve a mantener pulsado el botón de encendido, haz clic una vez el botón de volumen "+", debería aparecer el menú de recovery.
 
 > [!TIP]
 > Si el método anterior no te funciona, intenta desmontar el dispositivo y pulsar los botones directamente sin las piezas de plástico de la carcasa, en caso de que _tengas morcillas en vez de dedos_.

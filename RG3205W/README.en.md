@@ -92,9 +92,9 @@ There are also several stock ROM dumps made by the community available in the [R
 
 In order to enter the recovery mode, power off the device first.
 
-Hold the volume "+" (up), volume "-" (down) at the top and power buttons (the white button next to the power jack) all together, until the blue screen with white Movistar logo appears and disappears to a black screen (with a little bit backlight), release all the buttons.
+Hold the volume "+" (up), volume "-" (down) buttons at the top, and the power button at the back (the white button next to the power jack) all together, until the blue screen with white Movistar logo appears and disappears to a black screen (with a little bit backlight), release all the buttons immediately.
 
-Then, hold the volume "+" and power buttons together again, release them after 3 seconds. The recovery menu should appear.
+Then, hold the power button again, click the volume "+" button once, the recovery menu should appear.
 
 > [!TIP]
 > If the above method is not working for you, try disassembling the device and pressing the buttons directly without the plastic parts of the chassis, in case _you have morcilla fingers_.

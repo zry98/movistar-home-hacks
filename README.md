@@ -58,6 +58,7 @@ Si tienes este modelo, por favor consulta [IGW5000/README.md](./IGW5000/README.m
 - Lucas Sánchez
 - Tony
 - Javier
+- Ángel Luis
 
 ## Aviso legal
 
