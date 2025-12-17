@@ -133,9 +133,10 @@ Then execute `sudo mkinitcpio -P` to regenerate the initramfs.
 
 ### Power button
 
-Edit the file `/etc/systemd/logind.conf` to change the values in section `[Login]` as follows:
+Create the file `/etc/systemd/logind.conf.d/99-movistar-home-panel.conf` with the following content:
 
 ```systemd
+[Login]
 HandlePowerKey=ignore
 HandlePowerKeyLongPress=poweroff
 ```
@@ -143,8 +144,6 @@ HandlePowerKeyLongPress=poweroff
 This will make the power button do nothing on a short press, and power off the device gracefully on a long press.
 
 If you have configured a [screen lock](https://wiki.archlinux.org/title/Session_lock), you can also set `HandlePowerKey=lock` to lock the screen.
-
-Then execute `sudo systemctl enable --now systemd-logind.service`.
 
 ### Screen rotation and backlight control
 
@@ -413,9 +412,10 @@ Then execute `sudo mkinitcpio -P` to regenerate the initramfs. Also execute `sud
 
 #### Logging
 
-Edit the file `/etc/systemd/journald.conf` to change the values in section `[Journal]` as follows:
+Create the file `/etc/systemd/journald.conf.d/99-movistar-home-panel.conf` with the following content:
 
 ```systemd
+[Journal]
 Storage=volatile
 Compress=yes
 SystemMaxUse=10M

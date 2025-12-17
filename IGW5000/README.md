@@ -133,9 +133,10 @@ Y ejecuta `sudo mkinitcpio -P` para regenerar el _initramfs_.
 
 ### Botón de encendido
 
-Edita el fichero `/etc/systemd/logind.conf` para cambiar los valores en la sección `[Login]` como sigue:
+Crea el fichero `/etc/systemd/logind.conf.d/99-movistar-home-panel.conf` con el siguiente contenido:
 
 ```systemd
+[Login]
 HandlePowerKey=ignore
 HandlePowerKeyLongPress=poweroff
 ```
@@ -143,8 +144,6 @@ HandlePowerKeyLongPress=poweroff
 Esto hará que el botón de encendido no haga nada al pulsarlo brevemente y que el dispositivo se apague correctamente al pulsarlo prolongadamente.
 
 Si has configurado una [pantalla de bloqueo](https://wiki.archlinux.org/title/Session_lock), también puedes configurar `HandlePowerKey=lock` para habilitarla.
-
-Y ejecuta `sudo systemctl enable --now systemd-logind.service`.
 
 ### Rotación de la pantalla y control de la retroiluminación
 
@@ -413,9 +412,10 @@ Ejecuta `sudo mkinitcpio -P` para regenerar el initramfs. También ejecuta `sudo
 
 #### Logging
 
-Edita el fichero `/etc/systemd/journald.conf` para cambiar los valores en la sección `[Journal]` como sigue:
+Crea el fichero `/etc/systemd/journald.conf.d/99-movistar-home-panel.conf` con el siguiente contenido:
 
 ```systemd
+[Journal]
 Storage=volatile
 Compress=yes
 SystemMaxUse=10M

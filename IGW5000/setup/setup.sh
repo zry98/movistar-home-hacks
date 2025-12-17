@@ -2,30 +2,6 @@
 
 DISK_DEVICE="/dev/mmcblk1"
 KERNEL_OPTIONS="loglevel=3 quiet consoleblank=0 cpufreq.default_governor=performance fbcon=rotate:1 fbconsole=rotate:1 audit=0 mitigations=off zswap.enabled=0"
-declare -A _CONFIG_RESOLVED=(
-  [FallbackDNS]="1\.0\.0\.1#cloudflare-dns\.com 149\.112\.112\.112#dns\.quad9\.net 8\.8\.4\.4#dns\.google 2606:4700:4700::1001#cloudflare-dns\.com 2620:fe::9#dns\.quad9\.net 2001:4860:4860::8844#dns\.google"
-)
-declare -A _CONFIG_TIMESYNCD=(
-  [FallbackNTP]="0\.es\.pool\.ntp\.org 1\.europe\.pool\.ntp\.org time\.cloudflare\.com time\.google\.com"
-  [PollIntervalMinSec]="600"
-  [PollIntervalMaxSec]="10800"
-)
-declare -A _CONFIG_JOURNALD=(
-  [Storage]="volatile"
-  [Compress]="yes"
-  [SystemMaxUse]="10M"
-  [ForwardToSyslog]="no"
-  [ForwardToKMsg]="no"
-  [ForwardToConsole]="no"
-  [MaxLevelStore]="notice"
-  [MaxLevelSyslog]="notice"
-  [MaxLevelKMsg]="notice"
-  [MaxLevelConsole]="info"
-)
-declare -A _CONFIG_LOGIND=(
-  [HandlePowerKey]="ignore"
-  [HandlePowerKeyLongPress]="poweroff"
-)
 
 # script utils
 GREEN=$'\e[32m'
@@ -82,9 +58,13 @@ function arch_install {
   loadkeys es
 
   ln -sf /usr/share/zoneinfo/${TZ:-Europe/Madrid} /etc/localtime
-  for key in "${!_CONFIG_TIMESYNCD[@]}"; do
-    sed -i "s/^#\? \?${key}=.*$/${key}=${_CONFIG_TIMESYNCD[$key]}/" /etc/systemd/timesyncd.conf
-  done
+  mkdir /etc/systemd/timesyncd.conf.d/
+  cat /etc/systemd/timesyncd.conf.d/99-movistar-home-panel.conf <<\EOF
+[Time]
+FallbackNTP=0.es.pool.ntp.org 1.europe.pool.ntp.org time.cloudflare.com time.google.com
+PollIntervalMinSec=100
+PollIntervalMaxSec=10800
+EOF
   timedatectl set-ntp true
   sleep 5  # wait for clock sync
   hwclock --systohc
@@ -270,26 +250,39 @@ EOF
 127.0.1.1 panel.localdomain panel
 ::1 localhost
 EOF
-  for key in "${!_CONFIG_RESOLVED[@]}"; do
-    sed -i "s/^#\? \?${key}=.*$/${key}=${_CONFIG_RESOLVED[$key]}/" /etc/systemd/resolved.conf
-  done
+  mkdir /etc/systemd/resolved.conf.d/
+  cat /etc/systemd/resolved.conf.d/99-movistar-home-panel.conf <<\EOF
+[Resolve]
+FallbackDNS=1.0.0.1#cloudflare-dns.com 149.112.112.112#dns.quad9.net 8.8.4.4#dns.google 2606:4700:4700::1001#cloudflare-dns.com 2620:fe::9#dns.quad9.net 2001:4860:4860::8844#dns.google
+EOF
 
   # time
   ln -sf /usr/share/zoneinfo/${TZ:-Europe/Madrid} /etc/localtime
-  for key in "${!_CONFIG_TIMESYNCD[@]}"; do
-    sed -i "s/^#\? \?${key}=.*$/${key}=${_CONFIG_TIMESYNCD[$key]}/" /etc/systemd/timesyncd.conf
-  done
   systemctl enable systemd-timesyncd
 
   # journald
-  for key in "${!_CONFIG_JOURNALD[@]}"; do
-    sed -i "s/^#\? \?${key}=.*$/${key}=${_CONFIG_JOURNALD[$key]}/" /etc/systemd/journald.conf
-  done
+  mkdir /etc/systemd/journald.conf.d/
+  cat /etc/systemd/journald.conf.d/99-movistar-home-panel.conf <<\EOF
+[Journal]
+Storage=volatile
+Compress=yes
+SystemMaxUse=10M
+ForwardToSyslog=no
+ForwardToKMsg=no
+ForwardToConsole=no
+MaxLevelStore=notice
+MaxLevelSyslog=notice
+MaxLevelKMsg=notice
+MaxLevelConsole=info
+EOF
 
   # power button event
-  for key in "${!_CONFIG_LOGIND[@]}"; do
-    sed -i "s/^#\? \?${key}=.*$/${key}=${_CONFIG_LOGIND[$key]}/" /etc/systemd/logind.conf
-  done
+  mkdir /etc/systemd/logind.conf.d/
+  cat > /etc/systemd/logind.conf.d/99-movistar-home-panel.conf <<\EOF
+[Login]
+HandlePowerKey=ignore
+HandlePowerKeyLongPress=poweroff
+EOF
 
   # panel user
   useradd --create-home --groups wheel,audio,video,input,seat panel
@@ -424,8 +417,8 @@ EOF
   if [[ ! -z "${PANEL_CONTROLLER_TOKEN}" ]]; then
     pacman --sync --noconfirm base-devel gtk4 gtk4-layer-shell
     python3 -m venv /home/panel/panel-controller
-    curl -L -o /home/panel/panel-controller/app.py https://raw.githubusercontent.com/zry98/movistar-home-hacks/main/IGW5000/panel-controller/app.py
-    curl -L -o /home/panel/panel-controller/requirements.txt https://raw.githubusercontent.com/zry98/movistar-home-hacks/main/IGW5000/panel-controller/requirements.txt
+    curl -L -o /home/panel/panel-controller/app.py "https://raw.githubusercontent.com/zry98/movistar-home-hacks/main/IGW5000/panel-controller/app.py"
+    curl -L -o /home/panel/panel-controller/requirements.txt "https://raw.githubusercontent.com/zry98/movistar-home-hacks/main/IGW5000/panel-controller/requirements.txt"
     /home/panel/panel-controller/bin/pip install -r /home/panel/panel-controller/requirements.txt
 
     cat > /home/panel/.config/systemd/user/panel-controller.service <<EOF
