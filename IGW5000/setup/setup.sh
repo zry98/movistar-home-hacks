@@ -58,12 +58,7 @@ function arch_install {
   loadkeys es
 
   ln -sf /usr/share/zoneinfo/${TZ:-Europe/Madrid} /etc/localtime
-  mkdir /etc/systemd/timesyncd.conf.d/
-  #####################################################
-  # Agrego esto porque si no lo ponía yo, no me dejaba continuar con el script
-  touch /etc/systemd/timesyncd.conf.d/99-movistar-home-panel.conf
-  mkdir /mnt/emmc
-  ####################################################
+  mkdir -p /etc/systemd/timesyncd.conf.d/
   cat /etc/systemd/timesyncd.conf.d/99-movistar-home-panel.conf <<\EOF
 [Time]
 FallbackNTP=0.es.pool.ntp.org 1.europe.pool.ntp.org time.cloudflare.com time.google.com
@@ -74,6 +69,7 @@ EOF
   sleep 5  # wait for clock sync
   hwclock --systohc
 
+  mkdir -p /mnt/emmc
   ! mountpoint --quiet /mnt/emmc || umount --recursive --force --quiet /mnt/emmc
   local PTUUID="$(blkid -s PTUUID -o value "${DISK_DEVICE}")"
   sfdisk "${DISK_DEVICE}" <<EOF
@@ -255,7 +251,7 @@ EOF
 127.0.1.1 panel.localdomain panel
 ::1 localhost
 EOF
-  mkdir /etc/systemd/resolved.conf.d/
+  mkdir -p /etc/systemd/resolved.conf.d/
   cat /etc/systemd/resolved.conf.d/99-movistar-home-panel.conf <<\EOF
 [Resolve]
 FallbackDNS=1.0.0.1#cloudflare-dns.com 149.112.112.112#dns.quad9.net 8.8.4.4#dns.google 2606:4700:4700::1001#cloudflare-dns.com 2620:fe::9#dns.quad9.net 2001:4860:4860::8844#dns.google
@@ -266,7 +262,7 @@ EOF
   systemctl enable systemd-timesyncd
 
   # journald
-  mkdir /etc/systemd/journald.conf.d/
+  mkdir -p /etc/systemd/journald.conf.d/
   cat /etc/systemd/journald.conf.d/99-movistar-home-panel.conf <<\EOF
 [Journal]
 Storage=volatile
@@ -282,7 +278,7 @@ MaxLevelConsole=info
 EOF
 
   # power button event
-  mkdir /etc/systemd/logind.conf.d/
+  mkdir -p /etc/systemd/logind.conf.d/
   cat > /etc/systemd/logind.conf.d/99-movistar-home-panel.conf <<\EOF
 [Login]
 HandlePowerKey=ignore
