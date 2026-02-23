@@ -59,6 +59,11 @@ function arch_install {
 
   ln -sf /usr/share/zoneinfo/${TZ:-Europe/Madrid} /etc/localtime
   mkdir /etc/systemd/timesyncd.conf.d/
+  #####################################################
+  # Agrego esto porque si no lo ponía yo, no me dejaba continuar con el script
+  touch /etc/systemd/timesyncd.conf.d/99-movistar-home-panel.conf
+  mkdir /mnt/emmc
+  ####################################################
   cat /etc/systemd/timesyncd.conf.d/99-movistar-home-panel.conf <<\EOF
 [Time]
 FallbackNTP=0.es.pool.ntp.org 1.europe.pool.ntp.org time.cloudflare.com time.google.com
