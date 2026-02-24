@@ -59,6 +59,7 @@ Special thanks to everyone who has contributed!
 - Tony
 - Javier
 - Ángel Luis
+- [@alxayu97](https://github.com/alxayu97)
 
 ## Disclaimer
 

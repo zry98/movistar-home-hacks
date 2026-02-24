@@ -59,6 +59,7 @@ Si tienes este modelo, por favor consulta [IGW5000/README.md](./IGW5000/README.m
 - Tony
 - Javier
 - Ángel Luis
+- [@alxayu97](https://github.com/alxayu97)
 
 ## Aviso legal
 
