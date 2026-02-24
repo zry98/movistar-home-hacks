@@ -59,7 +59,7 @@ function arch_install {
 
   ln -sf /usr/share/zoneinfo/${TZ:-Europe/Madrid} /etc/localtime
   mkdir -p /etc/systemd/timesyncd.conf.d/
-  cat /etc/systemd/timesyncd.conf.d/99-movistar-home-panel.conf <<\EOF
+  cat > /etc/systemd/timesyncd.conf.d/99-movistar-home-panel.conf <<\EOF
 [Time]
 FallbackNTP=0.es.pool.ntp.org 1.europe.pool.ntp.org time.cloudflare.com time.google.com
 PollIntervalMinSec=100
@@ -252,7 +252,7 @@ EOF
 ::1 localhost
 EOF
   mkdir -p /etc/systemd/resolved.conf.d/
-  cat /etc/systemd/resolved.conf.d/99-movistar-home-panel.conf <<\EOF
+  cat > /etc/systemd/resolved.conf.d/99-movistar-home-panel.conf <<\EOF
 [Resolve]
 FallbackDNS=1.0.0.1#cloudflare-dns.com 149.112.112.112#dns.quad9.net 8.8.4.4#dns.google 2606:4700:4700::1001#cloudflare-dns.com 2620:fe::9#dns.quad9.net 2001:4860:4860::8844#dns.google
 EOF
@@ -263,7 +263,7 @@ EOF
 
   # journald
   mkdir -p /etc/systemd/journald.conf.d/
-  cat /etc/systemd/journald.conf.d/99-movistar-home-panel.conf <<\EOF
+  cat > /etc/systemd/journald.conf.d/99-movistar-home-panel.conf <<\EOF
 [Journal]
 Storage=volatile
 Compress=yes
@@ -505,7 +505,7 @@ EOF
   reflector --sort rate --country es --number 20 --age 6 --latest 10 --fastest 10
 
   read -rp $'\n\n'"${GREEN}Successful! Please remove the USB drive and press Enter key to reboot now; or Ctrl+C if you want to do anything else...${RESET}"
-  [[ $? -eq 0 ]] && reboot now
+  [[ $? -eq 0 ]] && shutdown -r now
 }
 
 ############
