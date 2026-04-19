@@ -9,6 +9,11 @@ on:
         type: choice
         options:
           - 'ES_g1.0_RG3205W3.7.0_202209282206'
+      make-release:
+        description: 'Make GitHub release'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   prepare:
@@ -171,6 +176,7 @@ jobs:
       ca-certs-version: ${{ steps.get-ca-certs-version.outputs.version }}
 
   release:
+    if: ${{ inputs.make-release || false }}
     needs:
       - patch
     runs-on: ubuntu-24.04
