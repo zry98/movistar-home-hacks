@@ -123,6 +123,12 @@ jobs:
           fail-on-cache-miss: false
           enableCrossOsArchive: true
 
+      - name: Restore APKs to add from LFS
+        id: restore-lfs-apks-to-add
+        if: matrix.jobs.image-type == 'system' && steps.restore-cached-apks-to-add.outputs.cache-hit != 'true'
+        run: |
+          git lfs pull --include 'RG3205W/custom-rom-build/system/app/*/*.apk'
+
       - name: Run Ansible playbook
         working-directory: RG3205W/custom-rom-build/
         run: |

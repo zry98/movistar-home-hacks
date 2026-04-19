@@ -21,6 +21,10 @@
       - 'recovery-from-boot.p'
     files_to_remove_by_glob:
       - 'priv-app/AskeyTR69*'
+      - 'priv-app/troya-app-onboarding_*'
+      - 'priv-app/troya-app-events-sender_*'
+      - 'priv-app/troya-app-updater_*'
+      - 'priv-app/troya-app-support_*'
     apks_to_add:
       - name: 'WebView.apk'
         description: 'Android System WebView 138.0.7204.63'
