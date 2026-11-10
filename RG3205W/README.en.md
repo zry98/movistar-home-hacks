@@ -41,6 +41,9 @@ For limited software-only hacks please refer to [rev5-softhacks/README.en.md](./
 
 Fortunately, the bootloader can be unlocked and boot any modified ROM. In order to do this, you may need to improvise a modified USB cable depending on the variant you have.
 
+> [!TIP]
+> Check out [daniel1286/home-rom-rg3205w](https://github.com/daniel1286/home-rom-rg3205w) for an up-to-date Android 15 LineageOS ROM and painless flashing methods.
+
 Currently there are at least 2 variants (hardware revisions) of RG3205W exist: `Rev4` and `Rev5`.
 
 > [!IMPORTANT]

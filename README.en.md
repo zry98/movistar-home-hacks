@@ -60,6 +60,7 @@ Special thanks to everyone who has contributed!
 - Javier
 - Ángel Luis
 - [@alxayu97](https://github.com/alxayu97)
+- [@daniel1286](https://github.com/daniel1286)
 
 ## Disclaimer
 

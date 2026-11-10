@@ -38,6 +38,9 @@ Para información sobre modificaciones solo por software con limitaciones, por f
 
 Afortunadamente, el *bootloader* se puede desbloquear y permite arrancar cualquier ROM modificada. Para hacerlo, puede que necesites improvisar un cable USB, dependiendo de la variante que tengas.
 
+> [!TIP]
+> Consulta [daniel1286/home-rom-rg3205w](https://github.com/daniel1286/home-rom-rg3205w) para una ROM LineageOS basada en Android 15 actualizada y métodos de instalación sencillos.
+
 Actualmente existen al menos 2 variantes (revisiones de hardware) del RG3205W: `Rev4` y `Rev5`.
 
 > [!IMPORTANT]

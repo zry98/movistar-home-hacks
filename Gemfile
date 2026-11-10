@@ -1,9 +1,11 @@
 source 'https://rubygems.org'
- 
-gem 'jekyll'
+
+ruby '~> 3.4'
+
+gem 'csv'
+gem 'bigdecimal'
+gem 'base64'
 group :jekyll_plugins do
-  gem 'jekyll-gfm-admonitions'
-  gem 'jekyll-optional-front-matter'
   gem 'github-pages'
+  gem 'jekyll-gfm-admonitions'
 end
-gem 'jekyll-remote-theme'
